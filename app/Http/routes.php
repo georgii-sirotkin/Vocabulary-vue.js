@@ -30,6 +30,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
     Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
+    Route::get('/login/{provider}', ['as' => 'third_party_login', 'uses' => 'ThirdPartyAuthController@redirectToProvider']);
+    Route::get('/login/{provider}/callback', ['as' => 'third_party_login_callback', 'uses' => 'ThirdPartyAuthController@handleProviderCallback']);
 
     Route::get('words/random', ['as' => 'random_word', 'uses' => 'WordsController@randomWord']);
     Route::resource('/words', 'WordsController', ['names' => [

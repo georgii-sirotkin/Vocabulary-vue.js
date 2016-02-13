@@ -2,17 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class WordsController extends Controller
 {
+
     /**
-     * Display a listing of the resource.
+     * Create a new controller instance.
      *
-     * @return \Illuminate\Http\Response
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Display words.
+     *
+     * @return Illuminate\View\View
      */
     public function index()
     {
@@ -20,9 +29,9 @@ class WordsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for adding a new word.
      *
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\View\View
      */
     public function create()
     {
@@ -30,7 +39,7 @@ class WordsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new word in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -41,46 +50,56 @@ class WordsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display word.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  string  $word
+     * @return Illuminate\View\View
      */
-    public function show($id)
+    public function show($word)
     {
         //
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display random word.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\View\View
      */
-    public function edit($id)
+    public function randomWord()
+    {
+
+    }
+
+    /**
+     * Show the form for editing the specified word.
+     *
+     * @param  string  $word
+     * @return Illuminate\View\View
+     */
+    public function edit($word)
     {
         //
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified word in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  string  $word
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $word)
     {
         //
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified word from storage.
      *
-     * @param  int  $id
+     * @param  string  $word
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($word)
     {
         //
     }
