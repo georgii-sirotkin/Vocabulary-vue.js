@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\RegistrationService;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -30,14 +31,18 @@ class AuthController extends Controller
      */
     protected $redirectTo = '/home';
 
+    private $registrationService;
+
     /**
      * Create a new authentication controller instance.
      *
+     * @param  App\Services\RegistrationService  $registrationService
      * @return void
      */
-    public function __construct()
+    public function __construct(RegistrationService $registrationService)
     {
         $this->middleware('guest', ['except' => 'logout']);
+        $this->registrationService = $registrationService;
     }
 
     /**
@@ -63,10 +68,7 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        $data['password'] = bcrypt($data['password']);
+        return $this->registrationService->register($data);
     }
 }

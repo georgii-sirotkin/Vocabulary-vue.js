@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Services\ThirdPartyAuthService;
 use Illuminate\Http\Request;
-use Socialite;
 
 class ThirdPartyAuthController extends Controller
 {
@@ -38,10 +37,10 @@ class ThirdPartyAuthController extends Controller
     }
 
     /**
-     * Obtain the user information from the third party.
+     * Obtain the user information from the third party and authenticate user.
      *
      * @param  string $provider
-     * @return [type]           [description]
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function handleProviderCallback($provider)
     {
@@ -51,18 +50,12 @@ class ThirdPartyAuthController extends Controller
             return redirect('/');
         }
 
-        dd($this->hasProviderSentAnyData());
-        dd($request->query);
+        if (!$this->hasProviderSentAnyData()) {
+            return redirect()->route('third_party_login', ['provider' => $provider]);
+        }
 
-        $user = Socialite::driver($provider)->user();
-        dd($user);
-        // check provider
-        // check request
-        // try to get user
-        // if user exists then login  StatefulGuard login
-        // create new user
-        //
-        // ThirdPartyAuthService
+        $this->thirdPartyAuth->handleCallback($provider);
+        return redirect()->intended('/home');
     }
 
     /**
@@ -88,8 +81,13 @@ class ThirdPartyAuthController extends Controller
         return $this->request->error == 'access_denied';
     }
 
+    /**
+     * Determine if provider has sent any data.
+     *
+     * @return boolean
+     */
     private function hasProviderSentAnyData()
     {
-        return $this->request->query()->count(); // !== 0;
+        return !empty($this->request->query());
     }
 }

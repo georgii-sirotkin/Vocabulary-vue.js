@@ -8,6 +8,10 @@ class ThirdPartyAuthInfo extends Model
 {
     public $timestamps = false;
     protected $table = 'third_party_auth';
+    protected $fillable = [
+        'third_party',
+        'third_party_user_id',
+    ];
 
     /**
      * Get the user who owns this auth info.

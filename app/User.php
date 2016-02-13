@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\ThirdPartyAuthInfo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -23,4 +24,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Get third party authentication info that belongs to this user.
+     *
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function thirdPartyAuths()
+    {
+        return $this->hasMany(ThirdPartyAuthInfo::class);
+    }
 }
