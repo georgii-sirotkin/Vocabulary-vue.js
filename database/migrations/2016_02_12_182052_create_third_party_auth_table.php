@@ -16,9 +16,10 @@ class CreateThirdPartyAuthTable extends Migration
             $table->increments('id');
             $table->enum('third_party', ['facebook', 'google']);
             $table->string('third_party_user_id');
-            $table->integer('user_id')->unsigned()->index();
+            $table->integer('user_id')->unsigned();
 
             $table->unique(['third_party_user_id', 'third_party']);
+            $table->unique(['user_id', 'third_party']);
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

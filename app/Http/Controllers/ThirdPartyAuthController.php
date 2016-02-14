@@ -55,6 +55,7 @@ class ThirdPartyAuthController extends Controller
         }
 
         $this->thirdPartyAuth->handleCallback($provider);
+
         return redirect()->intended('/home');
     }
 

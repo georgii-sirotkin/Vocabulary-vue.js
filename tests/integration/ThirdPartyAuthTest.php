@@ -34,4 +34,20 @@ class ThirdPartyAuthTest extends TestCase
         $this->visit(route('third_party_login_callback', ['provider' => 'facebook']) . '?error=access_denied')
             ->seePageIs('/');
     }
+
+    /** @test */
+    public function redirects_to_google()
+    {
+        try {
+            $this->visit(route('third_party_login', ['provider' => 'google']));
+        } catch (Exception $e) {}
+
+        $this->assertContains('accounts.google.com', $this->currentUri);
+
+        try {
+            $this->visit(route('third_party_login_callback', ['provider' => 'google']));
+        } catch (Exception $e) {}
+
+        $this->assertContains('accounts.google.com', $this->currentUri);
+    }
 }

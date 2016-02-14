@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\UserRegistered;
 use App\User;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\DatabaseManager;
@@ -38,7 +39,7 @@ class RegistrationService
             $user = $this->createUserWithThirdPartyAuth($data, $thirdPartyAuthData);
         }
 
-        $this->fireRegisterEvent($user);
+        $this->fireUserRegisteredEvent($user);
 
         return $user;
     }
@@ -65,7 +66,7 @@ class RegistrationService
     {
         try {
             $this->db->beginTransaction();
-            $user = $this->createUser($data);
+            $user = $this->findOrCreateUser($data);
             $this->addThirdPartyAuthInfoToUser($user, $thirdPartyAuthData);
             $this->db->commit();
             return $user;
@@ -73,6 +74,21 @@ class RegistrationService
             $this->db->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Find the user with the given email in the database or create a new user.
+     *
+     * @param  array  $data
+     * @return App\User
+     */
+    private function findOrCreateUser(array $data)
+    {
+        if (isset($data['email']) && ($user = User::where('email', $data['email'])->first())) {
+            return $user;
+        }
+
+        return $this->createUser($data);
     }
 
     /**
@@ -88,13 +104,13 @@ class RegistrationService
     }
 
     /**
-     * Fire the register event.
+     * Fire the UserRegistered event.
      *
      * @param  App\User   $user
      * @return void
      */
-    private function fireRegisterEvent(User $user)
+    private function fireUserRegisteredEvent(User $user)
     {
-
+        $this->events->fire(new UserRegistered($user));
     }
 }

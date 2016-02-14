@@ -10,6 +10,7 @@ class AuthenticationTest extends TestCase
     /** @test */
     public function user_can_register()
     {
+        $this->expectsEvents(App\Events\UserRegistered::class);
         $this->visit('/register')
             ->type('John Doe', 'name')
             ->type('john@example.com', 'email')

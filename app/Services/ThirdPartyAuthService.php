@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repositories\UserRepository;
 use App\Services\RegistrationService;
 use App\ThirdPartyAuthInfo;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
@@ -14,18 +15,20 @@ class ThirdPartyAuthService
     private $socialite;
     private $guard;
     private $registrationService;
+    private $repository;
 
     /**
      * Create a new instance of service.
      *
      * @param array $supportedProviders
      */
-    public function __construct(array $supportedProviders, Factory $socialite, AuthFactory $guard, RegistrationService $registrationService)
+    public function __construct(array $supportedProviders, Factory $socialite, AuthFactory $guard, RegistrationService $registrationService, UserRepository $repository)
     {
         $this->supportedProviders = $supportedProviders;
         $this->socialite = $socialite;
         $this->guard = $guard;
         $this->registrationService = $registrationService;
+        $this->repository = $repository;
     }
 
     /**
@@ -90,7 +93,7 @@ class ThirdPartyAuthService
      */
     private function retrieveThirdPartyAuthInfo(User $thirdPartyUser, $provider)
     {
-        return ThirdPartyAuthInfo::where('third_party_user_id', $thirdPartyUser->getId())->where('third_party', $provider)->first();
+        return $this->repository->retrieveThirdPartyAuthInfo($thirdPartyUser->getId(), $provider);
     }
 
     /**
@@ -118,7 +121,7 @@ class ThirdPartyAuthService
     private function prepareUserData(User $thirdPartyUser)
     {
         $data = [
-            'name' => $thirdPartyUser->getName(),
+            'name' => $this->getUserName($thirdPartyUser),
         ];
 
         if ($this->emailIsValid($thirdPartyUser->getEmail())) {
@@ -126,6 +129,25 @@ class ThirdPartyAuthService
         }
 
         return $data;
+    }
+
+    /**
+     * Get the name of the user to store in the database.
+     *
+     * @param  Laravel\Socialite\Contracts\User   $thirdPartyUser
+     * @return string
+     */
+    private function getUserName(User $thirdPartyUser)
+    {
+        if (!empty($thirdPartyUser->getName())) {
+            return $thirdPartyUser->getName();
+        }
+
+        if (!empty($thirdPartyUser->getNickname())) {
+            return $thirdPartyUser->getNickname();
+        }
+
+        return $thirdPartyUser->getEmail();
     }
 
     /**
