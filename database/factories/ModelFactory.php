@@ -26,3 +26,19 @@ $factory->define(App\ThirdPartyAuthInfo::class, function (Faker\Generator $faker
         'third_party_user_id' => $faker->unique()->randomNumber(8),
     ];
 });
+
+$factory->define(App\Word::class, function (Faker\Generator $faker) {
+    $word = $faker->unique()->word;
+    return [
+        'word' => $word,
+        'url_friendly_word' => $word,
+        'right_guesses_number' => $faker->randomDigit,
+        'image_filename' => $faker->optional(0.3)->word,
+    ];
+});
+
+$factory->define(App\Definition::class, function (Faker\Generator $faker) {
+    return [
+        'definition' => $faker->sentence(),
+    ];
+});

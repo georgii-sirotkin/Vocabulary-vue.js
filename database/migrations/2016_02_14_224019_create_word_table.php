@@ -18,7 +18,7 @@ class CreateWordTable extends Migration
             $table->string('url_friendly_word');
             $table->integer('user_id')->unsigned()->index();
             $table->tinyInteger('right_guesses_number')->unsigned();
-            $table->string('image_filename');
+            $table->string('image_filename')->nullable();
             $table->timestamps();
 
             $table->unique(['word', 'user_id']);

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\ThirdPartyAuthInfo;
+use App\Word;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -26,6 +27,16 @@ class User extends Authenticatable
     ];
 
     /**
+     * Add third-party auth info to user.
+     *
+     * @param ThirdPartyAuthInfo $ThirdPartyAuthInfo
+     */
+    public function addThirdPartyAuthInfo(ThirdPartyAuthInfo $ThirdPartyAuthInfo)
+    {
+        $this->thirdPartyAuths()->save($ThirdPartyAuthInfo);
+    }
+
+    /**
      * Get third party authentication info that belongs to this user.
      *
      * @return Illuminate\Database\Eloquent\Relations\HasMany
@@ -33,5 +44,15 @@ class User extends Authenticatable
     public function thirdPartyAuths()
     {
         return $this->hasMany(ThirdPartyAuthInfo::class);
+    }
+
+    /**
+     * Get words that belong to this user.
+     *
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function words()
+    {
+        return $this->hasMany(Word::class);
     }
 }

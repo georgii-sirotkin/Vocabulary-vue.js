@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Events\UserRegistered;
+use App\Repositories\UserRepository;
+use App\ThirdPartyAuthInfo;
 use App\User;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\DatabaseManager;
@@ -11,16 +13,18 @@ class RegistrationService
 {
     private $events;
     private $db;
+    private $repository;
 
     /**
      * Create a new instance of RegistrationService.
      *
      * @param Illuminate\Contracts\Events\Dispatcher $events
      */
-    public function __construct(Dispatcher $events, DatabaseManager $db)
+    public function __construct(Dispatcher $events, DatabaseManager $db, UserRepository $repository)
     {
         $this->events = $events;
         $this->db = $db;
+        $this->repository = $repository;
     }
 
     /**
@@ -67,7 +71,7 @@ class RegistrationService
         try {
             $this->db->beginTransaction();
             $user = $this->findOrCreateUser($data);
-            $this->addThirdPartyAuthInfoToUser($user, $thirdPartyAuthData);
+            $user->addThirdPartyAuthInfo(new ThirdPartyAuthInfo($thirdPartyAuthData));
             $this->db->commit();
             return $user;
         } catch (\Exception $e) {
@@ -84,23 +88,11 @@ class RegistrationService
      */
     private function findOrCreateUser(array $data)
     {
-        if (isset($data['email']) && ($user = User::where('email', $data['email'])->first())) {
+        if (isset($data['email']) && ($user = $this->repository->findUserByEmail($data['email']))) {
             return $user;
         }
 
         return $this->createUser($data);
-    }
-
-    /**
-     * Store user's third party auth info.
-     *
-     * @param App\User  $user
-     * @param array $thirdPartyAuthData
-     * @return  void
-     */
-    private function addThirdPartyAuthInfoToUser(User $user, array $thirdPartyAuthData)
-    {
-        $user->thirdPartyAuths()->create($thirdPartyAuthData);
     }
 
     /**

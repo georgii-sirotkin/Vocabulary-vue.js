@@ -29,10 +29,6 @@ Route::get('/', function () {
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
-    Route::get('/test', function () {
-        return get_class(app('Illuminate\Contracts\Auth\Factory'));
-    });
-
     Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
     Route::get('/login/{provider}', ['as' => 'third_party_login', 'uses' => 'ThirdPartyAuthController@redirectToProvider']);
     Route::get('/login/{provider}/callback', ['as' => 'third_party_login_callback', 'uses' => 'ThirdPartyAuthController@handleProviderCallback']);
