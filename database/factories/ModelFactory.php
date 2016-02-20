@@ -31,7 +31,7 @@ $factory->define(App\Word::class, function (Faker\Generator $faker) {
     $word = $faker->unique()->word;
     return [
         'word' => $word,
-        'url_friendly_word' => $word,
+        'slug' => $word,
         'right_guesses_number' => $faker->randomDigit,
         'image_filename' => $faker->optional(0.3)->word,
     ];

@@ -15,14 +15,14 @@ class CreateWordTable extends Migration
         Schema::create('word', function (Blueprint $table) {
             $table->increments('id');
             $table->string('word');
-            $table->string('url_friendly_word');
+            $table->string('slug');
             $table->integer('user_id')->unsigned()->index();
-            $table->tinyInteger('right_guesses_number')->unsigned();
+            $table->tinyInteger('right_guesses_number')->unsigned()->default(0);
             $table->string('image_filename')->nullable();
             $table->timestamps();
 
             $table->unique(['word', 'user_id']);
-            $table->unique(['url_friendly_word', 'user_id']);
+            $table->unique(['slug', 'user_id']);
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

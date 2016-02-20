@@ -79,7 +79,7 @@ class ThirdPartyAuthController extends Controller
      */
     private function isAccessDenied()
     {
-        return $this->request->error == 'access_denied';
+        return $this->request->has('error') || $this->request->has('error_code') || $this->request->has('error_message');
     }
 
     /**

@@ -20,7 +20,11 @@ class ThirdPartyAuthService
     /**
      * Create a new instance of service.
      *
-     * @param array $supportedProviders
+     * @param array               $supportedProviders
+     * @param Factory             $socialite
+     * @param AuthFactory         $guard
+     * @param RegistrationService $registrationService
+     * @param UserRepository      $repository
      */
     public function __construct(array $supportedProviders, Factory $socialite, AuthFactory $guard, RegistrationService $registrationService, UserRepository $repository)
     {
