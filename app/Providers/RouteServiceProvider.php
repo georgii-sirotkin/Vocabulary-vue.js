@@ -25,9 +25,6 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(Router $router)
     {
         parent::boot($router);
-        $router->bind('words', function ($slugOrId) {
-            return \App\Word::findBySlugOrIdOrFail($slugOrId);
-        });
     }
 
     /**

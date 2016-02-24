@@ -53,7 +53,7 @@ class AddWordTest extends WordTest
     public function add_word_with_definitions()
     {
         $this->call('POST', route('insert_word'), ['word' => 'test', 'definitions' => ['test definition', 'another definition']]);
-        $this->seePageIs(route('words'));
+        $this->assertRedirectedToRoute('words');
         $word = Word::first();
         $this->assertEquals(2, $word->definitions()->count());
         $this->assertNull($word->image_filename);
@@ -81,6 +81,9 @@ class AddWordTest extends WordTest
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
         $this->add_word_with_definitions();
+        $words = Word::withoutGlobalScope('currentUser')->get();
+        $this->assertEquals(2, Word::withoutGlobalScope('currentUser')->count());
+        $this->assertEquals($words[0]->slug, $words[1]->slug);
     }
 
     /** @test */

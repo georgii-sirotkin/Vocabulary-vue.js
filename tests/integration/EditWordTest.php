@@ -1,6 +1,7 @@
 <?php
 
 use App\Definition;
+use App\User;
 use App\Word;
 
 class EditWordTest extends WordTest
@@ -46,6 +47,7 @@ class EditWordTest extends WordTest
 
         $this->call('PUT', route('update_word', [$word->slug]), $data);
 
+        $this->assertRedirectedToRoute('words');
         $this->assertEquals(1, Word::count());
         $this->seeInDatabase('word', ['id' => $word->id, 'word' => 'word changed']);
 
@@ -73,6 +75,7 @@ class EditWordTest extends WordTest
         $this->assertNotNull($updatedWord->image_filename);
         $this->assertFalse(Storage::exists($this->image->getFullFileName($word->image_filename)));
         $this->assertTrue(Storage::exists($this->image->getFullFileName($updatedWord->image_filename)));
+        $this->image->delete($updatedWord->image_filename);
     }
 
     /** @test */
@@ -101,12 +104,32 @@ class EditWordTest extends WordTest
 
         $data = [];
         $data['word'] = $word->word;
-        $data['definitionIds'] = $definitions->pluck('id');
-        $data['definitions'] = $definitions->pluck('definition');
+        $data['definitionIds'] = $definitions->pluck('id')->all();
+        $data['definitions'] = $definitions->pluck('definition')->all();
         $this->call('PUT', route('update_word', [$word->slug]), $data);
 
+        $this->assertRedirectedToRoute('words');
         $updatedWord = Word::first();
         $this->assertNull($updatedWord->image_filename);
         $this->assertFalse(Storage::exists($this->image->getFullFileName($word->image_filename)));
+    }
+
+    /** @test */
+    public function slug_is_not_incremented_when_two_users_have_identical_words()
+    {
+        Word::unguard();
+        $word = $this->createWordForUser(['word' => 'test', 'image_filename' => 'test.jpg']);
+        $anotherUser = factory(User::class)->create();
+        $this->actingAs($anotherUser);
+        $theSameWord = factory(Word::class)->make(['word' => 'test', 'image_filename' => 'test.jpg']);
+        $anotherUser->addWord($theSameWord);
+        $this->assertNotNull($word->slug);
+        $this->assertEquals($word->slug, $theSameWord->slug);
+
+        $this->call('PUT', route('update_word', [$word->slug]), ['word' => 'test', 'keepImage' => 'keepImage']);
+
+        $this->assertRedirectedToRoute('words');
+        $updatedWord = Word::first();
+        $this->assertEquals($theSameWord->slug, $updatedWord->slug);
     }
 }

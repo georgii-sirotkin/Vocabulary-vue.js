@@ -59,6 +59,7 @@ class WordsController extends Controller
      */
     public function store(Request $request)
     {
+        // DB::enableQueryLog(); ////////
         $validator = $this->validator($request);
         if ($validator->fails()) {
             return redirect()->route('add_word')
@@ -86,18 +87,19 @@ class WordsController extends Controller
             }
             throw $e;
         }
-
-        // return redirect
+        // dd(DB::getQueryLog()); /////
+        return redirect()->route('words');
     }
 
     /**
      * Display word.
      *
-     * @param  Word  $word
+     * @param  string  $slugOrId
      * @return Illuminate\View\View
      */
-    public function show(Word $word)
+    public function show($slugOrId)
     {
+        $word = Word::findBySlugOrIdOrFail($slugOrId);
         $word->load('definitions');
         return $word;
     }
@@ -115,11 +117,12 @@ class WordsController extends Controller
     /**
      * Show the form for editing the specified word.
      *
-     * @param  Word  $word
+     * @param  string  $slugOrId
      * @return Illuminate\View\View
      */
-    public function edit(Word $word)
+    public function edit($slugOrId)
     {
+        $word = Word::findBySlugOrIdOrFail($slugOrId);
         if ($this->hasOldInput()) {
             $definitions = $this->getDefinitionsFromOldInput();
         } else {
@@ -132,11 +135,13 @@ class WordsController extends Controller
      * Update the specified word in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  Word  $word
+     * @param  string  $slugOrId
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Word $word)
+    public function update(Request $request, $slugOrId)
     {
+        $word = Word::findBySlugOrIdOrFail($slugOrId);
+        // DB::enableQueryLog(); ////////
         $validator = $this->validator($request, $word->id);
         if ($validator->fails()) {
             return redirect()->route('edit_word', [$word->slug])
@@ -144,11 +149,10 @@ class WordsController extends Controller
                 ->withInput();
         }
 
-        // DB::enableQueryLog();
         $word->word = $request->input('word');
 
         if ($word->image_filename && (!$this->image->isEmpty() || !$request->has('keepImage'))) {
-            $this->image->delete($word->image_filename);
+            $imageToDelete = $word->image_filename;
             $word->image_filename = null;
         }
 
@@ -158,26 +162,39 @@ class WordsController extends Controller
             $word->image_filename = $this->image->getFileName();
         }
 
-        // transaction
-        $word->save();
-        // handle definitions
         $inputDefinitions = $this->getDefinitionsFromInput($request);
         $this->removeDefinitionsThatDoNotBelongToThisWord($inputDefinitions, $word);
-        $word->addDefinitionsWithTouch($inputDefinitions);
-        $inputDefinitionIds = collect($inputDefinitions)->pluck('id');
-        $word->definitions()->whereNotIn('id', $inputDefinitionIds)->delete();
+
+        try {
+            $word->save();
+            $word->addDefinitionsWithTouch($inputDefinitions);
+            $inputDefinitionIds = collect($inputDefinitions)->pluck('id');
+            $word->definitions()->whereNotIn('id', $inputDefinitionIds)->delete();
+            if (!empty($imageToDelete)) {
+                $this->image->delete($imageToDelete);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if (!$this->image->isEmpty()) {
+                $this->image->delete();
+            }
+            throw $e;
+        }
+
         // dd(DB::getQueryLog());
+
         return redirect()->route('words');
     }
 
     /**
      * Remove the specified word from storage.
      *
-     * @param  Word  $word
+     * @param  string  $slugOrId
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Word $word)
+    public function destroy($slugOrId)
     {
+        $word = Word::findBySlugOrIdOrFail($slugOrId);
         try {
             DB::beginTransaction();
             $word->delete();
@@ -190,7 +207,7 @@ class WordsController extends Controller
             throw $e;
         }
 
-        // add redirect.
+        return redirect()->route('words');
     }
 
     /**
