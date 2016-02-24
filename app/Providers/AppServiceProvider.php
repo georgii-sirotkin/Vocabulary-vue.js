@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(ImageService::class, function ($app) {
-            return new ImageService(config('settings.image.max_width'), config('settings.image.max_height'), config('settings.image.max_filesize'), config('settings.image.mime_types'), config('settings.image.path'), $app['Intervention\Image\ImageManager']);
+            return new ImageService(config('settings.image.max_width'), config('settings.image.max_height'), config('settings.image.max_filesize'), config('settings.image.mime_types'), config('settings.image.folder'), $app['Intervention\Image\ImageManager'], $app['\Illuminate\Contracts\Filesystem\Filesystem']);
         });
     }
 }

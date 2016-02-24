@@ -28,10 +28,8 @@ $factory->define(App\ThirdPartyAuthInfo::class, function (Faker\Generator $faker
 });
 
 $factory->define(App\Word::class, function (Faker\Generator $faker) {
-    $word = $faker->unique()->word;
     return [
-        'word' => $word,
-        'slug' => $word,
+        'word' => $faker->unique()->word,
         'right_guesses_number' => $faker->randomDigit,
         'image_filename' => $faker->optional(0.3)->word,
     ];

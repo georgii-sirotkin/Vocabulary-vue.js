@@ -11,6 +11,8 @@
 |
  */
 
+// Auth::loginUsingId(9);
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -28,6 +30,10 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
+
+    Route::get('/test', function () {
+        return public_path();
+    });
 
     Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
     Route::get('/login/{provider}', ['as' => 'third_party_login', 'uses' => 'ThirdPartyAuthController@redirectToProvider']);

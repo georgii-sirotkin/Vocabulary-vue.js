@@ -13,33 +13,27 @@
     {!! Form::file('image', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- file upload / image url -->
-
+@if (!empty($word) && !empty($word->image_filename))
+	<img src="{{ $word->getImageUrl() }}">
+	<input type="hidden" name="keepImage" value="keepImage">
+@endif
 
 <h4>Definitions</h4>
 
-@if (!is_null(old('definitions')) && is_array(old('definitions')) && count(old('definitions')) > 0)
-    @foreach (old('definitions') as $definition)
+@if (count($definitions) > 0)
+    @foreach ($definitions as $definition)
 		<div class="form-group">
-			<textarea class="form-control" name="definitions[]" cols="50" rows="10">{{ $definition }}</textarea>
+			<textarea class="form-control" name="definitions[]" cols="50" rows="10">{{ $definition->definition }}</textarea>
+			<input type="hidden" name="definitionIds[]" value="{{ $definition->id }}">
 		</div>
 	@endforeach
 @else
 	<div class="form-group">
 		<textarea class="form-control" name="definitions[]" cols="50" rows="10"></textarea>
-	</div>
-
-	{{-- temporary --}}
-
-	<div class="form-group">
-		<textarea class="form-control" name="definitions[]" cols="50" rows="10"></textarea>
-	</div>
-
-	<div class="form-group">
-		<textarea class="form-control" name="definitions[]" cols="50" rows="10"></textarea>
+		<input type="hidden" name="definitionIds[]" value="">
 	</div>
 @endif
 
 <div class="form-group">
-	{!! Form::submit('Add word', ['class' => 'btn btn-primary form-control']) !!}
+	{!! Form::submit($buttonName, ['class' => 'btn btn-primary form-control']) !!}
 </div>

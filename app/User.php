@@ -37,6 +37,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Add word.
+     *
+     * @param Word $word
+     */
+    public function addWord(Word $word)
+    {
+        $this->words()->save($word);
+    }
+
+    /**
      * Get third party authentication info that belongs to this user.
      *
      * @return Illuminate\Database\Eloquent\Relations\HasMany

@@ -14,6 +14,6 @@ return [
             'png',
             'gif',
         ],
-        'path' => '',
+        'folder' => env('IMAGES_FOR_WORDS_FOLDER'),
     ],
 ];

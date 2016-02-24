@@ -13,7 +13,7 @@ return [
     |
     | Supported: "local", "ftp", "s3", "rackspace"
     |
-    */
+     */
 
     'default' => 'local',
 
@@ -26,7 +26,7 @@ return [
     | reason, you may specify a default "cloud" driver here. This driver
     | will be bound as the Cloud disk implementation in the container.
     |
-    */
+     */
 
     'cloud' => 's3',
 
@@ -39,18 +39,18 @@ return [
     | may even configure multiple disks of the same driver. Defaults have
     | been setup for each driver as an example of the required options.
     |
-    */
+     */
 
     'disks' => [
 
         'local' => [
             'driver' => 'local',
-            'root'   => storage_path('app'),
+            'root' => '/',
         ],
 
         'ftp' => [
-            'driver'   => 'ftp',
-            'host'     => 'ftp.example.com',
+            'driver' => 'ftp',
+            'host' => 'ftp.example.com',
             'username' => 'your-username',
             'password' => 'your-password',
 
@@ -64,20 +64,20 @@ return [
 
         's3' => [
             'driver' => 's3',
-            'key'    => 'your-key',
+            'key' => 'your-key',
             'secret' => 'your-secret',
             'region' => 'your-region',
             'bucket' => 'your-bucket',
         ],
 
         'rackspace' => [
-            'driver'    => 'rackspace',
-            'username'  => 'your-username',
-            'key'       => 'your-key',
+            'driver' => 'rackspace',
+            'username' => 'your-username',
+            'key' => 'your-key',
             'container' => 'your-container',
-            'endpoint'  => 'https://identity.api.rackspacecloud.com/v2.0/',
-            'region'    => 'IAD',
-            'url_type'  => 'publicURL',
+            'endpoint' => 'https://identity.api.rackspacecloud.com/v2.0/',
+            'region' => 'IAD',
+            'url_type' => 'publicURL',
         ],
 
     ],
