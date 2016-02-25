@@ -9,10 +9,12 @@ class AddWordTest extends WordTest
     public function can_add_word_with_image_url_and_definitions()
     {
         $this->call('POST', route('insert_word'), ['word' => 'test', 'definitions' => ['test definition', 'another definition'], 'imageUrl' => 'https://www.google.co.uk/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png']);
+
         $this->seeInDatabase('word', ['word' => 'test']);
         $this->seeInDatabase('definition', ['definition' => 'test definition']);
         $this->seeInDatabase('definition', ['definition' => 'another definition']);
         $word = Word::first();
+        $this->assertEquals($this->user->id, $word->user_id);
         $this->assertEquals(2, $word->definitions()->count());
         $this->assertNotNull($word->image_filename);
         $this->assertTrue(Storage::exists($this->image->getFullFileName($word->image_filename)));
@@ -27,7 +29,9 @@ class AddWordTest extends WordTest
             ->attach($this->getPathToTestFile('image.png'), 'image')
             ->press('Add word')
             ->seePageIs(route('words'));
+
         $word = Word::first();
+        $this->assertEquals($this->user->id, $word->user_id);
         $this->assertEquals(0, $word->definitions()->count());
         $this->assertNotNull($word->image_filename);
         $this->assertTrue(Storage::exists($this->image->getFullFileName($word->image_filename)));
@@ -42,7 +46,9 @@ class AddWordTest extends WordTest
             ->attach($this->getPathToTestFile('image.jpg'), 'image')
             ->press('Add word')
             ->seePageIs(route('words'));
+
         $word = Word::first();
+        $this->assertEquals($this->user->id, $word->user_id);
         $this->assertEquals(0, $word->definitions()->count());
         $this->assertNotNull($word->image_filename);
         $this->assertTrue(Storage::exists($this->image->getFullFileName($word->image_filename)));
@@ -53,6 +59,7 @@ class AddWordTest extends WordTest
     public function add_word_with_definitions()
     {
         $this->call('POST', route('insert_word'), ['word' => 'test', 'definitions' => ['test definition', 'another definition']]);
+
         $this->assertRedirectedToRoute('words');
         $word = Word::first();
         $this->assertEquals(2, $word->definitions()->count());
@@ -67,7 +74,9 @@ class AddWordTest extends WordTest
             ->type('https://www.google.co.uk/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png', 'imageUrl')
             ->press('Add word')
             ->seePageIs(route('words'));
+
         $word = Word::first();
+        $this->assertEquals($this->user->id, $word->user_id);
         $this->assertEquals(0, $word->definitions()->count());
         $this->assertNotNull($word->image_filename);
         $this->assertTrue(Storage::exists($this->image->getFullFileName($word->image_filename)));
@@ -81,6 +90,7 @@ class AddWordTest extends WordTest
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
         $this->add_word_with_definitions();
+
         $words = Word::withoutGlobalScope('currentUser')->get();
         $this->assertEquals(2, Word::withoutGlobalScope('currentUser')->count());
         $this->assertEquals($words[0]->slug, $words[1]->slug);
@@ -91,6 +101,7 @@ class AddWordTest extends WordTest
     {
         $word = $this->createWordForUser(['word' => 'test word']);
         $anotherWord = $this->createWordForUser(['word' => 'test-word']);
+
         $this->assertFalse($word->slug == $anotherWord->slug);
     }
 }

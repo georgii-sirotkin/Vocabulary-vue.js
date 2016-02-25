@@ -30,7 +30,7 @@ class EditWordTest extends WordTest
     /** @test */
     public function can_update_word_and_definitions()
     {
-        $word = $this->createWordForUser();
+        $word = $this->createWordForUser(['image_filename' => null]);
         $definitions = factory(Definition::class, 3)->make()->all();
         $word->addDefinitionsWithoutTouch($definitions);
 
@@ -131,5 +131,17 @@ class EditWordTest extends WordTest
         $this->assertRedirectedToRoute('words');
         $updatedWord = Word::first();
         $this->assertEquals($theSameWord->slug, $updatedWord->slug);
+    }
+
+    /** @test */
+    public function cant_edit_other_users_word()
+    {
+        $word = $this->createWordForUser();
+        $anotherUser = factory(User::class)->create();
+        $this->actingAs($anotherUser);
+
+        $this->call('PUT', route('update_word', [$word->slug]), []);
+
+        $this->assertResponseStatus(404);
     }
 }

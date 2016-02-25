@@ -25,10 +25,11 @@ class ViewWordsTest extends WordTest
         foreach (range(0, 3) as $number) {
             $words[] = $this->createWordForUser()->word;
         }
-
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
+
         $this->visit(route('words'));
+
         foreach ($words as $word) {
             $this->dontSee($word);
         }

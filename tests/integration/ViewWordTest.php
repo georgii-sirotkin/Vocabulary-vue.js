@@ -46,4 +46,16 @@ class ViewWordTest extends WordTest
             $this->see($definition);
         }
     }
+
+    /** @test */
+    public function cant_view_other_users_word()
+    {
+        $word = $this->createWordForUser();
+        $anotherUser = factory(User::class)->create();
+        $this->actingAs($anotherUser);
+
+        $this->call('GET', route('view_word', [$word->slug]), []);
+
+        $this->assertResponseStatus(404);
+    }
 }
