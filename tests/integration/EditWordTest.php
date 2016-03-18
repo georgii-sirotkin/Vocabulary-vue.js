@@ -121,7 +121,7 @@ class EditWordTest extends WordTest
         $word = $this->createWordForUser(['word' => 'test', 'image_filename' => 'test.jpg']);
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
-        $theSameWord = factory(Word::class)->make(['word' => 'test', 'image_filename' => 'test.jpg']);
+        $theSameWord = factory(Word::class)->make(['word' => 'test', 'image_filename' => 'test2.jpg']);
         $anotherUser->addWord($theSameWord);
         $this->assertNotNull($word->slug);
         $this->assertEquals($word->slug, $theSameWord->slug);

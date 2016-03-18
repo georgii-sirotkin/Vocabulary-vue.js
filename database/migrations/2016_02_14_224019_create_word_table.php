@@ -17,12 +17,13 @@ class CreateWordTable extends Migration
             $table->string('word');
             $table->string('slug');
             $table->integer('user_id')->unsigned()->index();
-            $table->tinyInteger('right_guesses_number')->unsigned()->default(0);
+            $table->tinyInteger('right_guesses_number')->unsigned()->default(0)->index();
             $table->string('image_filename')->nullable();
             $table->timestamps();
 
             $table->unique(['word', 'user_id']);
             $table->unique(['slug', 'user_id']);
+            $table->unique('image_filename');
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

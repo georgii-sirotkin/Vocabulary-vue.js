@@ -5,9 +5,9 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    const USERS_WITH_PASSWORDS_NUMBER = 7;
-    const USERS_WITH_THIRD_PARTY_AUTH_NUMBER = 3;
-    const MAX_NUMBER_OF_WORDS_PER_USER = 10;
+    const USERS_WITH_PASSWORDS_NUMBER = 90;
+    const USERS_WITH_THIRD_PARTY_AUTH_NUMBER = 10;
+    const MAX_NUMBER_OF_WORDS_PER_USER = 100;
     const MAX_NUMBER_OF_DEFINITIONS_PER_WORD = 4;
 
     /**

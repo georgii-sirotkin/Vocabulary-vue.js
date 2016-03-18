@@ -25,10 +25,14 @@ class WordsController extends Controller
     /**
      * Display words.
      *
+     * @param  Request $request
      * @return Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->has('search')) {
+            return 'search results';
+        }
         return Word::lists('word');
     }
 
@@ -79,16 +83,6 @@ class WordsController extends Controller
         $word = Word::findBySlugOrIdOrFail($slugOrId);
         $word->load('definitions');
         return $word;
-    }
-
-    /**
-     * Display random word.
-     *
-     * @return Illuminate\View\View
-     */
-    public function randomWord()
-    {
-
     }
 
     /**

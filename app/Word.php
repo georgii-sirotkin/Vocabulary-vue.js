@@ -18,7 +18,9 @@ class Word extends Model implements SluggableInterface
         parent::boot();
 
         static::addGlobalScope('currentUser', function (Builder $builder) {
-            $builder->where('user_id', Auth::user()->id);
+            if (Auth::check()) {
+                $builder->where('user_id', Auth::user()->id);
+            }
         });
     }
 
@@ -79,41 +81,4 @@ class Word extends Model implements SluggableInterface
     {
         return $this->hasMany(Definition::class);
     }
-
-    // /**
-    //  * Get all existing slugs that are similar to the given slug.
-    //  *
-    //  * @param string $slug
-    //  * @return array
-    //  */
-    // protected function getExistingSlugs($slug)
-    // {
-    //     $config = $this->getSluggableConfig();
-    //     $save_to = $config['save_to'];
-    //     $include_trashed = $config['include_trashed'];
-
-    //     $instance = new static;
-
-    //     //check for direct match or something that has a separator followed by a suffix
-    //     $query = $instance->where('user_id', $this->user_id)->where(function ($query) use (
-    //         $save_to,
-    //         $config,
-    //         $slug
-    //     ) {
-    //         $query->where($save_to, $slug);
-    //         $query->orWhere($save_to, 'LIKE',
-    //             $slug . $config['separator'] . '%');
-    //     });
-
-    //     // include trashed models if required
-    //     if ($include_trashed && $this->usesSoftDeleting()) {
-    //         $query = $query->withTrashed();
-    //     }
-
-    //     // get a list of all matching slugs
-    //     $list = $query->lists($save_to, $this->getKeyName());
-
-    //     // Laravel 5.0/5.1 check
-    //     return $list instanceof Collection ? $list->all() : $list;
-    // }
 }

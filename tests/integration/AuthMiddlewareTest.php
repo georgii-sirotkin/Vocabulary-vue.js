@@ -7,5 +7,6 @@ class AuthMiddlewareTest extends TestCase
     {
         $this->visit(route('home'))->seePageIs('/login');
         $this->visit(route('words'))->seePageIs('/login');
+        $this->visit(route('random_word'))->seePageIs('/login');
     }
 }

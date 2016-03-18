@@ -37,7 +37,7 @@ class WordService
      * @param  string $wordId
      * @return Validator
      */
-    public function getValidator(Request $request, $wordId = null)
+    public function getValidator(Request $request, $wordId = 'NULL')
     {
         $userId = $request->user()->id;
 

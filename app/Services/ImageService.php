@@ -10,12 +10,14 @@ class ImageService
 {
     private $maxWidth;
     private $maxHeight;
+
     /**
      * Maximum file size in kilobytes.
      * @var  int
      */
     private $maxFilesize;
     private $mimeTypes;
+
     /**
      * Folder for storing images.
      * @var string
