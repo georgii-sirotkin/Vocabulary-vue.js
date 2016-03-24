@@ -6,6 +6,14 @@ use App\Word;
 
 class RandomWordTest extends WordTest
 {
+    /**
+     * Status codes.
+     */
+    const INCORRECT_ANSWER = 0;
+    const CORRECT_ANSWER = 1;
+    const CORRECT_ANSWER_WITH_SPELLING_MISTAKES = 2;
+    const NO_ANSWER = 3;
+
     /** @test */
     public function prompts_to_add_words_when_there_are_no_words()
     {
@@ -57,7 +65,7 @@ class RandomWordTest extends WordTest
     /** @test */
     public function returns_new_words_and_remembers_old_ones()
     {
-        $numberOfWordsToRemember = 5;
+        $numberOfWordsToRemember = config('settings.number_of_words_to_remember');
         foreach (range(1, $numberOfWordsToRemember) as $number) {
             $this->createWordForUser(['right_guesses_number' => 0]);
         }
@@ -80,13 +88,92 @@ class RandomWordTest extends WordTest
         }
 
         $this->visit(route('random_word'));
-        $mostRecentWordIds = Session::get('mostRecentWordIds');
+        $sessionData = Session::all();
 
-        $this->withSession(['mostRecentWordIds' => $mostRecentWordIds, 'mostRecentWordHaveBeenChecked' => true])
+        $this->withSession($sessionData)
+            ->json('POST', route('check_answer'), ['answer' => '']);
+        $sessionData = Session::all();
+        $this->assertTrue($sessionData['mostRecentWordHaveBeenChecked']);
+
+        $this->withSession($sessionData)
             ->visit(route('random_word'));
+
+        $sessionData = Session::all();
+
+        $this->assertFalse($sessionData['mostRecentWordHaveBeenChecked']);
+        $this->assertNotNull($sessionData['mostRecentWordHaveBeenChecked']);
+
+        $this->assertTrue(count($sessionData['mostRecentWordIds']->getNonemptyElements()) == 2);
+        $this->assertEquals(count(array_unique($sessionData['mostRecentWordIds']->getNonemptyElements())), count($sessionData['mostRecentWordIds']->getNonemptyElements()));
+    }
+
+    /** @test */
+    public function returns_correct_answer_status_and_increases_number_of_right_guesses()
+    {
+        $word = $this->createWordForUser();
+
+        $this->visit(route('random_word'));
         $mostRecentWordIds = Session::get('mostRecentWordIds');
 
-        $this->assertTrue(count($mostRecentWordIds->getNonemptyElements()) == 2);
-        $this->assertEquals(count(array_unique($mostRecentWordIds->getNonemptyElements())), count($mostRecentWordIds->getNonemptyElements()));
+        $this->withSession(['mostRecentWordIds' => $mostRecentWordIds])
+            ->json('POST', route('check_answer'), ['answer' => $word->word])
+            ->seeJson(["statusCode" => self::CORRECT_ANSWER]);
+
+        $updatedWord = $word->fresh();
+
+        $this->assertEquals($word->right_guesses_number + 1, $updatedWord->right_guesses_number);
+    }
+
+    /** @test */
+    public function returns_correct_with_mistakes_and_increases_number_of_right_guesses()
+    {
+        $minNumberOfCharsPerOneMistake = config('settings.min_number_of_chars_per_one_mistake');
+        $wordString = str_repeat('a', $minNumberOfCharsPerOneMistake);
+        $word = $this->createWordForUser(['word' => $wordString]);
+
+        $this->visit(route('random_word'));
+        $mostRecentWordIds = Session::get('mostRecentWordIds');
+
+        $this->withSession(['mostRecentWordIds' => $mostRecentWordIds])
+            ->json('POST', route('check_answer'), ['answer' => $wordString . 'e']) // submit an answer with a spelling mistake
+            ->seeJson(["statusCode" => self::CORRECT_ANSWER_WITH_SPELLING_MISTAKES]);
+
+        $updatedWord = $word->fresh();
+
+        $this->assertEquals($word->right_guesses_number + 1, $updatedWord->right_guesses_number);
+    }
+
+    /** @test */
+    public function returns_incorrect_and_decreases_number_of_right_guesses()
+    {
+        $word = $this->createWordForUser(['word' => 'cat', 'right_guesses_number' => 1]);
+
+        $this->visit(route('random_word'));
+        $mostRecentWordIds = Session::get('mostRecentWordIds');
+
+        $this->withSession(['mostRecentWordIds' => $mostRecentWordIds])
+            ->json('POST', route('check_answer'), ['answer' => 'bed'])
+            ->seeJson(["statusCode" => self::INCORRECT_ANSWER]);
+
+        $updatedWord = $word->fresh();
+
+        $this->assertEquals($word->right_guesses_number - 1, $updatedWord->right_guesses_number);
+    }
+
+    /** @test */
+    public function returns_no_answer_code_and_descreases_number_of_right_guesses()
+    {
+        $word = $this->createWordForUser(['word' => 'cat', 'right_guesses_number' => 1]);
+
+        $this->visit(route('random_word'));
+        $mostRecentWordIds = Session::get('mostRecentWordIds');
+
+        $this->withSession(['mostRecentWordIds' => $mostRecentWordIds])
+            ->json('POST', route('check_answer'), ['answer' => ''])
+            ->seeJson(["statusCode" => self::NO_ANSWER]);
+
+        $updatedWord = $word->fresh();
+
+        $this->assertEquals($word->right_guesses_number - 1, $updatedWord->right_guesses_number);
     }
 }

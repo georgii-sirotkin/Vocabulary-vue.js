@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Services\RandomWordService;
+use Illuminate\Http\Request;
 
 class RandomWordsController extends Controller
 {
@@ -40,8 +41,14 @@ class RandomWordsController extends Controller
         return $this->randomWordService->getNewRandomWord();
     }
 
-    public function check()
+    /**
+     * Check answer.
+     *
+     * @param  Request $request
+     * @return string  In JSON format
+     */
+    public function checkAnswer(Request $request)
     {
-
+        return $this->randomWordService->checkAnswer($request->input('answer'));
     }
 }

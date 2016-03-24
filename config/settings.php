@@ -22,4 +22,9 @@ return [
      * When we fetch a new random word from the database, we will make these words unlikely to be found.
      */
     'number_of_words_to_remember' => 5,
+
+    /**
+     * Minimum number of characters per one spelling mistake (levenshtein distance of 1) to consider answer correct.
+     */
+    'min_number_of_chars_per_one_mistake' => 6,
 ];

@@ -38,6 +38,7 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('words/random', ['as' => 'random_word', 'uses' => 'RandomWordsController@randomWord']);
     Route::get('words/next_random', ['as' => 'next_random_word', 'uses' => 'RandomWordsController@nextRandomWord']);
+    Route::post('words/check_answer', ['as' => 'check_answer', 'uses' => 'RandomWordsController@checkAnswer']);
 
     Route::resource('/words', 'WordsController', ['names' => [
         'index' => 'words',
