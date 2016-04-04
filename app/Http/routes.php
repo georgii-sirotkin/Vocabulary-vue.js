@@ -11,11 +11,13 @@
 |
  */
 
-// Auth::loginUsingId(1);
+// Auth::loginUsingId(81);
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Route::get('/generate', 'GenerateSQLController@index');
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +32,9 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
+
+    // Route::get('/test', function () { ///
+    // });
 
     Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 

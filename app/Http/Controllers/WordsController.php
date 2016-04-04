@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\WordRepository;
 use App\Services\WordService;
 use App\Word;
 use Illuminate\Http\Request;
@@ -23,16 +24,17 @@ class WordsController extends Controller
     }
 
     /**
-     * Display words.
+     * Display words or search results.
      *
      * @param  Request $request
      * @return Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index(Request $request, WordRepository $wordRepository)
     {
         if ($request->has('search')) {
-            return 'search results';
+            return $wordRepository->findWords($request->input('search'));
         }
+
         return Word::lists('word');
     }
 

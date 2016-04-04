@@ -5,9 +5,17 @@ namespace App\Repositories;
 use App\Exceptions\NoWordsException;
 use App\Word;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class WordRepository
 {
+    private $minNumberOfCharactersPerOneMistake;
+
+    public function __construct($minNumberOfCharactersPerOneMistake)
+    {
+        $this->minNumberOfCharactersPerOneMistake = $minNumberOfCharactersPerOneMistake;
+    }
+
     /**
      * Get random word.
      *
@@ -24,6 +32,97 @@ class WordRepository
         }
 
         return $word;
+    }
+
+    /**
+     * Find words.
+     *
+     * @param  string $searchString
+     * @return Collection
+     */
+    public function findWords($searchString)
+    {
+        $words = $this->getWordsThatMatchExactly($searchString);
+
+        if (!$words->isEmpty()) {
+            return $words;
+        }
+
+        return $this->getSimilarWords($searchString);
+    }
+
+    /**
+     * Get words that match exactly.
+     *
+     * @param  string $searchString
+     * @return Collection
+     */
+    private function getWordsThatMatchExactly($searchString)
+    {
+        return Word::where('word', 'like', "%{$searchString}%")->get();
+    }
+
+    /**
+     * Get similar words using fuzzy string searching.
+     *
+     * @param  string $searchString
+     * @return Collection
+     */
+    private function getSimilarWords($searchString)
+    {
+        $allSimilarWords = new Collection();
+
+        Word::chunk(1000, function ($words) use (&$allSimilarWords, $searchString) {
+            $similarWords = $this->filterDissimilarWords($words, $searchString);
+            $allSimilarWords = $allSimilarWords->merge($similarWords);
+        });
+
+        return $allSimilarWords;
+    }
+
+    /**
+     * Filter dissimilar words.
+     * Remove words that are not similar to the search string.
+     *
+     * @param  Collection $words
+     * @param  string     $searchString
+     * @return Collection
+     */
+    private function filterDissimilarWords(Collection $words, $searchString)
+    {
+        return $words->filter(function ($value, $key) use ($searchString) {
+            return $this->areWordsSimilar($searchString, $value->word);
+        });
+    }
+
+    /**
+     * Determine if words are similar.
+     *
+     * @param  [type] $searchString
+     * @param  [type] $word
+     * @return [type]
+     */
+    private function areWordsSimilar($searchString, $word)
+    {
+        if ($this->isWordTooShortOrTooLong($searchString, $word)) {
+            return false;
+        }
+
+        $levenshteinDistance = levenshtein($searchString, $word);
+
+        return floor(strlen($searchString) / $this->minNumberOfCharactersPerOneMistake) >= $levenshteinDistance;
+    }
+
+    /**
+     * Determine if word is too short or too long.
+     *
+     * @param  [type]  $searchString
+     * @param  [type]  $word
+     * @return boolean
+     */
+    private function isWordTooShortOrTooLong($searchString, $word)
+    {
+        return abs(strlen($searchString) - strlen($word)) > strlen($searchString) / $this->minNumberOfCharactersPerOneMistake;
     }
 
     /**

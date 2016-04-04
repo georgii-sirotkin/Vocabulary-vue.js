@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Repositories\WordRepository;
 use App\Services\ImageService;
 use App\Services\RandomWordService;
 use App\Services\ThirdPartyAuthService;
@@ -36,6 +37,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(RandomWordService::class, function ($app) {
             return new RandomWordService($app['App\Repositories\WordRepository'], $app['Illuminate\Session\SessionManager'], config('settings.min_number_of_chars_per_one_mistake'), config('settings.number_of_words_to_remember'));
+        });
+
+        $this->app->singleton(WordRepository::class, function ($app) {
+            return new WordRepository(config('settings.min_number_of_chars_per_one_mistake_in_search'));
         });
     }
 }

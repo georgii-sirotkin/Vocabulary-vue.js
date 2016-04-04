@@ -27,4 +27,9 @@ return [
      * Minimum number of characters per one spelling mistake (levenshtein distance of 1) to consider answer correct.
      */
     'min_number_of_chars_per_one_mistake' => 6,
+
+    /**
+     * Minimum number of characters per one spelling mistake (levenshtein distance of 1) to consider a word similar when searching.
+     */
+    'min_number_of_chars_per_one_mistake_in_search' => 4,
 ];
