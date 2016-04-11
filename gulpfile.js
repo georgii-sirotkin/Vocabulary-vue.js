@@ -1,5 +1,10 @@
 var elixir = require('laravel-elixir');
 
+const PUBLIC_DIR = '../html';
+
+elixir.config.publicDir = PUBLIC_DIR;
+elixir.config.publicPath = PUBLIC_DIR;
+
 /*
  |--------------------------------------------------------------------------
  | Elixir Asset Management
@@ -12,5 +17,6 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
-    mix.sass('app.scss');
+	mix.styles(['ie10-viewport-bug-workaround.css', 'theme.css'], PUBLIC_DIR + '/css/styles.css');
+    mix.version('css/styles.css');
 });
