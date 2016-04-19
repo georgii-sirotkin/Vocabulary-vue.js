@@ -14,7 +14,7 @@
 // Auth::loginUsingId(81);
 
 Route::get('/', function () {
-    return view('layouts.new');
+    return view('layouts.app');
 });
 
 // Route::get('/generate', 'GenerateSQLController@index');

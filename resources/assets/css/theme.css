@@ -73,6 +73,10 @@ body {
   margin-bottom: 10px;
 }
 
+.masthead-brand a:focus, .masthead-brand a:hover{
+  text-decoration: none;
+}
+
 .masthead-nav > li {
   display: inline-block;
 }
@@ -154,7 +158,8 @@ body {
 
   body {
     padding-top: 100px;
-    padding-bottom: 120px;
+    /*padding-bottom: 120px;*/
+    padding-bottom: 170px;
   }
 
   .sheet {
@@ -183,10 +188,24 @@ body {
   .sheet {
     min-height: 400px;
   }
+
+  body {
+    /*padding-bottom: 120px;*/
+    padding-bottom: 200px;
+  }
 }
 
 @media (min-width: 1200px) {
   .container {
     width: 970px;
+  }
+
+  body {
+    padding-bottom: 250px;
+  }
+
+  .cover-container,
+  .masthead {
+    width: 800px;
   }
 }
