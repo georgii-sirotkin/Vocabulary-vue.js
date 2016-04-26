@@ -159,6 +159,7 @@ return [
         Laravel\Socialite\SocialiteServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Cviebrock\EloquentSluggable\SluggableServiceProvider::class,
+        Laravelista\Ekko\EkkoServiceProvider::class,
     ],
 
     /*
@@ -207,6 +208,7 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Ekko' => Laravelista\Ekko\Facades\Ekko::class,
     ],
 
 ];

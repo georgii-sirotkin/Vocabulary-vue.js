@@ -63,7 +63,7 @@ class AuthenticationTest extends TestCase
         for ($i = 0; $i < $attemptsMaxNumber + 1; $i++) {
             $this->type('john@example.com', 'email')
                 ->type('incorrect password', 'password')
-                ->press('Login')
+                ->press('Log In')
                 ->seePageIs('/login');
         }
         $this->see('Too many login attempts');
@@ -81,7 +81,7 @@ class AuthenticationTest extends TestCase
         $this->visit('/login')
             ->type('john@example.com', 'email')
             ->type('123456', 'password')
-            ->press('Login')
+            ->press('Log In')
             ->seePageIs('/login');
 
         $this->assertFalse(Auth::check());
