@@ -1,1 +1,1 @@
-@extends('layouts.guest')
+@extends('layouts.authenticated')

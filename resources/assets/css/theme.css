@@ -1,23 +1,13 @@
-a,
-a:focus,
-a:hover {
-  color: #fff;
-}
-
-/* Custom default button */
-.btn-default,
-.btn-default:hover,
-.btn-default:focus {
-  color: #333;
-  text-shadow: none; /* Prevent inheritence from `body` */
-  background-color: #fff;
-  border: 1px solid #fff;
-}
-
-
 /*
  * Base structure
  */
+
+/*a,
+a:focus,
+a:hover {
+  color: #fff;
+}*/
+
 
 html,
 body {
@@ -65,6 +55,14 @@ body {
   padding: 30px;
 }
 
+form .nav-tabs > li > a {
+  color: #2462db;
+}
+
+form .nav-tabs {
+  margin-bottom: 15px;
+}
+
 
 /*
  * Header
@@ -74,8 +72,13 @@ body {
   margin-bottom: 10px;
 }
 
+.masthead-brand a {
+  color: #fff;
+}
+
 .masthead-brand a:focus, .masthead-brand a:hover{
   text-decoration: none;
+  color: #fff;
 }
 
 .masthead-nav > li {
@@ -115,6 +118,10 @@ body {
   padding-right: 0px;
 }
 
+.padding-bottom-sm {
+  padding-bottom: 7px;
+}
+
 .page-header {
   padding-bottom: 0px;
   margin: 0px 0 25px;
@@ -150,6 +157,10 @@ body {
   border-radius: 12px;
   /*min-height: 400px;*/
 }
+
+/*.sheet a {
+  color: #2462db;
+}*/
 
 /*
  * Affix and center

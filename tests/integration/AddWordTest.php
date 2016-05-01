@@ -26,8 +26,9 @@ class AddWordTest extends WordTest
     {
         $this->visit(route('add_word'))
             ->type('test', 'word')
+            ->seePageIs(route('add_word'))
             ->attach($this->getPathToTestFile('image.png'), 'image')
-            ->press('Add word')
+            ->press('Save')
             ->seePageIs(route('words'));
 
         $word = Word::first();
@@ -44,7 +45,7 @@ class AddWordTest extends WordTest
         $this->visit(route('add_word'))
             ->type('test', 'word')
             ->attach($this->getPathToTestFile('image.jpg'), 'image')
-            ->press('Add word')
+            ->press('Save')
             ->seePageIs(route('words'));
 
         $word = Word::first();
@@ -72,7 +73,7 @@ class AddWordTest extends WordTest
         $this->visit(route('add_word'))
             ->type('test', 'word')
             ->type('https://www.google.co.uk/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png', 'imageUrl')
-            ->press('Add word')
+            ->press('Save')
             ->seePageIs(route('words'));
 
         $word = Word::first();

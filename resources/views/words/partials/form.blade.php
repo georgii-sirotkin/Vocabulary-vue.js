@@ -1,39 +1,70 @@
 <div class="form-group">
     {!! Form::label('word', 'Word:') !!}
-    {!! Form::text('word', null, ['class' => 'form-control']) !!}
+    {!! Form::text('word', null, ['class' => 'form-control', 'id' => 'wordInput']) !!}
 </div>
 
-<div class="form-group">
-    {!! Form::label('imageUrl', 'Image url:') !!}
-    {!! Form::text('imageUrl', null, ['class' => 'form-control']) !!}
-</div>
-
-<div class="form-group">
-    {!! Form::label('image', 'Image:') !!}
-    {!! Form::file('image', null, ['class' => 'form-control']) !!}
-</div>
+<label>Image</label>
 
 @if (!empty($word) && !empty($word->image_filename))
-	<img src="{{ $word->getImageUrl() }}">
-	<input type="hidden" name="keepImage" value="keepImage">
+    <div id="oldImage">
+        <img src="{{ $word->getImageUrl() }}" class="img-responsive padding-bottom-sm">
+        <input type="hidden" name="keepImage" value="keepImage">
+        <div class="row">
+            <div class="col-xs-6 col-xs-offset-6 col-sm-4 col-sm-offset-8 col-md-3 col-md-offset-9 form-group">
+                <button class="btn btn-danger btn-block" id="deleteOldImage" type="button">
+                    <i class="fa fa-btn fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
 @endif
 
-<h4>Definitions</h4>
+<div id="imageInput"@if (!empty($word) && !empty($word->image_filename)) style="display: none"@endif>
+    <ul id="imageTabs" class="nav nav-tabs" role="tablist"> 
+        <li role="presentation" class="active">
+            <a href="#imageUrl" id="imageUrl-tab" role="tab" data-toggle="tab">URL</a>
+        </li>
+        <li role="presentation">
+            <a href="#imageFile" role="tab" id="imageFile-tab" data-toggle="tab">Upload</a>
+        </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div role="tabpanel" class="tab-pane fade active in" id="imageUrl">
+            <div class="form-group">
+                {!! Form::text('imageUrl', null, ['class' => 'form-control']) !!}
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="imageFile">
+            <div class="form-group">
+                {!! Form::file('image', ['style' => 'height: 34px']) !!}
+            </div>
+        </div> 
+    </div>
+</div>
 
-@if (count($definitions) > 0)
-    @foreach ($definitions as $definition)
-		<div class="form-group">
-			<textarea class="form-control" name="definitions[]" cols="50" rows="10">{{ $definition->definition }}</textarea>
-			<input type="hidden" name="definitionIds[]" value="{{ $definition->id }}">
-		</div>
-	@endforeach
-@else
-	<div class="form-group">
-		<textarea class="form-control" name="definitions[]" cols="50" rows="10"></textarea>
-		<input type="hidden" name="definitionIds[]" value="">
-	</div>
-@endif
+<label>Defintions</label>
+
+<div id="definitionsContainer">
+    @each('words.partials.definitionInput', $definitions, 'definition', 'words.partials.definitionInput')
+</div>
+
+<div class="row">
+    <div class="col-xs-12 form-group">
+        <button type="button" class="btn btn-default btn-block" id="addDefinitionButton">
+            <i class="fa fa-btn fa-plus"></i> Add Definition
+        </button>
+    </div>
+</div>
 
 <div class="form-group">
-	{!! Form::submit($buttonName, ['class' => 'btn btn-primary form-control']) !!}
+    <button type="submit" class="btn btn-primary form-control">
+        <i class="glyphicon glyphicon-save"></i> Save
+    </button>
 </div>
+
+@push('scripts')
+    <script type="text/template" id="definitionTemplate">
+        @include('words.partials.definitionInput')
+    </script>
+    <script src="{{ elixir('js/form.js') }}"></script>
+@endpush

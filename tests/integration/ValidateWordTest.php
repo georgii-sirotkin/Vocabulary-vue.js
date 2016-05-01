@@ -6,7 +6,7 @@ class ValidateWordTest extends WordTest
     public function word_is_required()
     {
         $this->visit(route('add_word'))
-            ->press('Add word')
+            ->press('Save')
             ->see('The word field is required.');
     }
 
@@ -15,7 +15,7 @@ class ValidateWordTest extends WordTest
     {
         $this->visit(route('add_word'))
             ->type('test', 'word')
-            ->press('Add word')
+            ->press('Save')
             ->seePageIs(route('add_word'));
     }
 
@@ -25,7 +25,7 @@ class ValidateWordTest extends WordTest
         $this->visit(route('add_word'))
             ->type('test', 'word')
             ->attach($this->getPathToTestFile('text_file.txt'), 'image')
-            ->press('Add word')
+            ->press('Save')
             ->seePageIs(route('add_word'));
 
     }
@@ -36,7 +36,7 @@ class ValidateWordTest extends WordTest
         $this->visit(route('add_word'))
             ->type('test', 'word')
             ->attach($this->getPathToTestFile('large_image.jpg'), 'image')
-            ->press('Add word')
+            ->press('Save')
             ->seePageIs(route('add_word'))
             ->see('too large');
     }
@@ -47,7 +47,7 @@ class ValidateWordTest extends WordTest
         $this->visit(route('add_word'))
             ->type('test', 'word')
             ->type('image.png', 'imageUrl')
-            ->press('Add word')
+            ->press('Save')
             ->seePageIs(route('add_word'));
     }
 
@@ -57,7 +57,7 @@ class ValidateWordTest extends WordTest
         $this->visit(route('add_word'))
             ->type('test', 'word')
             ->type('http://www.google.co.uk/robots.txt', 'imageUrl')
-            ->press('Add word')
+            ->press('Save')
             ->seePageIs(route('add_word'))
             ->see('Unable to get image.');
     }

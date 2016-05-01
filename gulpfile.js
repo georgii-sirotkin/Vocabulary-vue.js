@@ -18,5 +18,7 @@ elixir.config.publicPath = PUBLIC_DIR;
 
 elixir(function(mix) {
 	mix.styles(['ie10-viewport-bug-workaround.css', 'theme.css', 'bootstrap-social.css'], PUBLIC_DIR + '/css/styles.css');
-    mix.version('css/styles.css');
+	mix.scripts(['ie10-viewport-bug-workaround.js', 'code.js'], PUBLIC_DIR + '/js/scripts.js');
+	mix.copy('resources/assets/js/form.js', PUBLIC_DIR + '/js/form.js');
+    mix.version(['css/styles.css', 'js/scripts.js', 'js/form.js']);
 });

@@ -48,7 +48,7 @@ class AuthenticationTest extends TestCase
 
         $this->actingAs($user)
             ->visit(route('home'))
-            ->click('Logout')
+            ->click('Log Out')
             ->seePageIs('/');
 
         $this->assertFalse(Auth::check());

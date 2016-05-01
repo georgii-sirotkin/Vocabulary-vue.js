@@ -1,20 +1,14 @@
-@extends('layouts.app')
+@extends('layouts.authenticated')
+
+@section('title', 'Edit word')
 
 @section('content')
-<div class="container">
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <div class="panel panel-default">
-                <div class="panel-heading">Edit</div>
-
-                <div class="panel-body">
-                    @include('errors.partials.errors')
-                    {!! Form::model($word, array('route' => array('update_word', $word->slug), 'method' => 'PUT')) !!}
-                        @include('words.partials.form')
-                    {!! Form::close() !!}
-                </div>
-            </div>
+        <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+            @include('errors.partials.errors')
+            {!! Form::model($word, array('route' => array('update_word', $word->slug), 'method' => 'PUT')) !!}
+                @include('words.partials.form')
+            {!! Form::close() !!}
         </div>
     </div>
-</div>
 @endsection

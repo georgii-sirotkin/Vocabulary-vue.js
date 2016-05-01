@@ -51,7 +51,7 @@ class WordsController extends Controller
             $definitions = [];
         }
 
-        return view('words.create', ['definitions' => $definitions, 'buttonName' => 'Add word']);
+        return view('words.create', ['definitions' => $definitions]);
     }
 
     /**
@@ -101,7 +101,7 @@ class WordsController extends Controller
         } else {
             $definitions = $word->definitions;
         }
-        return view('words.edit', ['word' => $word, 'definitions' => $definitions, 'buttonName' => 'Save']);
+        return view('words.edit', ['word' => $word, 'definitions' => $definitions]);
     }
 
     /**
