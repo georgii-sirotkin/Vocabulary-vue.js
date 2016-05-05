@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\WordRequest;
 use App\Repositories\WordRepository;
 use App\Services\WordService;
 use App\Word;
@@ -46,7 +47,7 @@ class WordsController extends Controller
     public function create()
     {
         if ($this->hasOldInput()) {
-            $definitions = $this->wordService->getDefinitionsFromOldInput();
+            $definitions = $this->getDefinitionsFromOldInput();
         } else {
             $definitions = [];
         }
@@ -57,18 +58,11 @@ class WordsController extends Controller
     /**
      * Store a new word in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  WordRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(WordRequest $request)
     {
-        $validator = $this->wordService->getValidator($request);
-        if ($validator->fails()) {
-            return redirect()->route('add_word')
-                ->withErrors($validator)
-                ->withInput();
-        }
-
         $this->wordService->storeWord($request);
 
         return redirect()->route('words');
@@ -77,27 +71,27 @@ class WordsController extends Controller
     /**
      * Display word.
      *
-     * @param  string  $slugOrId
+     * @param  string  $slug
      * @return Illuminate\View\View
      */
-    public function show($slugOrId)
+    public function show($slug)
     {
-        $word = Word::findBySlugOrIdOrFail($slugOrId);
-        $word->load('definitions');
+        $word = Word::findBySlugOrFail($slug);
+        $word->load('definitions'); /// ???
         return $word;
     }
 
     /**
      * Show the form for editing the specified word.
      *
-     * @param  string  $slugOrId
+     * @param  string  $slug
      * @return Illuminate\View\View
      */
-    public function edit($slugOrId)
+    public function edit($slug)
     {
-        $word = Word::findBySlugOrIdOrFail($slugOrId);
+        $word = Word::findBySlugOrFail($slug);
         if ($this->hasOldInput()) {
-            $definitions = $this->wordService->getDefinitionsFromOldInput();
+            $definitions = $this->getDefinitionsFromOldInput();
         } else {
             $definitions = $word->definitions;
         }
@@ -105,24 +99,15 @@ class WordsController extends Controller
     }
 
     /**
-     * Update the specified word in storage.
+     * Update the specified word.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slugOrId
+     * @param  WordRequest  $request
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $slugOrId)
+    public function update(WordRequest $request, $slug)
     {
-        $word = Word::findBySlugOrIdOrFail($slugOrId);
-
-        $validator = $this->wordService->getValidator($request, $word->id);
-        if ($validator->fails()) {
-            return redirect()->route('edit_word', [$word->slug])
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $this->wordService->updateWord($request, $word);
+        $this->wordService->updateWord($request, $slug);
 
         return redirect()->route('words');
     }
@@ -130,15 +115,12 @@ class WordsController extends Controller
     /**
      * Remove the specified word from storage.
      *
-     * @param  string  $slugOrId
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function destroy($slugOrId)
+    public function destroy($slug)
     {
-        $word = Word::findBySlugOrIdOrFail($slugOrId);
-
-        $this->wordService->deleteWord($word);
-
+        $this->wordService->deleteWord($slug);
         return redirect()->route('words');
     }
 
@@ -149,6 +131,16 @@ class WordsController extends Controller
      */
     private function hasOldInput()
     {
-        return !is_null(old('definitions')) && is_array(old('definitions')) && !is_null(old('definitionIds')) && is_array(old('definitionIds'));
+        return !is_null(old('definitions')) && is_array(old('definitions'));
+    }
+
+    /**
+     * Get array of Definition objects from old input.
+     *
+     * @return array
+     */
+    public function getDefinitionsFromOldInput()
+    {
+        return $this->wordService->getDefinitionObjects(old('definitions'));
     }
 }

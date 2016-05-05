@@ -9,8 +9,8 @@ class DeleteWordTest extends WordTest
     /** @test */
     public function can_delete_word()
     {
-        Storage::put($this->image->getFullFileName('test.jpg'), 'data');
         $word = $this->createWordForUser(['image_filename' => 'test.jpg']);
+        Storage::disk('public')->put($word->getImagePath(), 'data');
         $definitions = factory(Definition::class, 3)->make()->all();
         $word->addDefinitionsWithoutTouch($definitions);
 
@@ -18,7 +18,7 @@ class DeleteWordTest extends WordTest
 
         $this->assertEquals(0, Word::count());
         $this->assertEquals(0, Definition::count());
-        $this->assertFalse(Storage::exists($this->image->getFullFileName($word->image_filename)));
+        $this->assertFalse(Storage::disk('public')->exists($word->getImagePath()));
     }
 
     /** @test */

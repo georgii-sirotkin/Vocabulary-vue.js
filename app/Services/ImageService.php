@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
-use Illuminate\Contracts\Filesystem\Filesystem;
-use Illuminate\Validation\Validator;
-use Intervention\Image\ImageManager;
+use App\Http\Requests\WordRequest;
+use App\Word;
+use Illuminate\Contracts\Filesystem\Factory;
+use Intervention\Image\Image;
 
 class ImageService
 {
@@ -12,106 +13,58 @@ class ImageService
     private $maxHeight;
 
     /**
-     * Maximum file size in kilobytes.
-     * @var  int
-     */
-    private $maxFilesize;
-    private $mimeTypes;
-
-    /**
      * Folder for storing images.
+     * 
      * @var string
      */
     private $imagesFolder;
-    private $image;
-    private $imageManager;
-    private $storage;
-    private $name;
 
     /**
      * Create a new instance of ImageService.
      *
      * @param int  $maxWidth
      * @param int  $maxHeight
-     * @param int  $maxFilesize  Maximum file size in kilobytes.
-     * @param array  $mimeTypes
      * @param string  $imagesFolder  Folder for storing images.
-     * @param ImageManager $imageManager
      */
-    public function __construct($maxWidth, $maxHeight, $maxFilesize, array $mimeTypes, $imagesFolder, ImageManager $imageManager, Filesystem $storage)
+    public function __construct($maxWidth, $maxHeight, $imagesFolder)
     {
         $this->maxWidth = $maxWidth;
         $this->maxHeight = $maxHeight;
-        $this->maxFilesize = $maxFilesize;
-        $this->mimeTypes = $mimeTypes;
         $this->imagesFolder = $imagesFolder;
-        $this->imageManager = $imageManager;
-        $this->storage = $storage;
     }
 
     /**
-     * Validate image.
-     *
-     * @param  Validator $validator
+     * Process image.
+     * 
+     * @param  WordRequest $request
+     * @param  Word        $word
      * @return void
      */
-    public function validateImage(Validator $validator)
+    public function processImage(WordRequest $request, Word $word)
     {
-        $validData = $validator->valid();
-        $files = $validator->getFiles();
-
-        if (!empty($validData['imageUrl'])) {
-            $inputName = 'imageUrl';
-            $value = $validData['imageUrl'];
-        } elseif (isset($files['image']) && $validator->isAValidFileInstance($files['image'])) {
-            $inputName = 'image';
-            $value = $files['image'];
-        } else {
-            return;
-        }
-
-        try {
-            $this->image = $this->imageManager->make($value);
-        } catch (\Exception $e) {
-            $validator->errors()->add($inputName, "Unable to get image. Supported image types: {$this->getMimeTypesAsString()}.");
-            return;
-        }
-
-        if ($this->isImageFilesizeTooLarge()) {
-            $validator->errors()->add($inputName, "Image file size is too large. Max file size: {$this->maxFilesize} kilobytes.");
-        }
-
-        if (!$this->isAllowedMimeType()) {
-            $validator->errors()->add($inputName, "Image type {$this->extractImageTypeFromMimeType()} is not supported. Allowed image types: {$this->getMimeTypesAsString()}.");
-        }
-    }
-
-    /**
-     * Determine if image is present.
-     *
-     * @return boolean
-     */
-    public function isEmpty()
-    {
-        return empty($this->image);
+        $image = $request->getImage();
+        $this->resizeIfNecessary($image);
+        $this->save($image);
+        $word->image_filename = $image->basename;
     }
 
     /**
      * Resize image if necessary.
      *
+     * @param  Image $image
      * @return void
      */
-    public function resizeIfNecessary()
+    private function resizeIfNecessary(Image $image)
     {
-        if ($this->needsResizing()) {
+        if ($this->needsResizing($image)) {
 
-            $normalizedWidth = $this->image->width() / $this->maxWidth;
-            $normalizedHeight = $this->image->height() / $this->maxHeight;
+            $normalizedWidth = $image->width() / $this->maxWidth;
+            $normalizedHeight = $image->height() / $this->maxHeight;
 
             if ($normalizedWidth > $normalizedHeight) {
-                $this->image->widen($this->maxWidth);
+                $image->widen($this->maxWidth);
             } else {
-                $this->image->heighten($this->maxHeight);
+                $image->heighten($this->maxHeight);
             }
         }
     }
@@ -119,36 +72,40 @@ class ImageService
     /**
      * Save image.
      *
+     * @param  Image $image
      * @return void
      */
-    public function save()
+    private function save(Image $image)
     {
-        $this->name = $this->getUniqueFileName();
-        $this->image->save($this->getFullFileName($this->name));
+        $path = $this->getUniqueFileName($image);
+        $image->save($path);
     }
 
     /**
-     * Get image file name.
+     * Determine if image needs resizing.
+     *
+     * @param  Image $image
+     * @return bool
+     */
+    private function needsResizing(Image $image)
+    {
+        return $image->width() > $this->maxWidth || $image->height() > $this->maxHeight;
+    }
+
+    /**
+     * Get unique file name for storing the image.
      *
      * @return string
      */
-    public function getFileName()
+    private function getUniqueFileName(Image $image)
     {
-        return $this->name;
-    }
+        $extension = $this->getExtension($image);
 
-    /**
-     * Delete image.
-     *
-     * @return void.
-     */
-    public function delete($imageFilename = null)
-    {
-        $imageFilename = $imageFilename ? $imageFilename : $this->name;
+        do {
+            $path = $this->getFullFileName(uniqid('', true) . '.' . $extension);
+        } while (file_exists($path));
 
-        if (!$this->storage->delete($this->getFullFileName($imageFilename))) {
-            throw new \ErrorException('Failed to delete file');
-        }
+        return $path;
     }
 
     /**
@@ -157,98 +114,32 @@ class ImageService
      * @param  string $name
      * @return string
      */
-    public function getFullFileName($name)
+    private function getFullFileName($name)
     {
-        return public_path($this->imagesFolder . DIRECTORY_SEPARATOR . $name);
+        return config('filesystems.disks.public.root') . DIRECTORY_SEPARATOR . $this->imagesFolder . DIRECTORY_SEPARATOR . $name;
     }
 
     /**
-     * Determine if image needs resizing.
-     *
-     * @return bool
-     */
-    private function needsResizing()
-    {
-        return $this->image->width() > $this->maxWidth || $this->image->height() > $this->maxHeight;
-    }
-
-    /**
-     * Get unique file name for storing the image.
-     *
-     * @return string
-     */
-    private function getUniqueFileName()
-    {
-        $extension = $this->getExtension();
-        do {
-            $name = uniqid('', true) . $extension;
-        } while ($this->storage->exists($this->getFullFileName($name)));
-
-        return $name;
-    }
-
-    /**
-     * Get image file extension defined by mime type.
+     * Get image file extension.
      *
      * @return  string
      */
-    private function getExtension()
+    private function getExtension(Image $image)
     {
-        switch ($this->extractImageTypeFromMimeType()) {
-            case 'jpeg':
-                $extension = '.jpg';
+        switch ($image->mime()) {
+            case 'image/jpeg':
+                $extension = 'jpg';
                 break;
-            case 'png':
-                $extension = '.png';
+            case 'image/png':
+                $extension = 'png';
                 break;
-            case 'gif':
-                $extension = '.gif';
+            case 'image/gif':
+                $extension = 'gif';
                 break;
             default:
                 $extension = '';
         }
 
         return $extension;
-    }
-
-    /**
-     * Get supported mime types as string.
-     *
-     * @param  string $separator
-     * @return  string
-     */
-    private function getMimeTypesAsString($separator = ', ')
-    {
-        return implode($separator, $this->mimeTypes);
-    }
-
-    /**
-     * Determine if image mime type is allowed.
-     *
-     * @return boolean
-     */
-    private function isAllowedMimeType()
-    {
-        return in_array($this->extractImageTypeFromMimeType(), $this->mimeTypes);
-    }
-
-    /**
-     * Extract image type from mime type.
-     *
-     * @return string
-     */
-    private function extractImageTypeFromMimeType()
-    {
-        return substr($this->image->mime(), strpos($this->image->mime(), '/') + 1);
-    }
-
-    /**
-     * Determine if image file size is too large.
-     *
-     * @return boolean
-     */
-    private function isImageFilesizeTooLarge()
-    {
-        return $this->image->filesize() > $this->maxFilesize * 1024;
     }
 }

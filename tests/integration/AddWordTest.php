@@ -2,6 +2,7 @@
 
 use App\User;
 use App\Word;
+use Storage;
 
 class AddWordTest extends WordTest
 {
@@ -17,8 +18,8 @@ class AddWordTest extends WordTest
         $this->assertEquals($this->user->id, $word->user_id);
         $this->assertEquals(2, $word->definitions()->count());
         $this->assertNotNull($word->image_filename);
-        $this->assertTrue(Storage::exists($this->image->getFullFileName($word->image_filename)));
-        $this->image->delete($word->image_filename);
+        $this->assertTrue(Storage::disk('public')->exists($word->getImagePath()));
+        Storage::disk('public')->delete($word->getImagePath());
     }
 
     /** @test */
@@ -35,8 +36,8 @@ class AddWordTest extends WordTest
         $this->assertEquals($this->user->id, $word->user_id);
         $this->assertEquals(0, $word->definitions()->count());
         $this->assertNotNull($word->image_filename);
-        $this->assertTrue(Storage::exists($this->image->getFullFileName($word->image_filename)));
-        $this->image->delete($word->image_filename);
+        $this->assertTrue(Storage::disk('public')->exists($word->getImagePath()));
+        Storage::disk('public')->delete($word->getImagePath());
     }
 
     /** @test */
@@ -52,8 +53,8 @@ class AddWordTest extends WordTest
         $this->assertEquals($this->user->id, $word->user_id);
         $this->assertEquals(0, $word->definitions()->count());
         $this->assertNotNull($word->image_filename);
-        $this->assertTrue(Storage::exists($this->image->getFullFileName($word->image_filename)));
-        $this->image->delete($word->image_filename);
+        $this->assertTrue(Storage::disk('public')->exists($word->getImagePath()));
+        Storage::disk('public')->delete($word->getImagePath());
     }
 
     /** @test */
@@ -80,8 +81,8 @@ class AddWordTest extends WordTest
         $this->assertEquals($this->user->id, $word->user_id);
         $this->assertEquals(0, $word->definitions()->count());
         $this->assertNotNull($word->image_filename);
-        $this->assertTrue(Storage::exists($this->image->getFullFileName($word->image_filename)));
-        $this->image->delete($word->image_filename);
+        $this->assertTrue(Storage::disk('public')->exists($word->getImagePath()));
+        Storage::disk('public')->delete($word->getImagePath());
     }
 
     /** @test */

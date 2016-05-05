@@ -66,6 +66,7 @@ class ValidateWordTest extends WordTest
     public function rejects_duplicate_word_for_the_same_user()
     {
         $word = $this->createWordForUser();
+        $this->visit(route('add_word'));
         $response = $this->call('POST', route('insert_word'), ['word' => $word->word, 'definitions' => ['test definition', 'another definition']]);
         $this->assertRedirectedToRoute('add_word');
         $this->visit(route('add_word'))

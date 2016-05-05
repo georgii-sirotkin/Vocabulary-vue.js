@@ -8,6 +8,7 @@ use Cviebrock\EloquentSluggable\SluggableInterface;
 use Cviebrock\EloquentSluggable\SluggableTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Word extends Model implements SluggableInterface
 {
@@ -46,7 +47,31 @@ class Word extends Model implements SluggableInterface
             return null;
         }
 
-        return '/' . config('settings.image.folder') . '/' . $this->image_filename;
+        return Storage::disk('public')->url(config('settings.image.folder') . '/' . $this->image_filename);
+    }
+
+    /**
+     * Get image path.
+     * 
+     * @return string|null
+     */
+    public function getImagePath()
+    {
+        if (empty($this->image_filename)) {
+            return null;
+        }
+
+        return config('settings.image.folder') . DIRECTORY_SEPARATOR . $this->image_filename;
+    }
+
+    /**
+     * Determine if word has an image.
+     * 
+     * @return boolean
+     */
+    public function hasImage()
+    {
+        return !is_null($this->image_filename);
     }
 
     /**

@@ -22,28 +22,24 @@ class EditWordTest extends WordTest
 
         $this->assertEquals(3, Definition::count());
         foreach ($definitions as $definition) {
-            $this->seeInDatabase('definition', ['id' => $definition->id, 'definition' => $definition->definition]);
+            $this->seeInDatabase('definition', ['definition' => $definition->definition]);
+            $this->dontSeeInDatabase('definition', ['id' => $definition->id]);
         }
-
     }
 
     /** @test */
     public function can_update_word_and_definitions()
     {
         $word = $this->createWordForUser(['image_filename' => null]);
-        $definitions = factory(Definition::class, 3)->make()->all();
-        $word->addDefinitionsWithoutTouch($definitions);
+        $oldDefinitions = factory(Definition::class, 3)->make()->all();
+        $word->addDefinitionsWithoutTouch($oldDefinitions);
 
         $data = [];
         $data['word'] = 'word changed';
-        $definitions[0]->definition = 'definition updated';
-        $data['definitions'][] = $definitions[0]->definition;
-        $data['definitionIds'][] = $definitions[0]->id;
-        $data['definitions'][] = $definitions[1]->definition;
-        $data['definitionIds'][] = $definitions[1]->id;
-
-        $data['definitions'][] = 'new definition';
-        $data['definitionIds'][] = '';
+        $newDefinitions = factory(Definition::class, 2)->make()->all();
+        foreach ($newDefinitions as $newDefinition) {
+            $data['definitions'][] = $newDefinition->definition;
+        }
 
         $this->call('PUT', route('update_word', [$word->slug]), $data);
 
@@ -51,19 +47,21 @@ class EditWordTest extends WordTest
         $this->assertEquals(1, Word::count());
         $this->seeInDatabase('word', ['id' => $word->id, 'word' => 'word changed']);
 
-        $this->assertEquals(3, Definition::count());
-        $this->seeInDatabase('definition', ['id' => $definitions[0]->id, 'definition' => 'definition updated']);
-        $this->seeInDatabase('definition', ['id' => $definitions[1]->id, 'definition' => $definitions[1]->definition]);
-        $this->seeInDatabase('definition', ['definition' => 'new definition']);
-        $this->dontSeeInDatabase('definition', ['id' => $definitions[2]->id]);
-        $this->dontSeeInDatabase('definition', ['definition' => $definitions[2]->definition]);
+        $this->assertEquals(2, Definition::count());
+        foreach ($oldDefinitions as $oldDefinition) {
+            $this->dontSeeInDatabase('definition', ['id' => $oldDefinition->id]);
+        }
+
+        foreach ($newDefinitions as $newDefinition) {
+            $this->seeInDatabase('definition', ['definition' => $newDefinition->definition]);
+        }
     }
 
     /** @test */
     public function can_remove_image_by_uploading_a_new_one()
     {
-        Storage::put($this->image->getFullFileName('test.jpg'), 'data');
         $word = $this->createWordForUser(['image_filename' => 'test.jpg']);
+        Storage::disk('public')->put($word->getImagePath(), 'data');
 
         $this->visit(route('edit_word', [$word->slug]))
             ->attach($this->getPathToTestFile('image.png'), 'image')
@@ -73,16 +71,16 @@ class EditWordTest extends WordTest
         $updatedWord = Word::first();
         $this->assertNotEquals($word->image_filename, $updatedWord->image_filename);
         $this->assertNotNull($updatedWord->image_filename);
-        $this->assertFalse(Storage::exists($this->image->getFullFileName($word->image_filename)));
-        $this->assertTrue(Storage::exists($this->image->getFullFileName($updatedWord->image_filename)));
-        $this->image->delete($updatedWord->image_filename);
+        $this->assertFalse(Storage::disk('public')->exists($word->getImagePath()));
+        $this->assertTrue(Storage::disk('public')->exists($updatedWord->getImagePath()));
+        Storage::disk('public')->delete($updatedWord->getImagePath());
     }
 
     /** @test */
     public function image_is_kept()
     {
-        Storage::put($this->image->getFullFileName('test.jpg'), 'data');
         $word = $this->createWordForUser(['image_filename' => 'test.jpg']);
+        Storage::disk('public')->put($word->getImagePath(), 'data');
 
         $this->visit(route('edit_word', [$word->slug]))
             ->press('Save');
@@ -90,28 +88,27 @@ class EditWordTest extends WordTest
         $this->seePageIs(route('words'));
         $updatedWord = Word::first();
         $this->assertEquals($word->image_filename, $updatedWord->image_filename);
-        $this->assertTrue(Storage::exists($this->image->getFullFileName($updatedWord->image_filename)));
-        $this->image->delete($word->image_filename);
+        $this->assertTrue(Storage::disk('public')->exists($updatedWord->getImagePath()));
+        Storage::disk('public')->delete($updatedWord->getImagePath());
     }
 
     /** @test */
     public function can_remove_image_without_uploading_a_new_one()
     {
-        Storage::put($this->image->getFullFileName('test.jpg'), 'data');
         $word = $this->createWordForUser(['image_filename' => 'test.jpg']);
+        Storage::disk('public')->put($word->getImagePath(), 'data');
         $definitions = factory(Definition::class, 3)->make();
         $word->addDefinitionsWithoutTouch($definitions->all());
 
         $data = [];
         $data['word'] = $word->word;
-        $data['definitionIds'] = $definitions->pluck('id')->all();
         $data['definitions'] = $definitions->pluck('definition')->all();
         $this->call('PUT', route('update_word', [$word->slug]), $data);
 
         $this->assertRedirectedToRoute('words');
         $updatedWord = Word::first();
         $this->assertNull($updatedWord->image_filename);
-        $this->assertFalse(Storage::exists($this->image->getFullFileName($word->image_filename)));
+        $this->assertFalse(Storage::disk('public')->exists($word->getImagePath()));
     }
 
     /** @test */
@@ -140,8 +137,23 @@ class EditWordTest extends WordTest
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
 
-        $this->call('PUT', route('update_word', [$word->slug]), []);
+        $this->call('PUT', route('update_word', [$word->slug]), ['word' => 'test', 'definitions' => ['definition']]);
 
         $this->assertResponseStatus(404);
+    }
+
+    /** @test */
+    public function updated_at_column_changes_when_definition_is_added()
+    {
+        $word = $this->createWordForUser(['word' => 'initial_word']);
+        $initialUpdatedAt = $word->updated_at;
+        $initialCreatedAt = $word->created_at;
+        sleep(1);
+        $word->save(['word' => 'initial_word']);
+        $word->definitions()->save(factory(App\Definition::class)->make());
+        $wordChanged = Word::find($word->id);
+        $this->assertTrue($initialUpdatedAt->timestamp <
+            $wordChanged->updated_at->timestamp);
+        $this->assertEquals($initialCreatedAt->timestamp, $wordChanged->created_at->timestamp);
     }
 }

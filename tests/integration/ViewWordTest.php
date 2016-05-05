@@ -15,11 +15,11 @@ class ViewWordTest extends WordTest
     }
 
     /** @test */
-    public function can_get_word_by_id()
+    public function cant_get_word_by_id()
     {
         $word = $this->createWordForUser();
-        $this->visit(route('view_word', [$word->id]))
-            ->see($word->word);
+        $this->setExpectedException('Illuminate\Foundation\Testing\HttpException');
+        $this->visit(route('view_word', [$word->id]));
     }
 
     /** @test */

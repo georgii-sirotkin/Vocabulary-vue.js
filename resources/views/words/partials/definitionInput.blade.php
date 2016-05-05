@@ -7,5 +7,4 @@
             <i class="fa fa-btn fa-trash"></i> Delete
         </button>
     </div>
-    <input type="hidden" name="definitionIds[]" value="{{ !empty($definition) ? $definition->id : '' }}">
 </div>
