@@ -3,52 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Services\CheckAnswerService;
 use App\Services\RandomWordService;
 use Illuminate\Http\Request;
 
 class RandomWordsController extends Controller
 {
-    private $randomWordService;
-
     /**
      * Create a new controller instance.
-     *
-     * @param RandomWordService $randomWordService
      */
-    public function __construct(RandomWordService $randomWordService)
+    public function __construct()
     {
         $this->middleware('auth');
-        $this->randomWordService = $randomWordService;
     }
 
     /**
      * Display random word.
      *
+     * @param RandomWordService $randomWordService
      * @return Illuminate\View\View
      */
-    public function randomWord()
+    public function randomWord(RandomWordService $randomWordService)
     {
-        return $this->randomWordService->getRandomWord();
+        return $randomWordService->getRandomWord();
     }
 
     /**
      * Get a new random word.
-     *
+     * 
+     * @param RandomWordService $randomWordService
      * @return Word
      */
-    public function nextRandomWord()
+    public function nextRandomWord(RandomWordService $randomWordService)
     {
-        return $this->randomWordService->getNewRandomWord();
+        return $randomWordService->getNewRandomWord();
     }
 
     /**
      * Check answer.
      *
      * @param  Request $request
+     * @param  CheckAnswerService $answerChecker
      * @return string  In JSON format
      */
-    public function checkAnswer(Request $request)
+    public function checkAnswer(Request $request, CheckAnswerService $answerChecker)
     {
-        return $this->randomWordService->checkAnswer($request->input('answer'));
+        return $answerChecker->check($request->input('answer'));
     }
 }

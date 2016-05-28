@@ -52,7 +52,8 @@ body {
 
 /* Padding for spacing */
 .inner {
-  padding: 30px;
+  padding: 23px 30px;
+  /*padding: 30px;*/
 }
 
 form .nav-tabs > li > a {
@@ -133,6 +134,10 @@ form .nav-tabs {
   }
   .masthead-nav {
     float: right;
+  }
+
+  .inner {
+    padding: 30px;
   }
 }
 

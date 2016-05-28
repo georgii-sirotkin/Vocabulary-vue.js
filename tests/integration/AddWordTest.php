@@ -2,7 +2,6 @@
 
 use App\User;
 use App\Word;
-use Storage;
 
 class AddWordTest extends WordTest
 {
@@ -41,34 +40,6 @@ class AddWordTest extends WordTest
     }
 
     /** @test */
-    public function can_add_word_with_jpg_file()
-    {
-        $this->visit(route('add_word'))
-            ->type('test', 'word')
-            ->attach($this->getPathToTestFile('image.jpg'), 'image')
-            ->press('Save')
-            ->seePageIs(route('words'));
-
-        $word = Word::first();
-        $this->assertEquals($this->user->id, $word->user_id);
-        $this->assertEquals(0, $word->definitions()->count());
-        $this->assertNotNull($word->image_filename);
-        $this->assertTrue(Storage::disk('public')->exists($word->getImagePath()));
-        Storage::disk('public')->delete($word->getImagePath());
-    }
-
-    /** @test */
-    public function add_word_with_definitions()
-    {
-        $this->call('POST', route('insert_word'), ['word' => 'test', 'definitions' => ['test definition', 'another definition']]);
-
-        $this->assertRedirectedToRoute('words');
-        $word = Word::first();
-        $this->assertEquals(2, $word->definitions()->count());
-        $this->assertNull($word->image_filename);
-    }
-
-    /** @test */
     public function accepts_png_image_url()
     {
         $this->visit(route('add_word'))
@@ -88,10 +59,10 @@ class AddWordTest extends WordTest
     /** @test */
     public function two_users_can_have_the_same_word()
     {
-        $this->add_word_with_definitions();
+        $this->addWordWithDefinitions();
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
-        $this->add_word_with_definitions();
+        $this->addWordWithDefinitions();
 
         $words = Word::withoutGlobalScope('currentUser')->get();
         $this->assertEquals(2, Word::withoutGlobalScope('currentUser')->count());
@@ -104,6 +75,11 @@ class AddWordTest extends WordTest
         $word = $this->createWordForUser(['word' => 'test word']);
         $anotherWord = $this->createWordForUser(['word' => 'test-word']);
 
-        $this->assertFalse($word->slug == $anotherWord->slug);
+        $this->assertNotEquals($word->slug, $anotherWord->slug);
+    }
+
+    protected function addWordWithDefinitions()
+    {
+        $this->call('POST', route('insert_word'), ['word' => 'test', 'definitions' => ['test definition', 'another definition']]);
     }
 }

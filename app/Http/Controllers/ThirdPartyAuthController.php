@@ -46,12 +46,8 @@ class ThirdPartyAuthController extends Controller
     {
         $this->checkProvider($provider);
 
-        if ($this->isAccessDenied()) {
+        if ($this->isAccessDenied() || !$this->hasProviderSentAnyData()) {
             return redirect('/');
-        }
-
-        if (!$this->hasProviderSentAnyData()) {
-            return redirect()->route('third_party_login', ['provider' => $provider]);
         }
 
         $this->thirdPartyAuth->handleCallback($provider);

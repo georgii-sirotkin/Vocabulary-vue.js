@@ -28,36 +28,6 @@ class EditWordTest extends WordTest
     }
 
     /** @test */
-    public function can_update_word_and_definitions()
-    {
-        $word = $this->createWordForUser(['image_filename' => null]);
-        $oldDefinitions = factory(Definition::class, 3)->make()->all();
-        $word->addDefinitionsWithoutTouch($oldDefinitions);
-
-        $data = [];
-        $data['word'] = 'word changed';
-        $newDefinitions = factory(Definition::class, 2)->make()->all();
-        foreach ($newDefinitions as $newDefinition) {
-            $data['definitions'][] = $newDefinition->definition;
-        }
-
-        $this->call('PUT', route('update_word', [$word->slug]), $data);
-
-        $this->assertRedirectedToRoute('words');
-        $this->assertEquals(1, Word::count());
-        $this->seeInDatabase('word', ['id' => $word->id, 'word' => 'word changed']);
-
-        $this->assertEquals(2, Definition::count());
-        foreach ($oldDefinitions as $oldDefinition) {
-            $this->dontSeeInDatabase('definition', ['id' => $oldDefinition->id]);
-        }
-
-        foreach ($newDefinitions as $newDefinition) {
-            $this->seeInDatabase('definition', ['definition' => $newDefinition->definition]);
-        }
-    }
-
-    /** @test */
     public function can_remove_image_by_uploading_a_new_one()
     {
         $word = $this->createWordForUser(['image_filename' => 'test.jpg']);
@@ -90,25 +60,6 @@ class EditWordTest extends WordTest
         $this->assertEquals($word->image_filename, $updatedWord->image_filename);
         $this->assertTrue(Storage::disk('public')->exists($updatedWord->getImagePath()));
         Storage::disk('public')->delete($updatedWord->getImagePath());
-    }
-
-    /** @test */
-    public function can_remove_image_without_uploading_a_new_one()
-    {
-        $word = $this->createWordForUser(['image_filename' => 'test.jpg']);
-        Storage::disk('public')->put($word->getImagePath(), 'data');
-        $definitions = factory(Definition::class, 3)->make();
-        $word->addDefinitionsWithoutTouch($definitions->all());
-
-        $data = [];
-        $data['word'] = $word->word;
-        $data['definitions'] = $definitions->pluck('definition')->all();
-        $this->call('PUT', route('update_word', [$word->slug]), $data);
-
-        $this->assertRedirectedToRoute('words');
-        $updatedWord = Word::first();
-        $this->assertNull($updatedWord->image_filename);
-        $this->assertFalse(Storage::disk('public')->exists($word->getImagePath()));
     }
 
     /** @test */

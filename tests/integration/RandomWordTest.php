@@ -93,17 +93,16 @@ class RandomWordTest extends WordTest
         $this->withSession($sessionData)
             ->json('POST', route('check_answer'), ['answer' => '']);
         $sessionData = Session::all();
-        $this->assertTrue($sessionData['mostRecentWordHaveBeenChecked']);
+        $this->assertTrue($sessionData['mostRecentWordHasBeenChecked']);
 
         $this->withSession($sessionData)
             ->visit(route('random_word'));
 
         $sessionData = Session::all();
 
-        $this->assertFalse($sessionData['mostRecentWordHaveBeenChecked']);
-        $this->assertNotNull($sessionData['mostRecentWordHaveBeenChecked']);
+        $this->assertFalse($sessionData['mostRecentWordHasBeenChecked']);
 
-        $this->assertTrue(count($sessionData['mostRecentWordIds']->getNonemptyElements()) == 2);
+        $this->assertCount(2, $sessionData['mostRecentWordIds']->getNonemptyElements());
         $this->assertEquals(count(array_unique($sessionData['mostRecentWordIds']->getNonemptyElements())), count($sessionData['mostRecentWordIds']->getNonemptyElements()));
     }
 

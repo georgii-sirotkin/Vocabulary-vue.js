@@ -11,7 +11,7 @@
 |
  */
 
-// Auth::loginUsingId(81);
+// Auth::loginUsingId(70);
 
 Route::get('/', ['as' => 'welcome', function () {
     return view('welcome');
