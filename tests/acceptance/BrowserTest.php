@@ -17,6 +17,7 @@ abstract class BrowserTest extends TestCase
 		parent::setUp();
 		$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => env('BROWSER_NAME'));
 		$this->driver = RemoteWebDriver::create(env('SELENIUM_SERVER_URL'), $capabilities);
+        $this->driver->manage()->timeouts()->implicitlyWait(6);
 	}
 
     public function tearDown()

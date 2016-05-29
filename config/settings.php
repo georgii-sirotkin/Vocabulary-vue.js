@@ -32,5 +32,5 @@ return [
      * Minimum number of characters per one spelling mistake (levenshtein distance of 1) to consider a word similar when searching.
      */
     'min_number_of_chars_per_one_mistake_in_search' => 4,
-    'number_of_words_on_one_page' => 10,
+    'number_of_words_on_one_page' => 20,
 ];

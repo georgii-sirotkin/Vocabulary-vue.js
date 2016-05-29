@@ -5,8 +5,8 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    const USERS_WITH_PASSWORDS_NUMBER = 90;
-    const USERS_WITH_THIRD_PARTY_AUTH_NUMBER = 10;
+    const USERS_WITH_PASSWORDS_NUMBER = 10;
+    const USERS_WITH_THIRD_PARTY_AUTH_NUMBER = 3;
     const MAX_NUMBER_OF_WORDS_PER_USER = 100;
     const MAX_NUMBER_OF_DEFINITIONS_PER_WORD = 4;
 
@@ -18,9 +18,13 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $users = $this->createUsers();
+        $faker = app('Faker\Generator');
         foreach ($users as $user) {
+            // reset unique modifier so that different users may have the same words
+            $faker->unique(true);
             $this->createWordsForUser($user);
         }
+        $this->createTestUser();
     }
 
     /**
@@ -111,5 +115,16 @@ class DatabaseSeeder extends Seeder
             $definitions = new Collection([$definitions]);
         }
         return $definitions;
+    }
+
+    /**
+     * Create test user.
+     * Test user is used in acceptance testing.
+     * 
+     * @return User
+     */
+    private function createTestUser()
+    {
+        return factory(App\User::class)->create(['email' => config('credentials.vocabulary.email'), 'password' => bcrypt(config('credentials.vocabulary.password'))]);
     }
 }

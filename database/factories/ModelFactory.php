@@ -29,12 +29,12 @@ $factory->define(App\ThirdPartyAuthInfo::class, function (Faker\Generator $faker
 
 $factory->define(App\Word::class, function (Faker\Generator $faker) {
     $data = [
-        'word' => $faker->unique()->sentence(2),
+        'word' => $faker->unique()->words($faker->biasedNumberBetween(1, 5, function ($x) { return 1 - 10 * $x * $x;}), true),
         'right_guesses_number' => $faker->randomDigit,
     ];
 
     if ($faker->randomElement(['shouldHaveImage', 'shouldNotHaveImage']) == 'shouldHaveImage') {
-        $data['image_filename'] = $faker->word . $faker->unique()->randomNumber() . 'new';
+        $data['image_filename'] = uniqid('', true);
     }
 
     return $data;

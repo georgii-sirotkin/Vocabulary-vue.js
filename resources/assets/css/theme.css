@@ -2,6 +2,10 @@
  * Base structure
  */
 
+a {
+  color: #2462db;
+}
+
 /*a,
 a:focus,
 a:hover {
@@ -128,6 +132,10 @@ form .nav-tabs {
   margin: 0px 0 25px;
 }
 
+.sheet {
+  position: relative;
+}
+
 @media (min-width: 768px) {
   .masthead-brand {
     float: left;
@@ -138,6 +146,12 @@ form .nav-tabs {
 
   .inner {
     padding: 30px;
+  }
+
+  .stick-to-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
   }
 }
 
@@ -167,6 +181,7 @@ form .nav-tabs {
   color: #2462db;
 }*/
 
+
 /*
  * Affix and center
  */
@@ -190,7 +205,7 @@ form .nav-tabs {
   }
 
   .sheet {
-    min-height: 350px;
+    min-height: 400px;
   }
 
   /* Start the vertical centering */
@@ -210,10 +225,6 @@ form .nav-tabs {
   .mastfoot,
   .cover-container {
     width: 760px;
-  }
-
-  .sheet {
-    min-height: 400px;
   }
 
   .authentication-form {
