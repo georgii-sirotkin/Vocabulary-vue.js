@@ -10,6 +10,7 @@ class ViewWordTest extends WordTest
     public function can_get_word_by_slug()
     {
         $word = $this->createWordForUser();
+
         $this->visit(route('view_word', [$word->slug]))
             ->see($word->word);
     }
@@ -33,17 +34,17 @@ class ViewWordTest extends WordTest
         $theSameWord = factory(Word::class)->make(['word' => 'test']);
         $anotherUser->addWord($theSameWord);
         $theSameWord->addDefinitionsWithoutTouch(factory(Definition::class, 3)->make()->all());
-        $this->assertTrue($word->slug == $theSameWord->slug);
+        $this->assertEquals($word->slug, $theSameWord->slug);
 
         $this->visit(route('view_word', [$theSameWord->slug]));
         foreach ($theSameWord->definitions as $definition) {
-            $this->see($definition);
+            $this->see($definition->definition);
         }
 
         $this->actingAs($this->user);
         $this->visit(route('view_word', [$word->slug]));
         foreach ($word->definitions as $definition) {
-            $this->see($definition);
+            $this->see($definition->definition);
         }
     }
 

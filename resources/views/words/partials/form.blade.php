@@ -9,12 +9,10 @@
     <div id="oldImage">
         <img src="{{ $word->getImageUrl() }}" class="img-responsive padding-bottom-sm">
         <input type="hidden" name="keepImage" value="keepImage">
-        <div class="row">
-            <div class="col-xs-6 col-xs-offset-6 col-sm-4 col-sm-offset-8 col-md-3 col-md-offset-9 form-group">
-                <button class="btn btn-danger btn-block" id="deleteOldImage" type="button">
-                    <i class="fa fa-btn fa-trash"></i> Delete
-                </button>
-            </div>
+        <div class="form-group">
+            <button class="btn btn-danger" id="deleteOldImage" type="button">
+                <i class="fa fa-btn fa-trash"></i> Delete
+            </button>
         </div>
     </div>
 @endif
@@ -48,12 +46,10 @@
     @each('words.partials.definitionInput', $definitions, 'definition', 'words.partials.definitionInput')
 </div>
 
-<div class="row">
-    <div class="col-xs-12 form-group">
-        <button type="button" class="btn btn-default btn-block" id="addDefinitionButton">
-            <i class="fa fa-btn fa-plus"></i> Add Definition
-        </button>
-    </div>
+<div class="form-group">
+    <button type="button" class="btn btn-default btn-block" id="addDefinitionButton">
+        <i class="fa fa-btn fa-plus"></i> Add Definition
+    </button>
 </div>
 
 <div class="form-group">

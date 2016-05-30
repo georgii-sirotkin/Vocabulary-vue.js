@@ -17,8 +17,6 @@ Route::get('/', ['as' => 'welcome', function () {
     return view('welcome');
 }]);
 
-// Route::get('/generate', 'GenerateSQLController@index');
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes

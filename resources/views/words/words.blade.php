@@ -9,7 +9,6 @@
 	    <div class="row">
 	        <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
 		        <div class="row">
-			        {{-- no words --}}
 			        @foreach ($words->getCollection()->chunk(ceil($words->perPage() / 2)) as $chunk)
 				        <div class="col-sm-6">
 					        <ul class="list-unstyled" style="margin-bottom: 0">
@@ -22,7 +21,11 @@
 		        </div>
 	        </div>
 	    </div>
-	    <div class="col-xs-12 stick-to-bottom text-center">
+
+    	<div class="space-for-stick-to-bottom">
+		</div>
+
+	    <div class="stick-to-bottom text-center">
 	        {!! $words->links() !!}
 	    </div>
 	@endif

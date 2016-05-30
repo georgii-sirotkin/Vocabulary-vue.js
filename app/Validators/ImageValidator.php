@@ -137,7 +137,7 @@ class ImageValidator
      */
     private function isImageFilesizeTooLarge(Image $image)
     {
-        return $image->filesize() > $this->maxFilesize * 1024;
+        return $image->filesize() > $this->maxFilesize * 1000;
     }
 
     /**

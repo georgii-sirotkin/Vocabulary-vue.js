@@ -7,8 +7,8 @@ return [
     ],
     'image' => [
         'max_width' => 400,
-        'max_height' => 300,
-        'max_filesize' => 300,
+        'max_height' => 240,
+        'max_filesize' => 1000,
         'mime_types' => [
             'jpeg',
             'png',
@@ -32,5 +32,5 @@ return [
      * Minimum number of characters per one spelling mistake (levenshtein distance of 1) to consider a word similar when searching.
      */
     'min_number_of_chars_per_one_mistake_in_search' => 4,
-    'number_of_words_on_one_page' => 20,
+    'number_of_words_on_one_page' => 24,
 ];

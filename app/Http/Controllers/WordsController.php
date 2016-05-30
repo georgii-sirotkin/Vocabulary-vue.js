@@ -36,7 +36,6 @@ class WordsController extends Controller
             return $wordRepository->findWords($request->input('search'));
         }
 
-        // $words = Word::orderBy('word', 'asc')->simplePaginate(config('settings.number_of_words_on_one_page'));
         $words = Word::orderBy('word', 'asc')->paginate(config('settings.number_of_words_on_one_page'));
         return view('words.words', ['words' => $words]);
     }
@@ -79,8 +78,7 @@ class WordsController extends Controller
     public function show($slug)
     {
         $word = Word::findBySlugOrFail($slug);
-        $word->load('definitions'); /// ???
-        return $word;
+        return view('words.view')->with('word', $word);
     }
 
     /**

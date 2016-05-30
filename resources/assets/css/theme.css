@@ -136,6 +136,22 @@ form .nav-tabs {
   position: relative;
 }
 
+.stick-to-bottom {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 0px 20px;
+}
+
+.space-for-stick-to-bottom {
+  padding-bottom: 49px;
+}
+
+.button-panel {
+  margin: 20px 0px 25px 0px;
+}
+
 @media (min-width: 768px) {
   .masthead-brand {
     float: left;
@@ -146,12 +162,6 @@ form .nav-tabs {
 
   .inner {
     padding: 30px;
-  }
-
-  .stick-to-bottom {
-    position: absolute;
-    bottom: 0;
-    left: 0;
   }
 }
 
@@ -205,7 +215,7 @@ form .nav-tabs {
   }
 
   .sheet {
-    min-height: 400px;
+    min-height: 425px;
   }
 
   /* Start the vertical centering */
@@ -229,11 +239,6 @@ form .nav-tabs {
 
   .authentication-form {
     border-left: 1px solid #ccc;
-  }
-
-  body {
-    /*padding-bottom: 120px;*/
-    padding-bottom: 200px;
   }
 }
 

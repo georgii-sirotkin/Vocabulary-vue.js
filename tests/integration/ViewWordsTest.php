@@ -42,4 +42,12 @@ class ViewWordsTest extends WordTest
             $this->dontSee(">$word</a>");
         }
     }
+
+    /** @test */
+    public function user_is_prompted_to_add_a_word_when_there_are_no_words()
+    {
+        $this->visit(route('words'));
+
+        $this->see('Add a word');
+    }
 }
