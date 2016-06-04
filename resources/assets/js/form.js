@@ -8,7 +8,7 @@ input.val(tempStr);
 $("#addDefinitionButton").click(function() {
 	if ($('#definitionsArea').is(':hidden')) {
 		$("#definitionsContainer").append($("#definitionTemplate").html());
-		$('#definitionsArea').slideDown();
+		$('#definitionsArea').show("slow");
 		return;
 	}
 	
@@ -18,10 +18,10 @@ $("#addDefinitionButton").click(function() {
 // Remove definition input.
 $("#definitionsContainer").on("click", ".deleteDefinition", function () {
     if ($("#definitionsContainer").children().length == 1) {
-    	$('#definitionsArea').slideUp("normal", function () { $("#definitionsContainer").empty(); });
+    	$('#definitionsArea').hide("slow", function () { $("#definitionsContainer").empty(); });
     	return;
     }
-    
+
     $( this ).parents(':eq(1)').slideUp("normal", function () { $(this).remove(); });
 });
 

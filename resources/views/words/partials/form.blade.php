@@ -39,7 +39,7 @@
     </div>
 </div>
 
-<div class="form-group" id="definitionsArea"@if ($definitions->isEmpty()) style="display: none"@endif>
+<div class="row" id="definitionsArea"@if ($definitions->isEmpty()) style="display: none"@endif>
     <label class="col-sm-3 control-label">Defintions</label>
 
     <div class="col-sm-9 col-md-8" id="definitionsContainer">
@@ -47,16 +47,21 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-xs-7 col-sm-6 col-sm-offset-3 col-md-5">
-        <button type="button" class="btn btn-default btn-block" id="addDefinitionButton">
-            <i class="fa fa-btn fa-plus"></i> Add Definition
-        </button>
-    </div>
-    <div class="col-xs-5 col-sm-3 col-md-3">
-        <button type="submit" class="btn btn-primary btn-block">
-            <i class="glyphicon glyphicon-save"></i> Save
-        </button>
+<div class="space-for-stick-to-bottom">
+</div>
+
+<div class="stick-to-bottom button-panel">
+    <div class="row">
+        <div class="col-xs-7 col-sm-6 col-sm-offset-3 col-md-5">
+            <button type="button" class="btn btn-default btn-block" id="addDefinitionButton">
+                <i class="fa fa-btn fa-plus"></i> Add Definition
+            </button>
+        </div>
+        <div class="col-xs-5 col-sm-3 col-md-3">
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="glyphicon glyphicon-save"></i> Save
+            </button>
+        </div>
     </div>
 </div>
 

@@ -6,6 +6,6 @@
 	@if (is_null($word))
 		@include('errors.partials.nowords')
 	@else
-		{{ $word }}
+		{{ $word->word }}
 	@endif
 @endsection
