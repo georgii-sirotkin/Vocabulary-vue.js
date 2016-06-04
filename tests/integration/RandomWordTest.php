@@ -49,17 +49,19 @@ class RandomWordTest extends WordTest
     }
 
     /** @test */
-    public function returns_the_same_word_when_repeated_request()
+    public function prompts_to_add_a_word_when_not_checked_random_word_was_deleted()
     {
         $word = $this->createWordForUser();
-        $this->assertTrue(Word::count() == 1);
+        $this->assertEquals(1, Word::count());
 
         $this->visit(route('random_word'));
+        $sessionData = Session::all();
         $word->delete();
-        $this->setExpectedException('Illuminate\Foundation\Testing\HttpException');
-        $this->visit(route('random_word'));
 
-        $this->dontSee(route('add_word'));
+        $this->withSession($sessionData)
+            ->visit(route('random_word'));
+
+        $this->see(route('add_word'));
     }
 
     /** @test */

@@ -1,0 +1,1 @@
+No words yet. <b><a href="{{ route('add_word') }}">Add a word</a></b>

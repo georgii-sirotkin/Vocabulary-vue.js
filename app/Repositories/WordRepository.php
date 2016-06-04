@@ -9,8 +9,18 @@ use Illuminate\Database\Eloquent\Collection;
 
 class WordRepository
 {
+    /**
+     * Minimum number of characters per one spelling mistake (levenshtein distance of 1) to consider a word similar when searching.
+     * 
+     * @var int
+     */
     private $minNumberOfCharactersPerOneMistake;
 
+    /**
+     * Create a new instance of WordRepository.
+     * 
+     * @param int $minNumberOfCharactersPerOneMistake
+     */
     public function __construct($minNumberOfCharactersPerOneMistake)
     {
         $this->minNumberOfCharactersPerOneMistake = $minNumberOfCharactersPerOneMistake;
@@ -19,19 +29,13 @@ class WordRepository
     /**
      * Get random word.
      *
-     * @return Word|null
+     * @return Word
      */
     public function getRandomWord(array $mostRecentWordIds = array())
     {
         $query = $this->getQueryForFindingRandomWord($mostRecentWordIds);
 
-        $word = $query->first();
-
-        if (is_null($word)) {
-            throw new NoWordsException;
-        }
-
-        return $word;
+        return $query->first();
     }
 
     /**

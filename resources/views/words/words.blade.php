@@ -4,7 +4,7 @@
 
 @section('content')
 	@if ($words->isEmpty())
-		No words yet. <b><a href="{{ route('add_word') }}">Add a word</a></b>
+		@include('errors.partials.nowords')
 	@else
 	    <div class="row">
 	        <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">

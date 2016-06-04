@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\NoWordsException;
 use App\Http\Controllers\Controller;
 use App\Services\CheckAnswerService;
 use App\Services\RandomWordService;
@@ -25,7 +26,13 @@ class RandomWordsController extends Controller
      */
     public function randomWord(RandomWordService $randomWordService)
     {
-        return $randomWordService->getRandomWord();
+        try {
+            $word = $randomWordService->getRandomWord();
+        } catch (NoWordsException $e) {
+            $word = null;
+        }
+
+        return view('words.random')->with('word', $word);
     }
 
     /**

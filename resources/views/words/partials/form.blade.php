@@ -1,5 +1,5 @@
 <div class="form-group">
-    {!! Form::label('word', 'Word:') !!}
+    {!! Form::label('word', 'Word') !!}
     {!! Form::text('word', null, ['class' => 'form-control', 'id' => 'wordInput']) !!}
 </div>
 
@@ -10,7 +10,7 @@
         <img src="{{ $word->getImageUrl() }}" class="img-responsive padding-bottom-sm">
         <input type="hidden" name="keepImage" value="keepImage">
         <div class="form-group">
-            <button class="btn btn-danger" id="deleteOldImage" type="button">
+            <button class="btn btn-danger btn-sm" id="deleteOldImage" type="button">
                 <i class="fa fa-btn fa-trash"></i> Delete
             </button>
         </div>

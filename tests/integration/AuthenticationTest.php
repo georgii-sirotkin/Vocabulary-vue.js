@@ -12,7 +12,6 @@ class AuthenticationTest extends TestCase
     {
         $this->expectsEvents(App\Events\UserRegistered::class);
         $this->visit('/register')
-            ->type('John Doe', 'name')
             ->type('john@example.com', 'email')
             ->type('123456', 'password')
             ->type('123456', 'password_confirmation')

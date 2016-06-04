@@ -76,10 +76,6 @@ class ThirdPartyAuthServiceTest extends PHPUnit_Framework_TestCase
             ->times(2)
             ->andReturn('john@example.com');
 
-        $this->mockedUser->shouldReceive('getName')
-            ->times(2)
-            ->andReturn('John Doe');
-
         $this->mockedUser->shouldReceive('getId')
             ->once()
             ->andReturn('123456');

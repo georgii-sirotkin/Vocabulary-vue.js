@@ -124,34 +124,11 @@ class ThirdPartyAuthService
      */
     private function prepareUserData(User $thirdPartyUser)
     {
-        $data = [
-            'name' => $this->getUserName($thirdPartyUser),
-        ];
-
         if ($this->emailIsValid($thirdPartyUser->getEmail())) {
             $data['email'] = $thirdPartyUser->getEmail();
         }
 
         return $data;
-    }
-
-    /**
-     * Get the name of the user to store in the database.
-     *
-     * @param  Laravel\Socialite\Contracts\User   $thirdPartyUser
-     * @return string
-     */
-    private function getUserName(User $thirdPartyUser)
-    {
-        if (!empty($thirdPartyUser->getName())) {
-            return $thirdPartyUser->getName();
-        }
-
-        if (!empty($thirdPartyUser->getNickname())) {
-            return $thirdPartyUser->getNickname();
-        }
-
-        return $thirdPartyUser->getEmail();
     }
 
     /**
