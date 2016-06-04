@@ -68,6 +68,12 @@ form .nav-tabs {
   margin-bottom: 15px;
 }
 
+#oldImage img {
+  max-height: 183px;
+  margin-right: 10px;
+  margin-bottom: 7px;
+}
+
 
 /*
  * Header

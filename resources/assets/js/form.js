@@ -6,11 +6,22 @@ input.val(tempStr);
 
 // Add definition input.
 $("#addDefinitionButton").click(function() {
+	if ($('#definitionsArea').is(':hidden')) {
+		$("#definitionsContainer").append($("#definitionTemplate").html());
+		$('#definitionsArea').slideDown();
+		return;
+	}
+	
     $($("#definitionTemplate").html()).hide().appendTo("#definitionsContainer").slideDown();
 });
 
 // Remove definition input.
 $("#definitionsContainer").on("click", ".deleteDefinition", function () {
+    if ($("#definitionsContainer").children().length == 1) {
+    	$('#definitionsArea').slideUp("normal", function () { $("#definitionsContainer").empty(); });
+    	return;
+    }
+    
     $( this ).parents(':eq(1)').slideUp("normal", function () { $(this).remove(); });
 });
 

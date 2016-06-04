@@ -44,7 +44,9 @@ class EditWordInBrowserTest extends AuthenticatedUserBrowserTest
         $wordInput = $this->driver->findElement(WebDriverBy::id('wordInput'));
         $wordInput->clear();
         $wordInput->sendKeys('changed word');
-        $this->driver->findElement(WebDriverBy::xpath('//*[@id="definitionsContainer"]/div[2]/div[2]/button'))->click();
+        $deleteDefinitionButtonXpath = '//*[@id="definitionsContainer"]/div[2]/div[2]/button';
+        $this->driver->findElement(WebDriverBy::xpath($deleteDefinitionButtonXpath))->click();
+        $this->waitForElementToDisappear(WebDriverBy::xpath($deleteDefinitionButtonXpath));
         $this->driver->findElement(WebDriverBy::id('addDefinitionButton'))->click();
         $textareaXpath = '//*[@id="definitionsContainer"]/div[3]/div[1]/textarea';
         $this->waitForElementToAppear(WebDriverBy::xpath($textareaXpath));

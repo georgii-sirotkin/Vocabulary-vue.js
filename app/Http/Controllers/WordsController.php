@@ -50,7 +50,7 @@ class WordsController extends Controller
         if ($this->hasOldInput()) {
             $definitions = $this->getDefinitionsFromOldInput();
         } else {
-            $definitions = [];
+            $definitions = collect('');
         }
 
         return view('words.create', ['definitions' => $definitions]);
@@ -135,12 +135,12 @@ class WordsController extends Controller
     }
 
     /**
-     * Get array of Definition objects from old input.
+     * Get Collection of Definition objects from old input.
      *
-     * @return array
+     * @return Collection
      */
     public function getDefinitionsFromOldInput()
     {
-        return $this->wordService->getDefinitionObjects(old('definitions'));
+        return collect($this->wordService->getDefinitionObjects(old('definitions')));
     }
 }
