@@ -132,16 +132,12 @@ class CheckAnswerService
 
         switch ($statusCode) {
             case self::INCORRECT_ANSWER:
+            case self::NO_ANSWER:
                 $word->right_guesses_number--;
                 break;
             case self::CORRECT_ANSWER:
-                $word->right_guesses_number++;
-                break;
             case self::CORRECT_ANSWER_WITH_SPELLING_MISTAKES:
                 $word->right_guesses_number++;
-                break;
-            case self::NO_ANSWER:
-                $word->right_guesses_number--;
                 break;
         }
 
@@ -171,7 +167,7 @@ class CheckAnswerService
     {
         return [
             'statusCode' => $statusCode,
-            'message' => $this->getMessage($word, $statusCode),
+            'message' => $this->getMessage($statusCode),
             'correctAnswer' => $word,
         ];
     }
@@ -183,21 +179,20 @@ class CheckAnswerService
      * @param  int $statusCode
      * @return string
      */
-    private function getMessage($word, $statusCode)
+    private function getMessage($statusCode)
     {
         switch ($statusCode) {
             case self::INCORRECT_ANSWER:
-                $message = "You're wrong. Correct answer: $word.";
+                $message = "You're wrong.";
                 break;
             case self::CORRECT_ANSWER:
                 $message = "You're right!";
                 break;
             case self::CORRECT_ANSWER_WITH_SPELLING_MISTAKES:
-                $message = "You're right! But pay attention to correct spelling: $word.";
+                $message = "You're right! But pay attention to correct spelling.";
                 break;
-            case self::NO_ANSWER:
-                $message = "Correct answer: $word.";
-                break;
+            default:
+                $message = '';
         }
 
         return $message;

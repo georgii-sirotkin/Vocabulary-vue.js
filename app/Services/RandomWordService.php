@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DataStructures\RingBuffer;
+use App\Exceptions\NoWordsException;
 use App\Repositories\WordRepository;
 use App\Word;
 use Illuminate\Session\SessionManager;
@@ -54,7 +55,11 @@ class RandomWordService
      */
     public function getNewRandomWord()
     {
-        $newRandomWord = $this->repository->getRandomWord($this->mostRecentWordIds->getNonemptyElements());
+        try {
+            $newRandomWord = $this->repository->getRandomWord($this->mostRecentWordIds->getNonemptyElements());
+        } catch (NoWordsException $e) {
+            return null;
+        }
 
         $this->session->put('mostRecentWordHasBeenChecked', false);
         $this->rememberWordId($newRandomWord->id);

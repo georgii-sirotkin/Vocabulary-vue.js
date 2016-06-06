@@ -52,9 +52,17 @@
           <div class="row">
             <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 sheet">
               <div class="page-header">
-                <h3>@yield('title')</h3>
+                <h3>
+                  @hasSection('pageHeader')
+                    @yield('pageHeader')
+                  @else
+                    @yield('title')
+                  @endif
+                </h3>
               </div>
-              @yield('content')
+              <div id="content">
+                @yield('content')
+              </div>
             </div>
           </div>
         </div>
