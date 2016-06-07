@@ -2,11 +2,7 @@
 
 @section('title', 'Random')
 
-@section('pageHeader')
-	@for ($i = 0; $i < 3; $i ++)
-		<i class="fa fa-question-circle-o"></i> 
-	@endfor
-@endsection
+@section('pageHeader', str_repeat('<i class="fa fa-question-circle-o"></i> ', 3))
 
 @section('content')
 	@include('words.partials.random')

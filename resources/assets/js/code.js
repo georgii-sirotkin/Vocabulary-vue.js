@@ -29,7 +29,7 @@ function getClass(statusCode) {
 
 function changePageHeader(newValue) {
 	$(".page-header h3").fadeOut("fast", function () {
-		$(".page-header h3").html(newValue);
+		$(".page-header h3").html(escapeHtml(newValue));
 		$(".page-header h3").fadeIn("normal");
 	});
 }
@@ -50,3 +50,17 @@ function showNextWord(html) {
     });
 }
 
+var entityMap = {
+		"&": "&amp;",
+		"<": "&lt;",
+		">": "&gt;",
+		'"': '&quot;',
+		"'": '&#39;',
+		"/": '&#x2F;'
+	};
+
+function escapeHtml(string) {
+	return String(string).replace(/[&<>"'\/]/g, function (s) {
+		return entityMap[s];
+	});
+}

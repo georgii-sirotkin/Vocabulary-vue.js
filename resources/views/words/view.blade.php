@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', $word->word)
+@section('title', htmlentities($word->word))
 
 @section('content')
 	@include('words.partials.imageAndDefinitions')

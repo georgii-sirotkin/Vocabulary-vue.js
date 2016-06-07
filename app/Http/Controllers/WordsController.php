@@ -32,8 +32,10 @@ class WordsController extends Controller
      */
     public function index(Request $request, WordRepository $wordRepository)
     {
-        if ($request->has('search')) {
-            return $wordRepository->findWords($request->input('search'));
+        if ($request->exists('search')) {
+            $searchString = $request->input('search');
+            $words = $searchString ? $wordRepository->findWords($searchString) : collect();
+            return view('words.search', ['words' => $words, 'searchString' => $searchString]);
         }
 
         $words = Word::orderBy('word', 'asc')->paginate(config('settings.number_of_words_on_one_page'));

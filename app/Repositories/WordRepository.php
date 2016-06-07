@@ -76,7 +76,7 @@ class WordRepository
     {
         $allSimilarWords = new Collection();
 
-        Word::chunk(1000, function ($words) use (&$allSimilarWords, $searchString) {
+        Word::chunk(1000, function ($words) use ($allSimilarWords, $searchString) {
             $similarWords = $this->filterDissimilarWords($words, $searchString);
             $allSimilarWords = $allSimilarWords->merge($similarWords);
         });

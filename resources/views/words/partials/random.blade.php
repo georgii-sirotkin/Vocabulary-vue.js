@@ -9,7 +9,7 @@
     <div class="stick-to-bottom button-panel">
 	    <div class="row" id="formArea">
 		    <div class="col-sm-offset-1 col-sm-10 col-md-9">
-		        {!! Form::open(array('route' => 'check_answer', 'class' => 'form-horizontal', 'id' => 'answerForm')) !!}
+		        {!! Form::open(array('route' => 'check_answer', 'id' => 'answerForm')) !!}
 			        <div class="input-group">
 				        {!! Form::text('answer', null, ['class' => 'form-control']) !!}
 				        <span class="input-group-btn">

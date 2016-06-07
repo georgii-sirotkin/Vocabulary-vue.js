@@ -2,7 +2,6 @@
 
 use App\Definition;
 use App\User;
-use App\Word;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
@@ -63,10 +62,5 @@ class EditWordInBrowserTest extends AuthenticatedUserBrowserTest
         for ($i = 0; $i < count($newDefinitions); $i ++) {
             $this->assertEquals($newDefinitions[$i]->definition, $updatedWord->definitions[$i]->definition);
         }
-    }
-
-    protected function createWord(array $data)
-    {
-    	return $this->user->words()->save(factory(Word::class)->make($data));
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\User;
+use App\Word;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverKeys;
 
@@ -29,5 +30,10 @@ abstract class AuthenticatedUserBrowserTest extends BrowserTest
         $this->driver->getKeyboard()->sendKeys(WebDriverKeys::TAB);
         $this->driver->getKeyboard()->sendKeys(config('credentials.vocabulary.password'));
         $this->driver->getKeyboard()->sendKeys(WebDriverKeys::ENTER);
+    }
+
+    protected function createWord(array $data)
+    {
+    	return $this->user->words()->save(factory(Word::class)->make($data));
     }
 }
