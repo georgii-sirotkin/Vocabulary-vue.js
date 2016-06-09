@@ -2,11 +2,13 @@
 
 namespace App\Exceptions;
 
+use App;
 use App\Exceptions\NoWordsException;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Mail;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -35,6 +37,14 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
+        if (App::environment('production')) {
+            Mail::raw((string)$e, function ($message) use ($e) {
+                $message->subject($e->getMessage());
+                $message->from(config('mail.report_error_from.address'), config('mail.report_error_from.name'));
+                $message->to(config('mail.report_error_to.address'), config('mail.report_error_to.name'));
+            });
+        }
+
         parent::report($e);
     }
 

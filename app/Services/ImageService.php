@@ -43,29 +43,28 @@ class ImageService
     public function processImage(WordRequest $request, Word $word)
     {
         $image = $request->getImage();
-        $this->resizeIfNecessary($image);
+        if ($this->needsResizing($image)) {
+            $this->resize($image);
+        }
         $this->save($image);
         $word->image_filename = $image->basename;
     }
 
     /**
-     * Resize image if necessary.
+     * Resize image.
      *
      * @param  Image $image
      * @return void
      */
-    private function resizeIfNecessary(Image $image)
+    private function resize(Image $image)
     {
-        if ($this->needsResizing($image)) {
+        $normalizedWidth = $image->width() / $this->maxWidth;
+        $normalizedHeight = $image->height() / $this->maxHeight;
 
-            $normalizedWidth = $image->width() / $this->maxWidth;
-            $normalizedHeight = $image->height() / $this->maxHeight;
-
-            if ($normalizedWidth > $normalizedHeight) {
-                $image->widen($this->maxWidth);
-            } else {
-                $image->heighten($this->maxHeight);
-            }
+        if ($normalizedWidth > $normalizedHeight) {
+            $image->widen($this->maxWidth);
+        } else {
+            $image->heighten($this->maxHeight);
         }
     }
 
@@ -109,7 +108,7 @@ class ImageService
     }
 
     /**
-     * Get full file name to the image.
+     * Get full path to the image.
      *
      * @param  string $name
      * @return string

@@ -76,7 +76,7 @@ class WordRepository
     {
         $allSimilarWords = new Collection();
 
-        Word::chunk(1000, function ($words) use ($allSimilarWords, $searchString) {
+        Word::chunk(1000, function ($words) use (&$allSimilarWords, $searchString) {
             $similarWords = $this->filterDissimilarWords($words, $searchString);
             $allSimilarWords = $allSimilarWords->merge($similarWords);
         });
@@ -118,7 +118,7 @@ class WordRepository
     }
 
     /**
-     * Determine if word is too short or too long.
+     * Determine if word is too short or too long in comparison with the search string.
      *
      * @param  [type]  $searchString
      * @param  [type]  $word

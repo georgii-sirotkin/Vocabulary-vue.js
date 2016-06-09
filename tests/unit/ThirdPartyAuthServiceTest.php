@@ -56,7 +56,7 @@ class ThirdPartyAuthServiceTest extends PHPUnit_Framework_TestCase
             ->andReturn($this->mockedUser);
 
         $this->mockedGuard->shouldReceive('login')
-            ->with($this->mockedUser)
+            ->with($this->mockedUser, true)
             ->once();
 
         $this->mockedRegistrationService->shouldNotReceive('register');
@@ -86,7 +86,7 @@ class ThirdPartyAuthServiceTest extends PHPUnit_Framework_TestCase
             ->andReturn($this->mockedUser);
 
         $this->mockedGuard->shouldReceive('login')
-            ->with($this->mockedUser)
+            ->with($this->mockedUser, true)
             ->once();
 
         $this->authService->handleCallback('facebook');

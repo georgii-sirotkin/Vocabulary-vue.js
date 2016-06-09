@@ -62,7 +62,7 @@ class CheckAnswerService
     private function getMostRecentWord()
     {
 		if ($this->session->get('mostRecentWordHasBeenChecked') || is_null($mostRecentWordId = $this->getMostRecentWordId())) {
-            throw new \Exception('Something went wrong'); /////////////
+            throw new \Exception('Something went wrong');
         }
 
         return Word::findOrFail($mostRecentWordId);

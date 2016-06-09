@@ -54,7 +54,26 @@ return [
     |
     */
 
-    'from' => ['address' => 'vocabulary@mg.georgiisirotkin.website', 'name' => 'Vocabulary'],
+    'from' => [
+        'address' => 'vocabulary@mg.georgiisirotkin.website',
+        'name' => 'Vocabulary'
+    ],
+
+    /**
+     * Address from which error reports are sent
+     */
+    'report_error_from' => [
+        'address' => 'errors_vocabulary@mg.georgiisirotkin.website',
+        'name' => 'Vocabulary error report'
+    ],
+
+    /**
+     * Address to which error reports are sent
+     */
+    'report_error_to' => [
+        'address' => 'georgiysirotkin@gmail.com',
+        'name' => 'Georgii Sirotkin'
+    ],
 
     /*
     |--------------------------------------------------------------------------

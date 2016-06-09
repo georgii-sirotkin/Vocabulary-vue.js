@@ -11,15 +11,18 @@ class GuestMiddlewareTest extends TestCase
     public function authenticated_user_redirected_to_home_page()
     {
         $user = factory(User::class)->create();
+        $this->actingAs($user);
 
-        $this->actingAs($user)
-            ->visit('/login')
+        $this->visit('/login')
             ->seePageIs(route('home'));
 
         $this->visit('/register')
             ->seePageIs(route('home'));
 
         $this->visit('/login/facebook')
+            ->seePageIs(route('home'));
+
+        $this->visit('/')
             ->seePageIs(route('home'));
     }
 }

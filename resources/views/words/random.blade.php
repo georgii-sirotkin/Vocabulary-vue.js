@@ -13,6 +13,8 @@
 	    @yield('pageHeader')
     </script>
     <script>
+	    setFocusOnInput($("#answer"));
+
         $("#content").on("submit", "#answerForm", function(event) {
 			event.preventDefault();
 			$form = $(this);

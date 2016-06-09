@@ -111,6 +111,16 @@ class RandomWordService
      */
     private function shouldReturnMostRecentWord()
     {
-        return !is_null($this->mostRecentWordIds->top()) && !$this->session->get('mostRecentWordHasBeenChecked') && Word::where('id', $this->mostRecentWordIds->top())->exists();
+        return !is_null($this->mostRecentWordIds->top()) && !$this->session->get('mostRecentWordHasBeenChecked') && $this->mostRecentWordExists();
+    }
+
+    /**
+     * Determine if the most recent word exists.
+     * 
+     * @return bool
+     */
+    private function mostRecentWordExists()
+    {
+        return Word::where('id', $this->mostRecentWordIds->top())->exists();
     }
 }

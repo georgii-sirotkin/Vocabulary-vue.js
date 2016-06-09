@@ -96,7 +96,7 @@ class RegistrationService
     }
 
     /**
-     * Fire the UserRegistered event.
+     * Fire UserRegistered event.
      *
      * @param  App\User   $user
      * @return void

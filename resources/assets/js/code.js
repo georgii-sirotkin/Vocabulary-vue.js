@@ -8,6 +8,13 @@ $(window).scroll(function () {
     }
 });
 
+// Set focus and move cursor to the end of input
+function setFocusOnInput(jQueryObject) {
+	jQueryObject.focus();
+	var tempStr = jQueryObject.val();
+	jQueryObject.val(tempStr);
+}
+
 // functions used in random.blade.php
 
 function getClass(statusCode) {
@@ -46,7 +53,9 @@ function showNextWord(html) {
 	$(".sheet").children().fadeOut("normal", function () {
     	$(".page-header h3").html($("#pageHeaderTemplate").html());
     	$("#content").html(html);
-    	$(".sheet").children().fadeIn("normal");
+    	$(".sheet").children().fadeIn("normal", function () {
+    		setFocusOnInput($("#answer"));
+    	});
     });
 }
 

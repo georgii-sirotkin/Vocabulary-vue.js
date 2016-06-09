@@ -25,7 +25,6 @@ class RandomWordInBrowserTest extends AuthenticatedUserBrowserTest
 
     private function submitEmptyAnswerAndGetCorrectOne()
     {
-        $this->driver->findElement(WebDriverBy::linkText('Random'))->click();
         $this->waitForElementToAppear(WebDriverBy::id('answerForm'));
         $this->driver->findElement(WebDriverBy::xpath('//*[@id="answerForm"]/div/span/button'))->click();
         $this->waitForElementToAppear(WebDriverBy::id('responseArea'));

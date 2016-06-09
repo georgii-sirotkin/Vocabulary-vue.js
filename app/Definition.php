@@ -14,7 +14,7 @@ class Definition extends Model
     ];
 
     /**
-     * All of the relationships to be touched (updated timestamps).
+     * All of the relationships to be touched (update timestamps).
      *
      * @var array
      */

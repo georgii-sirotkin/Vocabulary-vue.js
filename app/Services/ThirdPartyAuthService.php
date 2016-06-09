@@ -74,7 +74,7 @@ class ThirdPartyAuthService
             $user = $this->register($thirdPartyUser, $provider);
         }
 
-        $this->guard->login($user);
+        $this->guard->login($user, true);
     }
 
     /**
@@ -124,6 +124,7 @@ class ThirdPartyAuthService
      */
     private function prepareUserData(User $thirdPartyUser)
     {
+        $data = [];
         if ($this->emailIsValid($thirdPartyUser->getEmail())) {
             $data['email'] = $thirdPartyUser->getEmail();
         }

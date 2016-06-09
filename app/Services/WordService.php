@@ -51,7 +51,7 @@ class WordService
         } catch (\Exception $e) {
             $this->db->rollBack();
             if ($word->hasImage()) {
-                $this->storage->disk('public')->delete($word->getImagePath());
+                $this->deleteImage($word->getImagePath());
             }
             throw $e;
         }
@@ -84,13 +84,13 @@ class WordService
             $word->definitions()->delete();
             $word->addDefinitionsWithTouch($this->getDefinitionsFromInput($request));
             if (!empty($imageToDeletePath)) {
-                $this->storage->disk('public')->delete($imageToDeletePath);
+                $this->deleteImage($imageToDeletePath);
             }
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollBack();
             if ($word->hasImage()) {
-                $this->storage->disk('public')->delete($word->getImagePath());
+                $this->deleteImage($word->getImagePath());
             }
             throw $e;
         }
@@ -110,7 +110,7 @@ class WordService
             $this->db->beginTransaction();
             $word->delete();
             if ($word->hasImage()) {
-                $this->storage->disk('public')->delete($word->getImagePath());
+                $this->deleteImage($word->getImagePath());
             }
             $this->db->commit();
         } catch (\Exception $e) {
@@ -161,5 +161,16 @@ class WordService
     private function shouldDeleteOldImage(WordRequest $request, Word $word)
     {
         return $word->hasImage() && ($request->hasImage() || !$request->has('keepImage'));
+    }
+
+    /**
+     * Delete image.
+     * 
+     * @param  string $path
+     * @return bool
+     */
+    private function deleteImage($path)
+    {
+        return $this->storage->disk('public')->delete($path);
     }
 }

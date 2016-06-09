@@ -5,10 +5,11 @@ return [
         'facebook',
         'google',
     ],
+
     'image' => [
         'max_width' => 400,
         'max_height' => 240,
-        'max_filesize' => 1000,
+        'max_filesize' => 2000,
         'mime_types' => [
             'jpeg',
             'png',

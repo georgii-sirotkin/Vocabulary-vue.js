@@ -1,8 +1,5 @@
 // Set focus and move cursor to the end of input
-var input = $("#wordInput");
-input.focus();
-var tempStr = input.val();
-input.val(tempStr);
+setFocusOnInput($("#wordInput"));
 
 // Add definition input.
 $("#addDefinitionButton").click(function() {

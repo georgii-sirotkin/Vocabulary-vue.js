@@ -15,6 +15,7 @@ class ThirdPartyAuthInfo extends Model
 
     /**
      * Get the user who owns this auth info.
+     * 
      * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()

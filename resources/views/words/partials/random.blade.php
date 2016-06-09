@@ -11,7 +11,7 @@
 		    <div class="col-sm-offset-1 col-sm-10 col-md-9">
 		        {!! Form::open(array('route' => 'check_answer', 'id' => 'answerForm')) !!}
 			        <div class="input-group">
-				        {!! Form::text('answer', null, ['class' => 'form-control']) !!}
+				        {!! Form::text('answer', null, ['class' => 'form-control', 'id' => 'answer']) !!}
 				        <span class="input-group-btn">
 					        <button type="submit" class="btn btn-primary">Answer</button>
 			            </span>

@@ -1,27 +1,14 @@
-/*
- * Base structure
- */
-
 a {
   color: #2462db;
 }
 
-/*a,
-a:focus,
-a:hover {
-  color: #fff;
-}*/
-
-
 html,
 body {
   height: 100%;
-  /* background-color: #333; */
 }
+
 body {
   color: #fff;
-  /*text-align: center;*/
-/*  text-shadow: 0 1px 3px rgba(0,0,0,.5); */
   background-color: #2462db;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#2462db), to(#b1d8ff)); /* Saf4+, Chrome */
   background-image: -webkit-linear-gradient(top, #2462db, #b1d8ff); /* Chrome 10+, Saf5.1+, iOS 5+ */
@@ -39,8 +26,6 @@ body {
   width: 100%;
   height: 100%; /* For at least Firefox */
   min-height: 100%;
-/*  -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
-          box-shadow: inset 0 0 100px rgba(0,0,0,.5);*/
 }
 
 .site-wrapper-inner {
@@ -57,7 +42,6 @@ body {
 /* Padding for spacing */
 .inner {
   padding: 23px 30px;
-  /*padding: 30px;*/
 }
 
 form .nav-tabs > li > a {
@@ -138,10 +122,6 @@ form .nav-tabs {
   margin: 0px 0 25px;
 }
 
-.sheet {
-  position: relative;
-}
-
 .stick-to-bottom {
   width: 100%;
   position: absolute;
@@ -158,6 +138,31 @@ form .nav-tabs {
   margin: 20px 0px 25px 0px;
 }
 
+.list-group-item {
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  padding: 17px 0;
+}
+
+a.list-group-item, a.list-group-item:focus, a.list-group-item:hover {
+  color: #2462db;
+}
+
+.cover {
+  padding: 0 20px;
+}
+
+.sheet {
+  position: relative;
+  min-height: 300px;
+  padding: 0px 20px 30px 20px;
+  background-color: #fff;
+  color: #2462db;
+  border: 1px solid transparent;
+  border-radius: 12px;
+}
+
 @media (min-width: 768px) {
   .masthead-brand {
     float: left;
@@ -169,36 +174,7 @@ form .nav-tabs {
   .inner {
     padding: 30px;
   }
-}
 
-
-/*
- * Cover
- */
-
-.cover {
-  padding: 0 20px;
-}
-
-.sheet {
-  padding: 0px 20px 30px 20px;
-  background-color: #fff;
-  color: #2462db;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  /*min-height: 400px;*/
-}
-
-/*.sheet a {
-  color: #2462db;
-}*/
-
-
-/*
- * Affix and center
- */
-
-@media (min-width: 768px) {
   /* Pull out the header*/
   .masthead {
     position: fixed;
@@ -212,7 +188,6 @@ form .nav-tabs {
 
   body {
     padding-top: 100px;
-    /*padding-bottom: 120px;*/
     padding-bottom: 170px;
   }
 

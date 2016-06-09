@@ -22,7 +22,7 @@
 	        </div>
 	    </div>
 
-    	<div class="space-for-stick-to-bottom">
+    	<div class="space-for-stick-to-bottom{{ $words->hasPages() ? '' : ' hidden-xs' }}">
 		</div>
 
 	    <div class="stick-to-bottom text-center">
