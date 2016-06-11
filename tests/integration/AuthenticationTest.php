@@ -1,6 +1,8 @@
 <?php
 
+use App\Events\UserRegistered;
 use App\User;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AuthenticationTest extends TestCase
@@ -10,7 +12,8 @@ class AuthenticationTest extends TestCase
     /** @test */
     public function user_can_register()
     {
-        $this->expectsEvents(App\Events\UserRegistered::class);
+        $this->expectsEvents([UserRegistered::class, Login::class]);
+        
         $this->visit('/register')
             ->type('john@example.com', 'email')
             ->type('123456', 'password')
@@ -26,6 +29,8 @@ class AuthenticationTest extends TestCase
     /** test */
     public function user_can_login()
     {
+        $this->expectsEvents(Login::class);
+
         $user = factory(User::class)->create([
             'email' => 'john@example.com',
             'password' => bcrypt('123456'),

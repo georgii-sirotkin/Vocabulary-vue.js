@@ -37,7 +37,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
-        if (App::environment('production')) {
+        if (App::environment('production') && $this->shouldReport($e)) {
             Mail::raw((string)$e, function ($message) use ($e) {
                 $message->subject($e->getMessage());
                 $message->from(config('mail.report_error_from.address'), config('mail.report_error_from.name'));
@@ -57,10 +57,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if ($e instanceof NoWordsException) {
-            return response()->view('errors.nowords');
-        }
-
         return parent::render($request, $e);
     }
 }

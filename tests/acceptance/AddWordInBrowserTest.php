@@ -9,7 +9,7 @@ class AddWordInBrowserTest extends AuthenticatedUserBrowserTest
     /** @test */
     public function add_word_with_definitions()
     {
-    	$this->driver->findElement(WebDriverBy::linkText('Add'))->click();
+    	$this->driver->get(route('add_word'));
     	$this->waitForElementToAppear(WebDriverBy::id('wordInput'));
     	$this->driver->findElement(WebDriverBy::id('wordInput'))->click();
     	$this->driver->getKeyboard()->sendKeys('test');
@@ -38,7 +38,7 @@ class AddWordInBrowserTest extends AuthenticatedUserBrowserTest
     /** @test */
     public function can_add_word_with_jpg_file()
     {
-    	$this->driver->findElement(WebDriverBy::linkText('Add'))->click();
+    	$this->driver->get(route('add_word'));
     	$this->waitForElementToAppear(WebDriverBy::id('wordInput'));
     	$this->driver->findElement(WebDriverBy::id('wordInput'))->click();
     	$this->driver->getKeyboard()->sendKeys('test');

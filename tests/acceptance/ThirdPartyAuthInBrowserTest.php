@@ -33,7 +33,7 @@ class ThirdPartyAuthInBrowserTest extends BrowserTest
 		$this->waitForElementToAppear(WebDriverBy::id('Passwd'));
 		$this->driver->getKeyboard()->sendKeys(config('credentials.google.password'));
 		$this->driver->getKeyboard()->sendKeys(WebDriverKeys::ENTER);
-		$this->driver->wait(10, 50)->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('submit_approve_access')));
+		$this->waitForElementToBeClickable(WebDriverBy::id('submit_approve_access'));
 		$this->driver->findElement(WebDriverBy::id('submit_approve_access'))->click();
 
 		$this->assertContains(route('home'), $this->driver->getCurrentUrl());

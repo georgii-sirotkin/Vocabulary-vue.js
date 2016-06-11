@@ -12,7 +12,7 @@ class RandomWordInBrowserTest extends AuthenticatedUserBrowserTest
             $words[] = $this->createWord(['right_guesses_number' => 0])->word;
         }
 
-        $this->driver->findElement(WebDriverBy::linkText('Random'))->click();
+        $this->driver->get(route('random_word'));
         $firstWord = $this->submitEmptyAnswerAndGetCorrectOne();
         $this->assertContains($firstWord, $words);
 

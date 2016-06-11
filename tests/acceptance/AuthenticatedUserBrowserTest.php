@@ -30,6 +30,9 @@ abstract class AuthenticatedUserBrowserTest extends BrowserTest
         $this->driver->getKeyboard()->sendKeys(WebDriverKeys::TAB);
         $this->driver->getKeyboard()->sendKeys(config('credentials.vocabulary.password'));
         $this->driver->getKeyboard()->sendKeys(WebDriverKeys::ENTER);
+        $this->waitForElementToAppear(WebDriverBy::id('modal'));
+        $this->driver->findElement(WebDriverBy::id('closeButton'))->click();
+        $this->waitForElementToDisappear(WebDriverBy::id('modal'));
     }
 
     protected function createWord(array $data)

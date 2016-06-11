@@ -12,9 +12,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/login/{provider}', ['as' => 'third_party_login', 'uses' => 'ThirdPartyAuthController@redirectToProvider']);
     Route::get('/login/{provider}/callback', ['as' => 'third_party_login_callback', 'uses' => 'ThirdPartyAuthController@handleProviderCallback']);
 
-    Route::get('words/random', ['as' => 'random_word', 'uses' => 'RandomWordsController@randomWord']);
-    Route::get('words/next_random', ['as' => 'next_random_word', 'uses' => 'RandomWordsController@nextRandomWord']);
-    Route::post('words/check_answer', ['as' => 'check_answer', 'uses' => 'RandomWordsController@checkAnswer']);
+    Route::get('quiz', ['as' => 'random_word', 'uses' => 'RandomWordsController@randomWord']);
+    Route::get('quiz/next', ['as' => 'next_random_word', 'uses' => 'RandomWordsController@nextRandomWord']);
+    Route::post('quiz/check', ['as' => 'check_answer', 'uses' => 'RandomWordsController@checkAnswer']);
 
     Route::resource('/words', 'WordsController', ['names' => [
         'index' => 'words',

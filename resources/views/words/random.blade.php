@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Random')
+@section('title', 'Quiz')
 
 @section('pageHeader', str_repeat('<i class="fa fa-question-circle-o"></i> ', 3))
 

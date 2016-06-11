@@ -36,4 +36,9 @@ abstract class BrowserTest extends TestCase
     {
         $this->driver->wait(10, 50)->until(WebDriverExpectedCondition::invisibilityOfElementLocated($element));
     }
+
+    protected function waitForElementToBeClickable(WebDriverBy $element)
+    {
+        $this->driver->wait(10, 50)->until(WebDriverExpectedCondition::elementToBeClickable($element));
+    }
 }

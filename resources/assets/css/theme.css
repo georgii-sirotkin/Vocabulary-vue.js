@@ -139,7 +139,7 @@ form .nav-tabs {
 }
 
 .list-group-item {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: bold;
   text-align: center;
   padding: 17px 0;
@@ -204,6 +204,44 @@ a.list-group-item, a.list-group-item:focus, a.list-group-item:hover {
   .mastfoot,
   .cover-container {
     width: 100%; /* Must be percentage or pixels for horizontal alignment */
+  }
+
+  .modal {
+    text-align: center;
+  }
+  .modal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: " ";
+    height: 100%;
+  }
+  .modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .modal.fade .modal-dialog {
+    -webkit-transform: scale(0.9);
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    transform: scale(0.9);
+    opacity: 0;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+  }
+  .modal.fade.in .modal-dialog {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+    //-webkit-transform: translate3d(0, -300px, 0);
+    //transform: translate3d(0, -300px, 0);
+    opacity: 1;
+  }
+
+  .modal-dialog {
+    padding-bottom: 15%;
   }
 }
 
