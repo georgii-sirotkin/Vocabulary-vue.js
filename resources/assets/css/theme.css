@@ -117,6 +117,10 @@ form .nav-tabs {
   padding-bottom: 7px;
 }
 
+.margin-top {
+  margin-top: 10px;
+}
+
 .page-header {
   padding-bottom: 0px;
   margin: 0px 0 25px;
@@ -161,6 +165,10 @@ a.list-group-item, a.list-group-item:focus, a.list-group-item:hover {
   color: #2462db;
   border: 1px solid transparent;
   border-radius: 12px;
+}
+
+big {
+  font-size: 17px;
 }
 
 @media (min-width: 768px) {

@@ -9,13 +9,13 @@
                         <b>Log in with social media</b>
                     </p>
                     <p>
-                        <a href="{{ route('third_party_login', ['provider' => 'facebook']) }}"class="btn btn-block btn-social btn-facebook">
+                        <a href="{{ route('third_party_login', ['provider' => 'facebook']) }}" class="btn btn-block btn-social btn-facebook">
                           <span class="fa fa-facebook"></span>
                           Log in with Facebook
                         </a>
                     </p>
                     <p>
-                        <a href="{{ route('third_party_login', ['provider' => 'google']) }}"class="btn btn-block btn-social btn-google">
+                        <a href="{{ route('third_party_login', ['provider' => 'google']) }}" class="btn btn-block btn-social btn-google">
                           <span class="fa fa-google"></span>
                           Log in with Google
                         </a>

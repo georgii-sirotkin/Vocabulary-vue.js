@@ -13,7 +13,7 @@
 			        <div class="input-group">
 				        {!! Form::text('answer', null, ['class' => 'form-control', 'id' => 'answer']) !!}
 				        <span class="input-group-btn">
-					        <button type="submit" class="btn btn-primary">Answer</button>
+					        <button type="submit" class="btn btn-primary" id="answerButton">Answer</button>
 			            </span>
 		            </div>
 			    {!! Form::close() !!}

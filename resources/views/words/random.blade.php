@@ -15,25 +15,23 @@
     <script>
 	    setFocusOnInput($("#answer"));
 
+	    var processingAnswer = false;
         $("#content").on("submit", "#answerForm", function(event) {
 			event.preventDefault();
-			$form = $(this);
-			$.post($form.attr('action'), $form.serialize(), null, 'json')
-			.done(function(data) {
-				changePageHeader(data.correctAnswer);
-				showResponse(data);
-			});
+			if (processingAnswer) {
+				return;
+			}
+			processingAnswer = true;
+			processAnswer($(this));
 		});
 
+		var loadingNextWord = false;
 		$("#content").on("click", "#nextButton", function () {
-			$.ajax({
-				url: "{{ route('next_random_word') }}",
-				dataType: "html",
-				cache: false
-			})
-			.done(function(html) {
-				showNextWord(html);
-			});
+			if (loadingNextWord) {
+				return;
+			}
+			loadingNextWord = true;
+			loadNextWord("{{ route('next_random_word') }}");
 		});
     </script>
 @endpush

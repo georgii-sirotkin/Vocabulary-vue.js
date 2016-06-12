@@ -35,28 +35,48 @@ function getClass(statusCode) {
 }
 
 function changePageHeader(newValue) {
-	$(".page-header h3").fadeOut("fast", function () {
-		$(".page-header h3").html(escapeHtml(newValue));
-		$(".page-header h3").fadeIn("normal");
+	$(".page-header h3").html(newValue);
+}
+
+function processAnswer (form) {
+	$("#formArea").fadeTo("fast", 0);
+	$(".page-header h3").fadeTo("fast", 0);
+	$.post(form.attr('action'), form.serialize(), null, 'json')
+	.done(function(data) {
+		$("#formArea").promise().done(function() {showResponse(data)});
+		$(".page-header h3").promise().done(function() {
+			changePageHeader(escapeHtml(data.correctAnswer));
+			$(".page-header h3").fadeTo("normal", 1);
+		});
 	});
 }
 
 function showResponse(data) {
-	$("#formArea").fadeOut("fast", function () {
-		$("#responseMessage").html(data.message);
-		$("#responseMessage").addClass(getClass(data.statusCode));
-		$("#responseArea").fadeIn("normal");
+	$("#responseMessage").html(data.message);
+	$("#responseMessage").addClass(getClass(data.statusCode));
+	$("#responseArea").fadeTo("normal", 1);
+	processingAnswer = false;
+}
+
+function loadNextWord(pageUrl) {
+	$(".sheet").children().fadeTo("fast", 0);
+	$.ajax({
+		url: pageUrl,
+		dataType: "html",
+		cache: false
+	})
+	.done(function(html) {
+		$(".sheet").children().promise().done(function() {showNextWord(html)});
 	});
 }
 
 function showNextWord(html) {
-	$(".sheet").children().fadeOut("normal", function () {
-    	$(".page-header h3").html($("#pageHeaderTemplate").html());
-    	$("#content").html(html);
-    	$(".sheet").children().fadeIn("normal", function () {
-    		setFocusOnInput($("#answer"));
-    	});
-    });
+	changePageHeader($("#pageHeaderTemplate").html());
+	$("#content").html(html);
+	$(".sheet").children().fadeTo("normal", 1, function () {
+		setFocusOnInput($("#answer"));
+		loadingNextWord = false;
+	});
 }
 
 var entityMap = {

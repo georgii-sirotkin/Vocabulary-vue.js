@@ -28,7 +28,7 @@
   </head>
 
   <body>
-
+    @include('analyticstracking')
     <div class="site-wrapper">
 
       <div class="site-wrapper-inner">
