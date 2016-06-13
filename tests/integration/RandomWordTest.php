@@ -126,6 +126,19 @@ class RandomWordTest extends WordTest
     }
 
     /** @test */
+    public function returns_correct_answer_status_when_case_doesnt_match()
+    {
+        $word = $this->createWordForUser(['word' => 'test']);
+
+        $this->visit(route('random_word'));
+        $mostRecentWordIds = Session::get('mostRecentWordIds');
+
+        $this->withSession(['mostRecentWordIds' => $mostRecentWordIds])
+            ->json('POST', route('check_answer'), ['answer' => 'Test'])
+            ->seeJson(["statusCode" => self::CORRECT_ANSWER]);
+    }
+
+    /** @test */
     public function returns_correct_with_mistakes_and_increases_number_of_right_guesses()
     {
         $minNumberOfCharsPerOneMistake = config('settings.min_number_of_chars_per_one_mistake');

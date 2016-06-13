@@ -14,7 +14,7 @@
 				<a href="{{ route('random_word') }}" class="list-group-item"><i class="fa fa-question-circle-o"></i> Quiz</a>
 				<a href="{{ route('words') }}" class="list-group-item"><i class="fa fa-list"></i> Words</a>
 				<a href="{{ route('words') }}?search" class="list-group-item"><i class="fa fa-search"></i> Search</a>
-				<a href="" class="list-group-item"><i class="fa fa-info-circle"></i> About</a>
+				<a href="{{ route('about') }}" class="list-group-item"><i class="fa fa-info-circle"></i> About</a>
 			</ul>
 		</div>
 	</div>

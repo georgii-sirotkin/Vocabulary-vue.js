@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Word;
 use Illuminate\Session\SessionManager;
+use Illuminate\Support\Str;
 
 class CheckAnswerService
 {
@@ -90,6 +91,9 @@ class CheckAnswerService
         if (empty($answer)) {
             return self::NO_ANSWER;
         }
+
+        $word = Str::lower($word);
+        $answer = Str::lower($answer);
 
         $levenshteinDistance = levenshtein($word, $answer);
 

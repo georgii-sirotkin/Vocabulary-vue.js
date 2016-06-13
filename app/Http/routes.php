@@ -8,6 +8,7 @@ Route::group(['middleware' => 'web'], function () {
     }]);
 
     Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
+    Route::get('/about', ['as' => 'about', 'uses' => 'HomeController@about']);
 
     Route::get('/login/{provider}', ['as' => 'third_party_login', 'uses' => 'ThirdPartyAuthController@redirectToProvider']);
     Route::get('/login/{provider}/callback', ['as' => 'third_party_login_callback', 'uses' => 'ThirdPartyAuthController@handleProviderCallback']);
