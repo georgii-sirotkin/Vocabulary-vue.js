@@ -2,7 +2,7 @@
 
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
-    
+
     Route::get('/', ['as' => 'welcome', 'middleware' => 'guest', function () {
         return view('welcome');
     }]);

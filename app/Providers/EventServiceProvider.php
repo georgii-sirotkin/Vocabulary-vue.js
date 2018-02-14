@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Word;
-use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,14 +18,11 @@ class EventServiceProvider extends ServiceProvider
     /**
      * Register any other events for your application.
      *
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
      * @return void
      */
-    public function boot(DispatcherContract $events)
+    public function boot()
     {
-        parent::boot($events);
-
-        $events->listen('Illuminate\Auth\Events\Login', function ($event) {
+        Event::listen('Illuminate\Auth\Events\Login', function ($event) {
             session()->flash('showHelloMessage', true);
             session()->flash('numberOfWords', Word::count());
         });

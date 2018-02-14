@@ -45,7 +45,7 @@ class WordRequest extends Request
      */
     public function rules()
     {
-        $slug = $this->route('words') ? $this->route('words') : 'NULL';
+        $slug = $this->route('word') ?: 'NULL';
         $userId = $this->user()->id;
 
         return [

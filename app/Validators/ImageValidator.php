@@ -105,13 +105,13 @@ class ImageValidator
 	 */
 	private function isFileSuccessfullyUploaded(Validator $validator)
 	{
-		$files = $validator->getFiles();
+        $validData = $validator->valid();
 
-		if (empty($files['image'])) {
+		if (empty($validData['image'])) {
 			return false;
 		}
 
-		if (!$files['image']->isValid()) {
+		if (!$validData['image']->isValid()) {
 			$validator->errors()->add('image', 'Failed to upload file.');
 			return false;
 		}
