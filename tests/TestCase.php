@@ -7,7 +7,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      *
      * @var string
      */
-    protected $baseUrl = 'http://localhost';
+    protected $baseUrl = 'http://vocabulary-vue.local';
 
     /**
      * Creates the application.
@@ -17,11 +17,6 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     public function createApplication()
     {
         $app = require __DIR__ . '/../bootstrap/app.php';
-
-        // set public directory
-        $app->bind('path.public', function () {
-            return '/var/www/html';
-        });
 
         $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
