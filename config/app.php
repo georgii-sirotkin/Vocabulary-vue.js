@@ -161,7 +161,7 @@ return [
 
         Laravel\Socialite\SocialiteServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
-        Cviebrock\EloquentSluggable\SluggableServiceProvider::class,
+        Cviebrock\EloquentSluggable\ServiceProvider::class,
         Laravelista\Ekko\EkkoServiceProvider::class,
     ],
 

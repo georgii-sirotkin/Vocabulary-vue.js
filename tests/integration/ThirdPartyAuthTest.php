@@ -5,10 +5,10 @@ class ThirdPartyAuthTest extends TestCase
     /** @test */
     public function page_not_found_for_unsupported_providers()
     {
-        $this->setExpectedException('Illuminate\Foundation\Testing\HttpException');
+        $this->expectException(\Laravel\BrowserKitTesting\HttpException::class);
         $this->visit(route('third_party_login', ['provider' => 'facebookunsupported_provider']));
 
-        $this->setExpectedException('Illuminate\Foundation\Testing\HttpException');
+        $this->expectException(\Laravel\BrowserKitTesting\HttpException::class);
         $this->visit(route('third_party_login_callback', ['provider' => 'facebookunsupported_provider']));
     }
 

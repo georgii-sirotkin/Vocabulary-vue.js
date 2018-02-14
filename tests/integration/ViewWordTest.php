@@ -19,7 +19,7 @@ class ViewWordTest extends WordTest
     public function cant_get_word_by_id()
     {
         $word = $this->createWordForUser();
-        $this->setExpectedException('Illuminate\Foundation\Testing\HttpException');
+        $this->expectException(\Laravel\BrowserKitTesting\HttpException::class);
         $this->visit(route('view_word', [$word->id]));
     }
 

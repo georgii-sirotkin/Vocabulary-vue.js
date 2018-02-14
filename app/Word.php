@@ -2,17 +2,16 @@
 
 namespace App;
 
-use App\Definition;
 use Auth;
-use Cviebrock\EloquentSluggable\SluggableInterface;
-use Cviebrock\EloquentSluggable\SluggableTrait;
+use Cviebrock\EloquentSluggable\Sluggable;
+use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-class Word extends Model implements SluggableInterface
+class Word extends Model
 {
-    use SluggableTrait;
+    use Sluggable, SluggableScopeHelpers;
 
     protected static function boot()
     {
@@ -31,10 +30,19 @@ class Word extends Model implements SluggableInterface
         'word',
     ];
 
-    protected $sluggable = [
-        'build_from' => 'word',
-        'save_to' => 'slug',
-    ];
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'word'
+            ]
+        ];
+    }
 
     /**
      * Get image url.

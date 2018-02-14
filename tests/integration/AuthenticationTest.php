@@ -26,8 +26,8 @@ class AuthenticationTest extends TestCase
         $this->assertEquals(1, User::count());
         $this->assertTrue(Auth::check());
 
-        Event::assertFired(Registered::class);
-        Event::assertFired(Login::class);
+        Event::assertDispatched(Registered::class);
+        Event::assertDispatched(Login::class);
     }
 
     /** test */
