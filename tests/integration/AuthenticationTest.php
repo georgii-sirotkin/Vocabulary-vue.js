@@ -4,7 +4,6 @@ use App\User;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Event;
 
 class AuthenticationTest extends TestCase
 {

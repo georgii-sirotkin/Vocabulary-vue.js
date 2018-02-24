@@ -137,7 +137,7 @@ class WordService
      */
     private function getDefinitionsFromInput(WordRequest $request)
     {
-        return $this->getDefinitionObjects($request->input('definitions', array()));
+        return $this->getDefinitionObjects(array_filter($request->input('definitions', array())));
     }
 
     /**

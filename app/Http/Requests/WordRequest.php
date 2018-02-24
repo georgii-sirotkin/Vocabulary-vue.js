@@ -26,17 +26,17 @@ class WordRequest extends Request
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     * Modify input.
-     */
-    public function all()
-    {
-        $attributes = parent::all();
-        $this->sanitiseInput($attributes);
-        $this->replace($attributes);
-        return $attributes;
-    }
+//    /**
+//     * {@inheritdoc}
+//     * Modify input.
+//     */
+//    public function all()
+//    {
+//        $attributes = parent::all();
+//        $this->sanitiseInput($attributes);
+//        $this->replace($attributes);
+//        return $attributes;
+//    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -51,7 +51,7 @@ class WordRequest extends Request
         return [
             'word' => "required|unique:word,word,{$slug},slug,user_id,{$userId}|max:255",
             'image' => "required_without_all:definitions.0,imageUrl,keepImage",
-            'imageUrl' => 'url'
+            'imageUrl' => 'nullable|url'
         ];
     }
 
@@ -97,21 +97,35 @@ class WordRequest extends Request
     {
         return !is_null($this->image);
     }
+//
+//    /**
+//     * {@inheritdoc}
+//     * Attach a callback to be run after validation is completed.
+//     *
+//     * @return Validator
+//     */
+//    protected function getValidatorInstance()
+//    {
+//        $validator = parent::getValidatorInstance();
+//        $validator->after(function (Validator $validator) {
+//            $imageValidator = new ImageValidator(config('settings.image.max_filesize'), config('settings.image.mime_types'), app('Intervention\Image\ImageManager'));
+//            $imageValidator->validate($validator, $this);
+//        });
+//        return $validator;
+//    }
 
     /**
-     * {@inheritdoc}
-     * Attach a callback to be run after validation is completed.
-     * 
-     * @return Validator
+     * Configure the validator instance.
+     *
+     * @param  \Illuminate\Validation\Validator  $validator
+     * @return void
      */
-    protected function getValidatorInstance()
+    public function withValidator($validator)
     {
-        $validator = parent::getValidatorInstance();
-        $validator->after(function (Validator $validator) {
+        $validator->after(function ($validator) {
             $imageValidator = new ImageValidator(config('settings.image.max_filesize'), config('settings.image.mime_types'), app('Intervention\Image\ImageManager'));
             $imageValidator->validate($validator, $this);
         });
-        return $validator;
     }
         
     /**

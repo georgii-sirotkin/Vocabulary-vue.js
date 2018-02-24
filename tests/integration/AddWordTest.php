@@ -8,7 +8,15 @@ class AddWordTest extends WordTest
     /** @test */
     public function can_add_word_with_image_url_and_definitions()
     {
-        $this->call('POST', route('insert_word'), ['word' => 'test', 'definitions' => ['test definition', 'another definition'], 'imageUrl' => 'https://www.google.co.uk/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png']);
+        $this->call('POST', route('insert_word'), [
+            'word' => 'test',
+            'definitions' => [
+                'test definition',
+                'another definition'
+            ],
+            'imageUrl' => 'https://www.google.co.uk/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+            '_token' => csrf_token(),
+        ]);
 
         $this->seeInDatabase('word', ['word' => 'test']);
         $this->seeInDatabase('definition', ['definition' => 'test definition']);
