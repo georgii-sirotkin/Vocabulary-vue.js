@@ -5,20 +5,20 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
-        "laravel/framework": "5.5.*",
-        "laravel/socialite": "^2.0",
+        "php": ">=7.1.3",
+        "laravel/framework": "5.6.*",
+        "laravel/socialite": "^3.0",
         "laravelcollective/html": "^5.2",
         "intervention/image": "^2.3",
-        "cviebrock/eloquent-sluggable": "4.3.*",
+        "cviebrock/eloquent-sluggable": "4.5.*",
         "laravelista/ekko": "~1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~6.0",
+        "phpunit/phpunit": "~7.0",
         "facebook/webdriver": "^1.1",
-        "laravel/browser-kit-testing": "3.*",
+        "laravel/browser-kit-testing": "4.*",
         "filp/whoops": "~2.0"
     },
     "autoload": {
@@ -45,14 +45,10 @@
             "php artisan key:generate"
         ],
         "post-install-cmd": [
-            "php artisan clear-compiled",
-            "php artisan optimize"
+            "php artisan clear-compiled"
         ],
         "pre-update-cmd": [
             "php artisan clear-compiled"
-        ],
-        "post-update-cmd": [
-            "php artisan optimize"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

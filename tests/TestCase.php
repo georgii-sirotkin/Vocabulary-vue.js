@@ -7,7 +7,7 @@ class TestCase extends Laravel\BrowserKitTesting\TestCase
      *
      * @var string
      */
-    protected $baseUrl = 'http://vocabulary-vue.local';
+    protected $baseUrl = 'http://vocabulary-vue.test';
 
     /**
      * Creates the application.
