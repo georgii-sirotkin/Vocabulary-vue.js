@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Definition extends Model
 {
     public $timestamps = false;
-    protected $table = 'definition';
+
     protected $fillable = [
         'definition',
     ];

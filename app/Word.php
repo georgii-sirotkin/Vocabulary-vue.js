@@ -24,8 +24,6 @@ class Word extends Model
         });
     }
 
-    protected $table = 'word';
-
     protected $fillable = [
         'word',
     ];

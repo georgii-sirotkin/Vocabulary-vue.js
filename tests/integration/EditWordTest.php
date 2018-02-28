@@ -18,12 +18,12 @@ class EditWordTest extends WordTest
             ->seePageIs(route('words'));
 
         $this->assertEquals(1, Word::count());
-        $this->seeInDatabase('word', ['id' => $word->id, 'word' => $word->word]);
+        $this->seeInDatabase('words', ['id' => $word->id, 'word' => $word->word]);
 
         $this->assertEquals(3, Definition::count());
         foreach ($definitions as $definition) {
-            $this->seeInDatabase('definition', ['definition' => $definition->definition]);
-            $this->dontSeeInDatabase('definition', ['id' => $definition->id]);
+            $this->seeInDatabase('definitions', ['definition' => $definition->definition]);
+            $this->dontSeeInDatabase('definitions', ['id' => $definition->id]);
         }
     }
 

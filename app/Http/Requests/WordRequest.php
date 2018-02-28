@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 use App\Validators\ImageValidator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use Intervention\Image\Image;
 
@@ -26,18 +27,6 @@ class WordRequest extends Request
         return true;
     }
 
-//    /**
-//     * {@inheritdoc}
-//     * Modify input.
-//     */
-//    public function all()
-//    {
-//        $attributes = parent::all();
-//        $this->sanitiseInput($attributes);
-//        $this->replace($attributes);
-//        return $attributes;
-//    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -45,11 +34,18 @@ class WordRequest extends Request
      */
     public function rules()
     {
+        // if editing word, then the url looks like /words/{word}/ where {word} is slug
         $slug = $this->route('word') ?: 'NULL';
         $userId = $this->user()->id;
 
         return [
-            'word' => "required|unique:word,word,{$slug},slug,user_id,{$userId}|max:255",
+            'word' => [
+                'required',
+                Rule::unique('words')->where(function ($query) use ($userId) {
+                    return $query->where('user_id', $userId);
+                })->ignore($slug, 'slug'),
+                'max:255',
+            ],
             'image' => "required_without_all:definitions.0,imageUrl,keepImage",
             'imageUrl' => 'nullable|url'
         ];

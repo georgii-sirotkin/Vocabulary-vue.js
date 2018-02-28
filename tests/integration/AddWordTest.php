@@ -18,9 +18,9 @@ class AddWordTest extends WordTest
             '_token' => csrf_token(),
         ]);
 
-        $this->seeInDatabase('word', ['word' => 'test']);
-        $this->seeInDatabase('definition', ['definition' => 'test definition']);
-        $this->seeInDatabase('definition', ['definition' => 'another definition']);
+        $this->seeInDatabase('words', ['word' => 'test']);
+        $this->seeInDatabase('definitions', ['definition' => 'test definition']);
+        $this->seeInDatabase('definitions', ['definition' => 'another definition']);
         $word = Word::first();
         $this->assertEquals($this->user->id, $word->user_id);
         $this->assertEquals(2, $word->definitions()->count());
