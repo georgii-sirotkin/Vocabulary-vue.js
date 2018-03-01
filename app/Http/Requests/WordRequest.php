@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
 use App\Validators\ImageValidator;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
 use Intervention\Image\Image;
 
 class WordRequest extends Request
@@ -13,7 +11,7 @@ class WordRequest extends Request
     /**
      * Image uploaded by user or downloaded from url.
      *
-     * @var Intervention\Image\Image
+     * @var Image
      */
     protected $image;
 
@@ -39,7 +37,7 @@ class WordRequest extends Request
         $userId = $this->user()->id;
 
         return [
-            'word' => [
+            'title' => [
                 'required',
                 Rule::unique('words')->where(function ($query) use ($userId) {
                     return $query->where('user_id', $userId);
@@ -93,22 +91,6 @@ class WordRequest extends Request
     {
         return !is_null($this->image);
     }
-//
-//    /**
-//     * {@inheritdoc}
-//     * Attach a callback to be run after validation is completed.
-//     *
-//     * @return Validator
-//     */
-//    protected function getValidatorInstance()
-//    {
-//        $validator = parent::getValidatorInstance();
-//        $validator->after(function (Validator $validator) {
-//            $imageValidator = new ImageValidator(config('settings.image.max_filesize'), config('settings.image.mime_types'), app('Intervention\Image\ImageManager'));
-//            $imageValidator->validate($validator, $this);
-//        });
-//        return $validator;
-//    }
 
     /**
      * Configure the validator instance.
@@ -122,29 +104,5 @@ class WordRequest extends Request
             $imageValidator = new ImageValidator(config('settings.image.max_filesize'), config('settings.image.mime_types'), app('Intervention\Image\ImageManager'));
             $imageValidator->validate($validator, $this);
         });
-    }
-        
-    /**
-     * Sanitise input.
-     * 
-     * @param  array  &$attributes
-     * @return void
-     */
-    private function sanitiseInput(array &$attributes)
-    {
-        if (isset($attributes['definitions'])) {
-            $this->removeEmptyDefinitions($attributes);
-        }
-    }
-    
-    /**
-     * Remove empty definitions from input.
-     * 
-     * @param  array  &$attributes
-     * @return void
-     */
-    private function removeEmptyDefinitions(array &$attributes)
-    {
-        $attributes['definitions'] = array_filter($attributes['definitions']);
     }
 }

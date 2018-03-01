@@ -46,13 +46,13 @@ class CheckAnswerService
     {
         $mostRecentWord = $this->getMostRecentWord();
 
-        $statusCode = $this->getStatusCode($mostRecentWord->word, $answer);
+        $statusCode = $this->getStatusCode($mostRecentWord->title, $answer);
 
         $this->changeNumberOfRightGuesses($mostRecentWord, $statusCode);
 
         $this->session->put('mostRecentWordHasBeenChecked', true);
 
-        return $this->createResponse($mostRecentWord->word, $statusCode);
+        return $this->createResponse($mostRecentWord->title, $statusCode);
     }
 
    /**

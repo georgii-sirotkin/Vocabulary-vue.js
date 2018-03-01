@@ -13,16 +13,16 @@ class EditWordTest extends WordTest
         $definitions = factory(Definition::class, 3)->make()->all();
         $word->addDefinitionsWithoutTouch($definitions);
 
-        $this->visit(route('edit_word', [$word->slug]))
+        $this->visit(route('edit_word', $word))
             ->press('Save')
             ->seePageIs(route('words'));
 
         $this->assertEquals(1, Word::count());
-        $this->seeInDatabase('words', ['id' => $word->id, 'word' => $word->word]);
+        $this->seeInDatabase('words', ['id' => $word->id, 'title' => $word->title]);
 
         $this->assertEquals(3, Definition::count());
         foreach ($definitions as $definition) {
-            $this->seeInDatabase('definitions', ['definition' => $definition->definition]);
+            $this->seeInDatabase('definitions', ['text' => $definition->text]);
             $this->dontSeeInDatabase('definitions', ['id' => $definition->id]);
         }
     }
@@ -33,7 +33,7 @@ class EditWordTest extends WordTest
         $word = $this->createWordForUser(['image_filename' => 'test.jpg']);
         Storage::disk('public')->put($word->getImagePath(), 'data');
 
-        $this->visit(route('edit_word', [$word->slug]))
+        $this->visit(route('edit_word', $word))
             ->attach($this->getPathToTestFile('image.png'), 'image')
             ->press('Save')
             ->seePageIs(route('words'));
@@ -52,7 +52,7 @@ class EditWordTest extends WordTest
         $word = $this->createWordForUser(['image_filename' => 'test.jpg']);
         Storage::disk('public')->put($word->getImagePath(), 'data');
 
-        $this->visit(route('edit_word', [$word->slug]))
+        $this->visit(route('edit_word', $word))
             ->press('Save');
 
         $this->seePageIs(route('words'));
@@ -66,15 +66,15 @@ class EditWordTest extends WordTest
     public function slug_is_not_incremented_when_two_users_have_identical_words()
     {
         Word::unguard();
-        $word = $this->createWordForUser(['word' => 'test', 'image_filename' => 'test.jpg']);
+        $word = $this->createWordForUser(['title' => 'test', 'image_filename' => 'test.jpg']);
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
-        $theSameWord = factory(Word::class)->make(['word' => 'test', 'image_filename' => 'test2.jpg']);
+        $theSameWord = factory(Word::class)->make(['title' => 'test', 'image_filename' => 'test2.jpg']);
         $anotherUser->addWord($theSameWord);
         $this->assertNotNull($word->slug);
         $this->assertEquals($word->slug, $theSameWord->slug);
 
-        $this->call('PUT', route('update_word', [$word->slug]), ['word' => 'test', 'keepImage' => 'keepImage']);
+        $this->call('PUT', route('update_word', $word), ['title' => 'test', 'keepImage' => 'keepImage']);
 
         $this->assertRedirectedToRoute('words');
         $updatedWord = Word::first();
@@ -88,7 +88,7 @@ class EditWordTest extends WordTest
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
 
-        $this->call('PUT', route('update_word', [$word->slug]), ['word' => 'test', 'definitions' => ['definition']]);
+        $this->call('PUT', route('update_word', $word), ['title' => 'test', 'definitions' => ['definition']]);
 
         $this->assertResponseStatus(404);
     }
@@ -96,11 +96,11 @@ class EditWordTest extends WordTest
     /** @test */
     public function updated_at_column_changes_when_definition_is_added()
     {
-        $word = $this->createWordForUser(['word' => 'initial_word']);
+        $word = $this->createWordForUser(['title' => 'initial_word']);
         $initialUpdatedAt = $word->updated_at;
         $initialCreatedAt = $word->created_at;
         sleep(1);
-        $word->save(['word' => 'initial_word']);
+        $word->save(['title' => 'initial_word']);
         $word->definitions()->save(factory(App\Definition::class)->make());
         $wordChanged = Word::find($word->id);
         $this->assertTrue($initialUpdatedAt->timestamp <

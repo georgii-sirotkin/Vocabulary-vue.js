@@ -117,7 +117,7 @@ class RandomWordTest extends WordTest
         $mostRecentWordIds = Session::get('mostRecentWordIds');
 
         $this->withSession(['mostRecentWordIds' => $mostRecentWordIds])
-            ->json('POST', route('check_answer'), ['answer' => $word->word])
+            ->json('POST', route('check_answer'), ['answer' => $word->title])
             ->seeJson(["statusCode" => self::CORRECT_ANSWER]);
 
         $updatedWord = $word->fresh();
@@ -128,7 +128,7 @@ class RandomWordTest extends WordTest
     /** @test */
     public function returns_correct_answer_status_when_case_doesnt_match()
     {
-        $word = $this->createWordForUser(['word' => 'test']);
+        $word = $this->createWordForUser(['title' => 'test']);
 
         $this->visit(route('random_word'));
         $mostRecentWordIds = Session::get('mostRecentWordIds');
@@ -143,7 +143,7 @@ class RandomWordTest extends WordTest
     {
         $minNumberOfCharsPerOneMistake = config('settings.min_number_of_chars_per_one_mistake');
         $wordString = str_repeat('a', $minNumberOfCharsPerOneMistake);
-        $word = $this->createWordForUser(['word' => $wordString]);
+        $word = $this->createWordForUser(['title' => $wordString]);
 
         $this->visit(route('random_word'));
         $mostRecentWordIds = Session::get('mostRecentWordIds');
@@ -160,7 +160,7 @@ class RandomWordTest extends WordTest
     /** @test */
     public function returns_incorrect_and_decreases_number_of_right_guesses()
     {
-        $word = $this->createWordForUser(['word' => 'cat', 'right_guesses_number' => 1]);
+        $word = $this->createWordForUser(['title' => 'cat', 'right_guesses_number' => 1]);
 
         $this->visit(route('random_word'));
         $mostRecentWordIds = Session::get('mostRecentWordIds');
@@ -177,7 +177,7 @@ class RandomWordTest extends WordTest
     /** @test */
     public function returns_no_answer_code_and_descreases_number_of_right_guesses()
     {
-        $word = $this->createWordForUser(['word' => 'cat', 'right_guesses_number' => 1]);
+        $word = $this->createWordForUser(['title' => 'cat', 'right_guesses_number' => 1]);
 
         $this->visit(route('random_word'));
         $mostRecentWordIds = Session::get('mostRecentWordIds');

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\WordRequest;
 use App\Repositories\WordRepository;
 use App\Services\WordService;
@@ -28,7 +27,7 @@ class WordsController extends Controller
      * Display words or search results.
      *
      * @param  Request $request
-     * @return Illuminate\View\View
+     * @return \Illuminate\View\View
      */
     public function index(Request $request, WordRepository $wordRepository)
     {
@@ -38,14 +37,14 @@ class WordsController extends Controller
             return view('words.search', ['words' => $words, 'searchString' => $searchString]);
         }
 
-        $words = Word::orderBy('word', 'asc')->paginate(config('settings.number_of_words_on_one_page'));
+        $words = Word::orderBy('title', 'asc')->paginate(config('settings.number_of_words_on_one_page'));
         return view('words.words', ['words' => $words]);
     }
 
     /**
      * Show the form for adding a new word.
      *
-     * @return Illuminate\View\View
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -75,7 +74,7 @@ class WordsController extends Controller
      * Display word.
      *
      * @param  string  $slug
-     * @return Illuminate\View\View
+     * @return \Illuminate\View\View
      */
     public function show($slug)
     {
@@ -87,7 +86,7 @@ class WordsController extends Controller
      * Show the form for editing the specified word.
      *
      * @param  string  $slug
-     * @return Illuminate\View\View
+     * @return \Illuminate\View\View
      */
     public function edit($slug)
     {

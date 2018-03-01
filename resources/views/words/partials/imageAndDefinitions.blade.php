@@ -7,7 +7,7 @@
 		@endif
 
 		@foreach ($word->definitions as $definition)
-			<p>{{ $definition->definition }}</p>
+			<p>{{ $definition->text }}</p>
 		@endforeach
 	</div>
 </div>

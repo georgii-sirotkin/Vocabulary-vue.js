@@ -11,7 +11,8 @@
         "laravelcollective/html": "^5.2",
         "intervention/image": "^2.3",
         "cviebrock/eloquent-sluggable": "4.5.*",
-        "laravelista/ekko": "~1.0"
+        "laravelista/ekko": "~1.0",
+        "doctrine/dbal": "^2.6"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

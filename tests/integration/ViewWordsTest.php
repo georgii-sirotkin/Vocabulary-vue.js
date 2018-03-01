@@ -23,7 +23,7 @@ class ViewWordsTest extends WordTest
     {
         $words = [];
         foreach (range(0, 3) as $number) {
-            $words[] = $this->createWordForUser()->word;
+            $words[] = $this->createWordForUser()->title;
         }
         $this->assertEquals(4, $this->user->words()->count());
         $this->visit(route('words'));

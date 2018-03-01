@@ -67,7 +67,7 @@ class WordService
     public function updateWord(WordRequest $request, $slug)
     {
         $word = Word::findBySlugOrFail($slug);
-        $word->word = $request->input('word');
+        $word->title = $request->input('title');
 
         if ($this->shouldDeleteOldImage($request, $word)) {
             $imageToDeletePath = $word->getImagePath();
@@ -148,7 +148,7 @@ class WordService
      */
     private function createDefinition($definition)
     {
-        return new Definition(['definition' => $definition]);
+        return new Definition(['text' => $definition]);
     }
 
     /**

@@ -1,7 +1,7 @@
 <div class="form-group">
     {!! Form::label('word', 'Word', ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-9 col-md-8">
-        {!! Form::text('word', null, ['class' => 'form-control', 'id' => 'wordInput']) !!}
+        {!! Form::text('title', null, ['class' => 'form-control', 'id' => 'wordInput']) !!}
     </div>
 </div>
 

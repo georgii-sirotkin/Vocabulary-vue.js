@@ -11,8 +11,8 @@ class ViewWordTest extends WordTest
     {
         $word = $this->createWordForUser();
 
-        $this->visit(route('view_word', [$word->slug]))
-            ->see($word->word);
+        $this->visit(route('view_word', $word))
+            ->see($word->title);
     }
 
     /** @test */
@@ -26,25 +26,25 @@ class ViewWordTest extends WordTest
     /** @test */
     public function user_sees_his_own_word_even_if_slugs_are_the_same()
     {
-        $word = $this->createWordForUser(['word' => 'test']);
+        $word = $this->createWordForUser(['title' => 'test']);
         $word->addDefinitionsWithoutTouch(factory(Definition::class, 3)->make()->all());
 
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
-        $theSameWord = factory(Word::class)->make(['word' => 'test']);
+        $theSameWord = factory(Word::class)->make(['title' => 'test']);
         $anotherUser->addWord($theSameWord);
         $theSameWord->addDefinitionsWithoutTouch(factory(Definition::class, 3)->make()->all());
         $this->assertEquals($word->slug, $theSameWord->slug);
 
         $this->visit(route('view_word', [$theSameWord->slug]));
         foreach ($theSameWord->definitions as $definition) {
-            $this->see($definition->definition);
+            $this->see($definition->text);
         }
 
         $this->actingAs($this->user);
-        $this->visit(route('view_word', [$word->slug]));
+        $this->visit(route('view_word', $word));
         foreach ($word->definitions as $definition) {
-            $this->see($definition->definition);
+            $this->see($definition->text);
         }
     }
 
@@ -55,7 +55,7 @@ class ViewWordTest extends WordTest
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
 
-        $this->call('GET', route('view_word', [$word->slug]), []);
+        $this->call('GET', route('view_word', $word), []);
 
         $this->assertResponseStatus(404);
     }

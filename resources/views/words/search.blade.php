@@ -25,7 +25,7 @@
 				    @else
 					    <ul class="list-unstyled">
 						    @foreach ($words as $word)
-							    <li><b><a href="{{ route('view_word', $word->slug) }}">{{ $word->word }}</a></b></li>
+							    <li><b><a href="{{ route('view_word', $word->slug) }}">{{ $word->title }}</a></b></li>
 						    @endforeach
 					    </ul>
 				    @endif

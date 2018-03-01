@@ -27,7 +27,7 @@ class AddWordInBrowserTest extends AuthenticatedUserBrowserTest
         $this->assertEquals(route('words'), $this->driver->getCurrentUrl());
         $this->assertEquals(1, $this->user->words()->count());
         $word = $this->user->words()->first();
-        $this->assertEquals('test', $word->word);
+        $this->assertEquals('test', $word->title);
         $this->assertNull($word->image_filename);
         $this->assertEquals(count($definitions), $word->definitions()->count());
         for ($i = 0; $i < count($definitions); $i ++) {
@@ -50,7 +50,7 @@ class AddWordInBrowserTest extends AuthenticatedUserBrowserTest
     	$this->assertEquals(route('words'), $this->driver->getCurrentUrl());
         $this->assertEquals(1, $this->user->words()->count());
         $word = $this->user->words()->first();
-        $this->assertEquals('test', $word->word);
+        $this->assertEquals('test', $word->title);
         $this->assertNotNull($word->image_filename);
         $this->assertTrue(Storage::disk('public')->exists($word->getImagePath()));
         Storage::disk('public')->delete($word->getImagePath());

@@ -10,7 +10,7 @@ class Definition extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'definition',
+        'text',
     ];
 
     /**

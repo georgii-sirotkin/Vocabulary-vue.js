@@ -28,7 +28,7 @@ $factory->define(App\ThirdPartyAuthInfo::class, function (Faker\Generator $faker
 
 $factory->define(App\Word::class, function (Faker\Generator $faker) {
     $data = [
-        'word' => $faker->unique()->words($faker->biasedNumberBetween(1, 5, function ($x) { return 1 - 10 * $x * $x;}), true),
+        'title' => $faker->unique()->words($faker->biasedNumberBetween(1, 5, function ($x) { return 1 - 10 * $x * $x;}), true),
         'right_guesses_number' => $faker->randomDigit,
     ];
 
@@ -41,6 +41,6 @@ $factory->define(App\Word::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Definition::class, function (Faker\Generator $faker) {
     return [
-        'definition' => $faker->sentence(),
+        'text' => $faker->sentence(),
     ];
 });

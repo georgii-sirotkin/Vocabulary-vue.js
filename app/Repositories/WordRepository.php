@@ -63,7 +63,7 @@ class WordRepository
      */
     private function getWordsThatMatchExactly($searchString)
     {
-        return Word::where('word', 'like', "%{$searchString}%")->get();
+        return Word::where('title', 'like', "%{$searchString}%")->get();
     }
 
     /**
@@ -78,7 +78,7 @@ class WordRepository
 
         Word::chunk(1000, function ($words) use (&$allSimilarWords, $searchString) {
             $similarWords = $this->filterDissimilarWords($words, $searchString);
-            $allSimilarWords = $allSimilarWords->merge($similarWords);
+            $allSimilarWords = $allSimilarWords->concat($similarWords);
         });
 
         return $allSimilarWords;
@@ -94,8 +94,8 @@ class WordRepository
      */
     private function filterDissimilarWords(Collection $words, $searchString)
     {
-        return $words->filter(function ($value, $key) use ($searchString) {
-            return $this->areWordsSimilar($searchString, $value->word);
+        return $words->filter(function ($word) use ($searchString) {
+            return $this->areWordsSimilar($searchString, $word->title);
         });
     }
 

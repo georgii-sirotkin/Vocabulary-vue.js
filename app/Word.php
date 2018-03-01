@@ -25,7 +25,7 @@ class Word extends Model
     }
 
     protected $fillable = [
-        'word',
+        'title',
     ];
 
     /**
@@ -37,7 +37,7 @@ class Word extends Model
     {
         return [
             'slug' => [
-                'source' => 'word'
+                'source' => 'title'
             ]
         ];
     }
@@ -111,5 +111,13 @@ class Word extends Model
     public function definitions()
     {
         return $this->hasMany(Definition::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

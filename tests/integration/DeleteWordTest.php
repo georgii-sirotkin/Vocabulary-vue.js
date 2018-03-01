@@ -14,7 +14,7 @@ class DeleteWordTest extends WordTest
         $definitions = factory(Definition::class, 3)->make()->all();
         $word->addDefinitionsWithoutTouch($definitions);
 
-        $this->call('DELETE', route('delete_word', [$word->slug]));
+        $this->call('DELETE', route('delete_word', $word));
 
         $this->assertEquals(0, Word::count());
         $this->assertEquals(0, Definition::count());
@@ -28,7 +28,7 @@ class DeleteWordTest extends WordTest
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
 
-        $this->call('DELETE', route('delete_word', [$word->slug]));
+        $this->call('DELETE', route('delete_word', $word));
 
         $this->assertResponseStatus(404);
     }
