@@ -2,9 +2,17 @@
 
 namespace App;
 
-use App\Word;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Definition
+ *
+ * @property int $id
+ * @property string $text
+ * @property int $word_id
+ * @property-read \App\Word $word
+ * @mixin \Eloquent
+ */
 class Definition extends Model
 {
     public $timestamps = false;
@@ -23,7 +31,7 @@ class Definition extends Model
     /**
      * Get word to which this definition belongs.
      *
-     * @return  Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return  \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function word()
     {

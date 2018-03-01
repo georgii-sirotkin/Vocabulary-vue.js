@@ -7,8 +7,22 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Storage;
 
+/**
+ * App\Word
+ *
+ * @property int $id
+ * @property string $title
+ * @property string $slug
+ * @property int $user_id
+ * @property int $right_guesses_number
+ * @property string|null $image_filename
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Definition[] $definitions
+ * @mixin \Eloquent
+ */
 class Word extends Model
 {
     use Sluggable, SluggableScopeHelpers;
@@ -106,7 +120,7 @@ class Word extends Model
     /**
      * Get definitions that belong to this word.
      *
-     * @return Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function definitions()
     {

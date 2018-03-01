@@ -47,5 +47,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(CheckAnswerService::class, function ($app) {
             return new CheckAnswerService($app['Illuminate\Session\SessionManager'], config('settings.min_number_of_chars_per_one_mistake'));
         });
+
+        if ($this->app->environment() !== 'production') {
+            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+        }
     }
 }

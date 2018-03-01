@@ -21,7 +21,8 @@
         "facebook/webdriver": "^1.1",
         "laravel/browser-kit-testing": "4.*",
         "filp/whoops": "~2.0",
-        "barryvdh/laravel-debugbar": "^3.1"
+        "barryvdh/laravel-debugbar": "^3.1",
+        "barryvdh/laravel-ide-helper": "^2.4"
     },
     "autoload": {
         "classmap": [
@@ -50,7 +51,10 @@
             "php artisan clear-compiled"
         ],
         "pre-update-cmd": [
-            "php artisan clear-compiled"
+            "php artisan clear-compiled",
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "php artisan ide-helper:generate",
+            "php artisan ide-helper:meta"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

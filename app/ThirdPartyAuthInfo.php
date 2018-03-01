@@ -4,6 +4,16 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\ThirdPartyAuthInfo
+ *
+ * @property int $id
+ * @property string $third_party
+ * @property string $third_party_user_id
+ * @property int $user_id
+ * @property-read \App\User $user
+ * @mixin \Eloquent
+ */
 class ThirdPartyAuthInfo extends Model
 {
     public $timestamps = false;
@@ -16,7 +26,7 @@ class ThirdPartyAuthInfo extends Model
     /**
      * Get the user who owns this auth info.
      * 
-     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {

@@ -2,10 +2,19 @@
 
 namespace App;
 
-use App\ThirdPartyAuthInfo;
-use App\Word;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * App\User
+ *
+ * @property int $id
+ * @property string|null $email
+ * @property string|null $password
+ * @property string|null $remember_token
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @mixin \Eloquent
+ */
 class User extends Authenticatable
 {
     /**
@@ -49,7 +58,7 @@ class User extends Authenticatable
     /**
      * Get third party authentication info that belongs to this user.
      *
-     * @return Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function thirdPartyAuths()
     {
@@ -59,7 +68,7 @@ class User extends Authenticatable
     /**
      * Get words that belong to this user.
      *
-     * @return Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function words()
     {
