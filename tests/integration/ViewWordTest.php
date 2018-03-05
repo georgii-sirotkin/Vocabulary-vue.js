@@ -11,7 +11,7 @@ class ViewWordTest extends WordTest
     {
         $word = $this->createWordForUser();
 
-        $this->visit(route('view_word', $word))
+        $this->visit(route('words.show', $word))
             ->see($word->title);
     }
 
@@ -20,7 +20,7 @@ class ViewWordTest extends WordTest
     {
         $word = $this->createWordForUser();
         $this->expectException(\Laravel\BrowserKitTesting\HttpException::class);
-        $this->visit(route('view_word', [$word->id]));
+        $this->visit(route('words.show', [$word->id]));
     }
 
     /** @test */
@@ -36,13 +36,13 @@ class ViewWordTest extends WordTest
         $theSameWord->addDefinitionsWithoutTouch(factory(Definition::class, 3)->make()->all());
         $this->assertEquals($word->slug, $theSameWord->slug);
 
-        $this->visit(route('view_word', [$theSameWord->slug]));
+        $this->visit(route('words.show', [$theSameWord->slug]));
         foreach ($theSameWord->definitions as $definition) {
             $this->see($definition->text);
         }
 
         $this->actingAs($this->user);
-        $this->visit(route('view_word', $word));
+        $this->visit(route('words.show', $word));
         foreach ($word->definitions as $definition) {
             $this->see($definition->text);
         }
@@ -55,7 +55,7 @@ class ViewWordTest extends WordTest
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
 
-        $this->call('GET', route('view_word', $word), []);
+        $this->call('GET', route('words.show', $word), []);
 
         $this->assertResponseStatus(404);
     }

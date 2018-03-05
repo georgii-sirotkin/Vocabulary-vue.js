@@ -9,7 +9,7 @@
 @section('content')
     <div class="row">
 	    <div class="col-sm-offset-1 col-sm-10 col-md-9">
-	        {!! Form::open(array('method' => 'GET', 'route' => 'words')) !!}
+	        {!! Form::open(array('method' => 'GET', 'route' => 'words.index')) !!}
 		        <div class="input-group form-group padding-bottom-sm">
 			        {!! Form::text('search', request('search'), ['class' => 'form-control']) !!}
 			        <span class="input-group-btn">
@@ -25,7 +25,7 @@
 				    @else
 					    <ul class="list-unstyled">
 						    @foreach ($words as $word)
-							    <li><b><a href="{{ route('view_word', $word->slug) }}">{{ $word->title }}</a></b></li>
+							    <li><b><a href="{{ route('words.show', $word->slug) }}">{{ $word->title }}</a></b></li>
 						    @endforeach
 					    </ul>
 				    @endif

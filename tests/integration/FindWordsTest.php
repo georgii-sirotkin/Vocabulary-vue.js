@@ -12,7 +12,7 @@ class FindWordsTest extends WordTest
         $words[] = $this->createWordForUser(['title' => 'new test']);
         $words[] = $this->createWordForUser(['title' => 'new test!!!']);
 
-        $this->call('GET', route('words'), ['search' => 'test']);
+        $this->call('GET', route('words.index'), ['search' => 'test']);
 
         foreach ($words as $word) {
             $this->see($word->title);
@@ -24,7 +24,7 @@ class FindWordsTest extends WordTest
     {
         $this->createWordForUser(['title' => 'aaa']);
 
-        $this->call('GET', route('words'), ['search' => 'bbb']);
+        $this->call('GET', route('words.index'), ['search' => 'bbb']);
 
         $this->dontSee('aaa');
     }
@@ -38,7 +38,7 @@ class FindWordsTest extends WordTest
         $words[] = $this->createWordForUser(['title' => substr($searchString, 1)]);
         $words[] = $this->createWordForUser(['title' => substr_replace($searchString, 'e', 0, 1)]);
 
-        $this->call('GET', route('words'), ['search' => $searchString]);
+        $this->call('GET', route('words.index'), ['search' => $searchString]);
 
         foreach ($words as $word) {
             $this->see(">$word->title</");

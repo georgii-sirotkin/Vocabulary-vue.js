@@ -93,8 +93,7 @@ class ImageValidator
 	 */
 	private function isImageURLValid(Validator $validator)
 	{
-		$validData = $validator->valid();
-		return !empty($validData['imageUrl']);
+		return !empty($validator->valid()['imageUrl']);
 	}
 
 	/**
@@ -105,18 +104,7 @@ class ImageValidator
 	 */
 	private function isFileSuccessfullyUploaded(Validator $validator)
 	{
-        $validData = $validator->valid();
-
-		if (empty($validData['image'])) {
-			return false;
-		}
-
-		if (!$validData['image']->isValid()) {
-			$validator->errors()->add('image', 'Failed to upload file.');
-			return false;
-		}
-
-		return true;
+		return !empty($validator->valid()['image']);
 	}
 
 	/**

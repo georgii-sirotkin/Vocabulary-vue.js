@@ -2,7 +2,11 @@
 
 @section('title', 'Quiz')
 
-@section('pageHeader', str_repeat('<i class="fa fa-question-circle-o"></i> ', 3))
+@section('pageHeader')
+	<i class="fa fa-question-circle-o"></i>
+	<i class="fa fa-question-circle-o"></i>
+	<i class="fa fa-question-circle-o"></i>
+@endsection
 
 @section('content')
 	@include('words.partials.random')

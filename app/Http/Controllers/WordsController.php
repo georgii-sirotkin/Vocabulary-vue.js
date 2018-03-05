@@ -7,19 +7,22 @@ use App\Repositories\WordRepository;
 use App\Services\WordService;
 use App\Word;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class WordsController extends Controller
 {
+    /**
+     * @var WordService
+     */
     private $wordService;
 
     /**
      * Create a new controller instance.
      *
-     * @return void
+     * @param WordService $wordService
      */
     public function __construct(WordService $wordService)
     {
-        $this->middleware('auth');
         $this->wordService = $wordService;
     }
 
@@ -34,11 +37,11 @@ class WordsController extends Controller
         if ($request->exists('search')) {
             $searchString = $request->input('search');
             $words = $searchString ? $wordRepository->findWords($searchString) : collect();
-            return view('words.search', ['words' => $words, 'searchString' => $searchString]);
+            return view('words.search', compact('words', 'searchString'));
         }
 
         $words = Word::orderBy('title', 'asc')->paginate(config('settings.number_of_words_on_one_page'));
-        return view('words.words', ['words' => $words]);
+        return view('words.index', compact('words'));
     }
 
     /**
@@ -48,13 +51,13 @@ class WordsController extends Controller
      */
     public function create()
     {
-        if ($this->hasOldInput()) {
+        if ($this->anyDefinitionsInOldInput()) {
             $definitions = $this->getDefinitionsFromOldInput();
         } else {
-            $definitions = collect('');
+            $definitions = collect($this->wordService->createDefinition(''));
         }
 
-        return view('words.create', ['definitions' => $definitions]);
+        return view('words.create', compact('definitions'));
     }
 
     /**
@@ -67,62 +70,62 @@ class WordsController extends Controller
     {
         $this->wordService->storeWord($request);
 
-        return redirect()->route('words');
+        return redirect()->route('words.index');
     }
 
     /**
      * Display word.
      *
-     * @param  string  $slug
+     * @param Word $word
      * @return \Illuminate\View\View
      */
-    public function show($slug)
+    public function show(Word $word)
     {
-        $word = Word::findBySlugOrFail($slug);
-        return view('words.view')->with('word', $word);
+        return view('words.view', compact('word'));
     }
 
     /**
      * Show the form for editing the specified word.
      *
-     * @param  string  $slug
+     * @param Word $word
      * @return \Illuminate\View\View
      */
-    public function edit($slug)
+    public function edit(Word $word)
     {
-        $word = Word::findBySlugOrFail($slug);
-        if ($this->hasOldInput()) {
+        if ($this->anyDefinitionsInOldInput()) {
             $definitions = $this->getDefinitionsFromOldInput();
         } else {
             $definitions = $word->definitions;
         }
-        return view('words.edit', ['word' => $word, 'definitions' => $definitions]);
+
+        return view('words.edit', compact('word', 'definitions'));
     }
 
     /**
      * Update the specified word.
      *
-     * @param  WordRequest  $request
-     * @param  string  $slug
+     * @param  WordRequest $request
+     * @param Word $word
      * @return \Illuminate\Http\Response
      */
-    public function update(WordRequest $request, $slug)
+    public function update(WordRequest $request, Word $word)
     {
-        $this->wordService->updateWord($request, $slug);
+        $this->wordService->updateWord($word, $request);
 
-        return redirect()->route('words');
+        return redirect()->route('words.index');
     }
 
     /**
      * Remove the specified word from storage.
      *
-     * @param  string  $slug
+     * @param Word $word
      * @return \Illuminate\Http\Response
      */
-    public function destroy($slug)
+    public function destroy(Word $word)
     {
-        $this->wordService->deleteWord($slug);
-        return redirect()->route('words');
+        $this->wordService->deleteWord($word);
+
+        return redirect()->route('words.index');
     }
 
     /**
@@ -130,7 +133,7 @@ class WordsController extends Controller
      *
      * @return boolean
      */
-    private function hasOldInput()
+    private function anyDefinitionsInOldInput()
     {
         return !is_null(old('definitions')) && is_array(old('definitions'));
     }
@@ -140,7 +143,7 @@ class WordsController extends Controller
      *
      * @return Collection
      */
-    public function getDefinitionsFromOldInput()
+    private function getDefinitionsFromOldInput()
     {
         return collect($this->wordService->getDefinitionObjects(old('definitions')));
     }

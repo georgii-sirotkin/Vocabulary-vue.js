@@ -16,6 +16,6 @@ class ThirdPartyAuthTest extends TestCase
     public function redirects_to_root_if_access_denied()
     {
         $this->visit(route('third_party_login_callback', ['provider' => 'facebook']) . '?error=access_denied')
-            ->seePageIs('/');
+            ->seeRouteIs('login');
     }
 }

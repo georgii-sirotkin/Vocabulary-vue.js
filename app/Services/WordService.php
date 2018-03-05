@@ -20,7 +20,7 @@ class WordService
      *
      * @param ImageService    $imageService
      * @param DatabaseManager $db
-     * @param Illuminate\Contracts\Filesystem\Factory $storage
+     * @param \Illuminate\Contracts\Filesystem\Factory $storage
      */
     public function __construct(ImageService $imageService, DatabaseManager $db, Factory $storage)
     {
@@ -37,10 +37,10 @@ class WordService
      */
     public function storeWord(WordRequest $request)
     {
-        $word = new Word($request->all());
+        $word = new Word(['title' => $request->input('title')]);
 
         if ($request->hasImage()) {
-            $this->imageService->processImage($request, $word);
+            $this->processImage($request, $word);
         }
 
         try {
@@ -60,13 +60,13 @@ class WordService
     /**
      * Update word.
      *
+     * @param Word $word
      * @param  WordRequest $request
-     * @param  string $slug
      * @return void
+     * @throws \Exception
      */
-    public function updateWord(WordRequest $request, $slug)
+    public function updateWord(Word $word, WordRequest $request)
     {
-        $word = Word::findBySlugOrFail($slug);
         $word->title = $request->input('title');
 
         if ($this->shouldDeleteOldImage($request, $word)) {
@@ -75,14 +75,14 @@ class WordService
         }
 
         if ($request->hasImage()) {
-            $this->imageService->processImage($request, $word);
+            $this->processImage($request, $word);
         }
 
         try {
             $this->db->beginTransaction();
             $word->save();
             $word->definitions()->delete();
-            $word->addDefinitionsWithTouch($this->getDefinitionsFromInput($request));
+            $word->addDefinitions($this->getDefinitionsFromInput($request));
             if (!empty($imageToDeletePath)) {
                 $this->deleteImage($imageToDeletePath);
             }
@@ -99,24 +99,19 @@ class WordService
     /**
      * Delete word.
      *
-     * @param  string $slug
+     * @param Word $word
      * @return void
+     * @throws \Exception
      */
-    public function deleteWord($slug)
+    public function deleteWord(Word $word)
     {
-        $word = Word::findBySlugOrFail($slug);
-
-        try {
-            $this->db->beginTransaction();
+        $this->db->transaction(function () use ($word) {
             $word->delete();
+
             if ($word->hasImage()) {
                 $this->deleteImage($word->getImagePath());
             }
-            $this->db->commit();
-        } catch (\Exception $e) {
-            $this->db->rollBack();
-            throw $e;
-        }
+        });
     }
 
     /**
@@ -146,7 +141,7 @@ class WordService
      * @param  string $definition
      * @return Definition
      */
-    private function createDefinition($definition)
+    public function createDefinition($definition)
     {
         return new Definition(['text' => $definition]);
     }
@@ -172,5 +167,16 @@ class WordService
     private function deleteImage($path)
     {
         return $this->storage->disk('public')->delete($path);
+    }
+
+    /**
+     * @param WordRequest $request
+     * @param $word
+     */
+    protected function processImage(WordRequest $request, $word)
+    {
+        $image = $request->getImage();
+        $this->imageService->processImage($image);
+        $word->image_filename = $image->basename;
     }
 }

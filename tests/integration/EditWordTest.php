@@ -13,9 +13,9 @@ class EditWordTest extends WordTest
         $definitions = factory(Definition::class, 3)->make()->all();
         $word->addDefinitionsWithoutTouch($definitions);
 
-        $this->visit(route('edit_word', $word))
+        $this->visit(route('words.edit', $word))
             ->press('Save')
-            ->seePageIs(route('words'));
+            ->seePageIs(route('words.index'));
 
         $this->assertEquals(1, Word::count());
         $this->seeInDatabase('words', ['id' => $word->id, 'title' => $word->title]);
@@ -33,10 +33,10 @@ class EditWordTest extends WordTest
         $word = $this->createWordForUser(['image_filename' => 'test.jpg']);
         Storage::disk('public')->put($word->getImagePath(), 'data');
 
-        $this->visit(route('edit_word', $word))
+        $this->visit(route('words.edit', $word))
             ->attach($this->getPathToTestFile('image.png'), 'image')
             ->press('Save')
-            ->seePageIs(route('words'));
+            ->seePageIs(route('words.index'));
 
         $updatedWord = Word::first();
         $this->assertNotEquals($word->image_filename, $updatedWord->image_filename);
@@ -52,10 +52,10 @@ class EditWordTest extends WordTest
         $word = $this->createWordForUser(['image_filename' => 'test.jpg']);
         Storage::disk('public')->put($word->getImagePath(), 'data');
 
-        $this->visit(route('edit_word', $word))
+        $this->visit(route('words.edit', $word))
             ->press('Save');
 
-        $this->seePageIs(route('words'));
+        $this->seePageIs(route('words.index'));
         $updatedWord = Word::first();
         $this->assertEquals($word->image_filename, $updatedWord->image_filename);
         $this->assertTrue(Storage::disk('public')->exists($updatedWord->getImagePath()));
@@ -74,9 +74,9 @@ class EditWordTest extends WordTest
         $this->assertNotNull($word->slug);
         $this->assertEquals($word->slug, $theSameWord->slug);
 
-        $this->call('PUT', route('update_word', $word), ['title' => 'test', 'keepImage' => 'keepImage']);
+        $this->call('PUT', route('words.update', $word), ['title' => 'test', 'keepImage' => 'keepImage']);
 
-        $this->assertRedirectedToRoute('words');
+        $this->assertRedirectedToRoute('words.index');
         $updatedWord = Word::first();
         $this->assertEquals($theSameWord->slug, $updatedWord->slug);
     }
@@ -88,7 +88,7 @@ class EditWordTest extends WordTest
         $anotherUser = factory(User::class)->create();
         $this->actingAs($anotherUser);
 
-        $this->call('PUT', route('update_word', $word), ['title' => 'test', 'definitions' => ['definition']]);
+        $this->call('PUT', route('words.update', $word), ['title' => 'test', 'definitions' => ['definition']]);
 
         $this->assertResponseStatus(404);
     }

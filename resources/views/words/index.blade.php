@@ -13,7 +13,7 @@
 				        <div class="col-sm-6">
 					        <ul class="list-unstyled" style="margin-bottom: 0">
 						        @foreach ($chunk as $word)
-							        <li><b><a href="{{ route('view_word', $word) }}">{{ $word->title }}</a></b></li>
+							        <li><b><a href="{{ route('words.show', $word) }}">{{ $word->title }}</a></b></li>
 						        @endforeach
 					        </ul>
 				        </div>

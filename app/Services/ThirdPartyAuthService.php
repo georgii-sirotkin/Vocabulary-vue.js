@@ -2,20 +2,19 @@
 
 namespace App\Services;
 
-use App\Repositories\UserRepository;
-use App\Services\RegistrationService;
 use App\ThirdPartyAuthInfo;
+use App\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Laravel\Socialite\Contracts\Factory;
-use Laravel\Socialite\Contracts\User;
+use Laravel\Socialite\Contracts\User as ThirdPartyUser;
+use DB;
 
 class ThirdPartyAuthService
 {
     private $supportedProviders;
     private $socialite;
     private $guard;
-    private $registrationService;
-    private $repository;
 
     /**
      * Create a new instance of service.
@@ -23,16 +22,12 @@ class ThirdPartyAuthService
      * @param array               $supportedProviders
      * @param Factory             $socialite
      * @param AuthFactory         $guard
-     * @param RegistrationService $registrationService
-     * @param UserRepository      $repository
      */
-    public function __construct(array $supportedProviders, Factory $socialite, AuthFactory $guard, RegistrationService $registrationService, UserRepository $repository)
+    public function __construct(array $supportedProviders, Factory $socialite, AuthFactory $guard)
     {
         $this->supportedProviders = $supportedProviders;
         $this->socialite = $socialite;
         $this->guard = $guard;
-        $this->registrationService = $registrationService;
-        $this->repository = $repository;
     }
 
     /**
@@ -50,7 +45,7 @@ class ThirdPartyAuthService
      * Redirect the user to the third party authentication page.
      *
      * @param  string $provider
-     * @return void
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function redirectToProvider($provider)
     {
@@ -70,8 +65,10 @@ class ThirdPartyAuthService
 
         if ($authInfo) {
             $user = $authInfo->user;
+        } elseif ($this->emailIsValid($thirdPartyUser->getEmail()) && ($user = $this->getUserByEmail($thirdPartyUser->getEmail()))) {
+            $this->addThirdPartyAuthInfoToUser($user, $thirdPartyUser, $provider);
         } else {
-            $user = $this->register($thirdPartyUser, $provider);
+            $user = $this->registerNewUser($thirdPartyUser, $provider);
         }
 
         $this->guard->login($user, true);
@@ -81,7 +78,7 @@ class ThirdPartyAuthService
      * Get user instance from third party auth provider.
      *
      * @param  string $provider
-     * @return Laravel\Socialite\Contracts\User
+     * @return ThirdPartyUser
      */
     private function getThirdPartyUser($provider)
     {
@@ -91,60 +88,39 @@ class ThirdPartyAuthService
     /**
      * Get ThirdPartyAuthInfo instance with the given id and auth provider.
      *
-     * @param  Laravel\Socialite\Contracts\User   $thirdPartyUser
+     * @param  ThirdPartyUser   $thirdPartyUser
      * @param string $provider
-     * @return App\ThirdPartyAuthInfo|null
+     * @return ThirdPartyAuthInfo|null
      */
-    private function retrieveThirdPartyAuthInfo(User $thirdPartyUser, $provider)
+    private function retrieveThirdPartyAuthInfo(ThirdPartyUser $thirdPartyUser, $provider)
     {
-        return $this->repository->retrieveThirdPartyAuthInfo($thirdPartyUser->getId(), $provider);
+        return ThirdPartyAuthInfo::where('third_party_user_id', $thirdPartyUser->getId())
+            ->where('third_party', $provider)
+            ->first();
     }
 
     /**
-     * Register user.
-     *
-     * @param  Laravel\Socialite\Contracts\User   $thirdPartyUser
-     * @param  string $provider
-     * @return App\User
+     * @param $email
+     * @return User|null
      */
-    private function register(User $thirdPartyUser, $provider)
+    private function getUserByEmail($email)
     {
-        $data = $this->prepareUserData($thirdPartyUser);
-
-        $thirdPartyAuthData = $this->prepareThirdPartyAuthData($thirdPartyUser, $provider);
-
-        return $this->registrationService->register($data, true, $thirdPartyAuthData);
+        return User::where('email', $email)->first();
     }
 
     /**
-     * Get array of user data.
-     *
-     * @param  Laravel\Socialite\Contracts\User   $thirdPartyUser
-     * @return array
+     * @param User $user
+     * @param ThirdPartyUser $thirdPartyUser
+     * @param $provider
      */
-    private function prepareUserData(User $thirdPartyUser)
+    private function addThirdPartyAuthInfoToUser(User $user, ThirdPartyUser $thirdPartyUser, $provider)
     {
-        $data = [];
-        if ($this->emailIsValid($thirdPartyUser->getEmail())) {
-            $data['email'] = $thirdPartyUser->getEmail();
-        }
-
-        return $data;
-    }
-
-    /**
-     * Get array of third party auth data.
-     *
-     * @param  Laravel\Socialite\Contracts\User   $thirdPartyUser
-     * @param  string  $provider
-     * @return array
-     */
-    private function prepareThirdPartyAuthData(User $thirdPartyUser, $provider)
-    {
-        return [
+        $authInfo = new ThirdPartyAuthInfo([
             'third_party' => $provider,
             'third_party_user_id' => $thirdPartyUser->getId(),
-        ];
+        ]);
+
+        $user->addThirdPartyAuthInfo($authInfo);
     }
 
     /**
@@ -156,5 +132,30 @@ class ThirdPartyAuthService
     private function emailIsValid($email)
     {
         return filter_var($email, FILTER_VALIDATE_EMAIL);
+    }
+
+    /**
+     * @param ThirdPartyUser $thirdPartyUser
+     * @param $provider
+     * @return User
+     */
+    private function registerNewUser(ThirdPartyUser $thirdPartyUser, $provider)
+    {
+        return DB::transaction(function () use ($thirdPartyUser, $provider) {
+            $user = $this->createUser($thirdPartyUser);
+            $this->addThirdPartyAuthInfoToUser($user, $thirdPartyUser, $provider);
+            event(new Registered($user));
+            return $user;
+        });
+    }
+
+    /**
+     * @param ThirdPartyUser $thirdPartyUser
+     * @return User
+     */
+    private function createUser(ThirdPartyUser $thirdPartyUser) {
+        return User::create([
+            'email' => $this->emailIsValid($thirdPartyUser->getEmail()) ? $thirdPartyUser->getEmail() : null,
+        ]);
     }
 }

@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Http\Requests\WordRequest;
-use App\Word;
-use Illuminate\Contracts\Filesystem\Factory;
 use Intervention\Image\Image;
+use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 
 class ImageService
 {
@@ -35,19 +33,17 @@ class ImageService
 
     /**
      * Process image.
-     * 
-     * @param  WordRequest $request
-     * @param  Word        $word
+     *
+     * @param Image $image
      * @return void
      */
-    public function processImage(WordRequest $request, Word $word)
+    public function processImage(Image $image)
     {
-        $image = $request->getImage();
         if ($this->needsResizing($image)) {
             $this->resize($image);
         }
+
         $this->save($image);
-        $word->image_filename = $image->basename;
     }
 
     /**
@@ -121,24 +117,12 @@ class ImageService
     /**
      * Get image file extension.
      *
-     * @return  string
+     * @param Image $image
+     * @return string
      */
     private function getExtension(Image $image)
     {
-        switch ($image->mime()) {
-            case 'image/jpeg':
-                $extension = 'jpg';
-                break;
-            case 'image/png':
-                $extension = 'png';
-                break;
-            case 'image/gif':
-                $extension = 'gif';
-                break;
-            default:
-                $extension = '';
-        }
-
-        return $extension;
+        $guesser = ExtensionGuesser::getInstance();
+        return $guesser->guess($image->mime());
     }
 }

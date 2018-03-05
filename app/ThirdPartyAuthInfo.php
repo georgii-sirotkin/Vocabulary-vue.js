@@ -16,12 +16,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ThirdPartyAuthInfo extends Model
 {
+    /**
+     * @var bool
+     */
     public $timestamps = false;
+
+    /**
+     * @var string
+     */
     protected $table = 'third_party_auth';
-    protected $fillable = [
-        'third_party',
-        'third_party_user_id',
-    ];
+
+    /**
+     * @var array
+     */
+    protected $fillable = ['third_party', 'third_party_user_id'];
 
     /**
      * Get the user who owns this auth info.

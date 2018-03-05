@@ -7,6 +7,7 @@ use App\Services\CheckAnswerService;
 use App\Services\ImageService;
 use App\Services\RandomWordService;
 use App\Services\ThirdPartyAuthService;
+use App\Validators\ImageValidator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,15 +30,35 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(ThirdPartyAuthService::class, function ($app) {
-            return new ThirdPartyAuthService(config('settings.authentication_services'), $app['Laravel\Socialite\Contracts\Factory'], $app['Illuminate\Contracts\Auth\Factory'], $app['App\Services\RegistrationService'], $app['App\Repositories\UserRepository']);
+            return new ThirdPartyAuthService(
+                config('settings.authentication_services'),
+                $app['Laravel\Socialite\Contracts\Factory'],
+                $app['Illuminate\Contracts\Auth\Factory']
+            );
+        });
+
+        $this->app->singleton(ImageValidator::class, function ($app) {
+            return new ImageValidator(
+                config('settings.image.max_filesize'),
+                config('settings.image.mime_types'),
+                $app['Intervention\Image\ImageManager']
+            );
         });
 
         $this->app->singleton(ImageService::class, function ($app) {
-            return new ImageService(config('settings.image.max_width'), config('settings.image.max_height'), config('settings.image.folder'), $app['Illuminate\Contracts\Filesystem\Factory']);
+            return new ImageService(
+                config('settings.image.max_width'),
+                config('settings.image.max_height'),
+                config('settings.image.folder')
+            );
         });
 
         $this->app->singleton(RandomWordService::class, function ($app) {
-            return new RandomWordService($app['App\Repositories\WordRepository'], $app['Illuminate\Session\SessionManager'], config('settings.number_of_words_to_remember'));
+            return new RandomWordService(
+                $app['App\Repositories\WordRepository'],
+                $app['Illuminate\Session\SessionManager'],
+                config('settings.number_of_words_to_remember')
+            );
         });
 
         $this->app->singleton(WordRepository::class, function ($app) {
@@ -45,7 +66,10 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(CheckAnswerService::class, function ($app) {
-            return new CheckAnswerService($app['Illuminate\Session\SessionManager'], config('settings.min_number_of_chars_per_one_mistake'));
+            return new CheckAnswerService(
+                $app['Illuminate\Session\SessionManager'],
+                config('settings.min_number_of_chars_per_one_mistake')
+            );
         });
 
         if ($this->app->environment() !== 'production') {

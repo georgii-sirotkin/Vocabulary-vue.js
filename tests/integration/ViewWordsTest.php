@@ -12,7 +12,7 @@ class ViewWordsTest extends WordTest
             $words[] = $this->createWordForUser()->word;
         }
 
-        $this->visit(route('words'));
+        $this->visit(route('words.index'));
         foreach ($words as $word) {
             $this->see($word);
         }
@@ -26,7 +26,7 @@ class ViewWordsTest extends WordTest
             $words[] = $this->createWordForUser()->title;
         }
         $this->assertEquals(4, $this->user->words()->count());
-        $this->visit(route('words'));
+        $this->visit(route('words.index'));
         foreach ($words as $word) {
             $this->see(">$word</a>");
         }
@@ -36,7 +36,7 @@ class ViewWordsTest extends WordTest
         $this->actingAs($anotherUser);
         $this->assertEquals(0, $anotherUser->words()->count());
 
-        $this->visit(route('words'));
+        $this->visit(route('words.index'));
 
         foreach ($words as $word) {
             $this->dontSee(">$word</a>");
@@ -46,7 +46,7 @@ class ViewWordsTest extends WordTest
     /** @test */
     public function user_is_prompted_to_add_a_word_when_there_are_no_words()
     {
-        $this->visit(route('words'));
+        $this->visit(route('words.index'));
 
         $this->see('Add a word');
     }

@@ -2,21 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Services\CheckAnswerService;
 use App\Services\RandomWordService;
 use Illuminate\Http\Request;
 
 class RandomWordsController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Display random word.
      *

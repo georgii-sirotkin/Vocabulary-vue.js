@@ -8,7 +8,7 @@
 <div class="form-group">
     <label class="col-sm-3 control-label">Image</label>
     <div class="col-sm-9 col-md-8">
-        @if (!empty($word) && !empty($word->image_filename))
+        @if (!empty($word) && $word->hasImage())
             <div id="oldImage">
                 <img src="{{ $word->getImageUrl() }}" class="pull-left img-responsive">
                 <input type="hidden" name="keepImage" value="keepImage">

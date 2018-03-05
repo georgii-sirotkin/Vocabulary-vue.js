@@ -31,11 +31,11 @@ class Word extends Model
     {
         parent::boot();
 
-        static::addGlobalScope('currentUser', function (Builder $builder) {
-            if (Auth::check()) {
+        if (Auth::check()) {
+            static::addGlobalScope('currentUser', function (Builder $builder) {
                 $builder->where('user_id', Auth::user()->id);
-            }
-        });
+            });
+        }
     }
 
     protected $fillable = [
@@ -63,11 +63,11 @@ class Word extends Model
      */
     public function getImageUrl()
     {
-        if (empty($this->image_filename)) {
+        if (!$this->hasImage()) {
             return null;
         }
 
-        return Storage::disk('public')->url(config('settings.image.folder') . '/' . $this->image_filename);
+        return Storage::disk('public')->url($this->getImagePath());
     }
 
     /**
@@ -77,7 +77,7 @@ class Word extends Model
      */
     public function getImagePath()
     {
-        if (empty($this->image_filename)) {
+        if (!$this->hasImage()) {
             return null;
         }
 
@@ -108,11 +108,11 @@ class Word extends Model
     }
 
     /**
-     * Add definitions to word touching word's updated_at field.
+     * Add definitions to word.
      *
      * @param array $definitions
      */
-    public function addDefinitionsWithTouch(array $definitions)
+    public function addDefinitions(array $definitions)
     {
         $this->definitions()->saveMany($definitions);
     }

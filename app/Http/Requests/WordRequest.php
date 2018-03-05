@@ -32,8 +32,7 @@ class WordRequest extends Request
      */
     public function rules()
     {
-        // if editing word, then the url looks like /words/{word}/ where {word} is slug
-        $slug = $this->route('word') ?: 'NULL';
+        $wordId = $this->route('word') ? $this->route('word')->id : 'NULL';
         $userId = $this->user()->id;
 
         return [
@@ -41,11 +40,12 @@ class WordRequest extends Request
                 'required',
                 Rule::unique('words')->where(function ($query) use ($userId) {
                     return $query->where('user_id', $userId);
-                })->ignore($slug, 'slug'),
+                })->ignore($wordId),
                 'max:255',
             ],
-            'image' => "required_without_all:definitions.0,imageUrl,keepImage",
-            'imageUrl' => 'nullable|url'
+            'definitions' => 'array',
+            'image' => "required_without_all:definitions.0,imageUrl,keepImage|file",
+            'imageUrl' => 'nullable|url',
         ];
     }
 
@@ -57,7 +57,7 @@ class WordRequest extends Request
     public function messages()
     {
         return [
-            'word.unique' => 'You have already added this word.',
+            'title.unique' => 'You have already added this word.',
             'image.required_without_all' => 'Image is required when no definitions are given.',
         ];
     }
@@ -101,7 +101,8 @@ class WordRequest extends Request
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $imageValidator = new ImageValidator(config('settings.image.max_filesize'), config('settings.image.mime_types'), app('Intervention\Image\ImageManager'));
+            /** @var ImageValidator $imageValidator */
+            $imageValidator = app(ImageValidator::class);
             $imageValidator->validate($validator, $this);
         });
     }

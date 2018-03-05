@@ -9,7 +9,7 @@ class AddWordInBrowserTest extends AuthenticatedUserBrowserTest
     /** @test */
     public function add_word_with_definitions()
     {
-    	$this->driver->get(route('add_word'));
+    	$this->driver->get(route('words.create'));
     	$this->waitForElementToAppear(WebDriverBy::id('wordInput'));
     	$this->driver->findElement(WebDriverBy::id('wordInput'))->click();
     	$this->driver->getKeyboard()->sendKeys('test');
@@ -24,7 +24,7 @@ class AddWordInBrowserTest extends AuthenticatedUserBrowserTest
     	}
     	$this->driver->findElement(WebDriverBy::cssSelector('.btn-primary'))->click();
 
-        $this->assertEquals(route('words'), $this->driver->getCurrentUrl());
+        $this->assertEquals(route('words.index'), $this->driver->getCurrentUrl());
         $this->assertEquals(1, $this->user->words()->count());
         $word = $this->user->words()->first();
         $this->assertEquals('test', $word->title);
@@ -38,7 +38,7 @@ class AddWordInBrowserTest extends AuthenticatedUserBrowserTest
     /** @test */
     public function can_add_word_with_jpg_file()
     {
-    	$this->driver->get(route('add_word'));
+    	$this->driver->get(route('words.create'));
     	$this->waitForElementToAppear(WebDriverBy::id('wordInput'));
     	$this->driver->findElement(WebDriverBy::id('wordInput'))->click();
     	$this->driver->getKeyboard()->sendKeys('test');
@@ -47,7 +47,7 @@ class AddWordInBrowserTest extends AuthenticatedUserBrowserTest
     	$this->driver->findElement(WebDriverBy::name('image'))->sendKeys($this->getPathToTestFile('image.jpg'));
     	$this->driver->findElement(WebDriverBy::cssSelector('.btn-primary'))->click();
 
-    	$this->assertEquals(route('words'), $this->driver->getCurrentUrl());
+    	$this->assertEquals(route('words.index'), $this->driver->getCurrentUrl());
         $this->assertEquals(1, $this->user->words()->count());
         $word = $this->user->words()->first();
         $this->assertEquals('test', $word->title);

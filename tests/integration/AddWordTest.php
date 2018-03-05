@@ -8,7 +8,7 @@ class AddWordTest extends WordTest
     /** @test */
     public function can_add_word_with_image_url_and_definitions()
     {
-        $this->call('POST', route('insert_word'), [
+        $this->call('POST', route('words.store'), [
             'title' => 'test',
             'definitions' => [
                 'test definition',
@@ -32,12 +32,12 @@ class AddWordTest extends WordTest
     /** @test */
     public function can_add_word_with_png_file()
     {
-        $this->visit(route('add_word'))
+        $this->visit(route('words.create'))
             ->type('test', 'title')
-            ->seePageIs(route('add_word'))
+            ->seePageIs(route('words.create'))
             ->attach($this->getPathToTestFile('image.png'), 'image')
             ->press('Save')
-            ->seePageIs(route('words'));
+            ->seePageIs(route('words.index'));
 
         $word = Word::first();
         $this->assertEquals($this->user->id, $word->user_id);
@@ -50,11 +50,11 @@ class AddWordTest extends WordTest
     /** @test */
     public function accepts_png_image_url()
     {
-        $this->visit(route('add_word'))
+        $this->visit(route('words.create'))
             ->type('test', 'title')
             ->type('https://www.google.co.uk/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png', 'imageUrl')
             ->press('Save')
-            ->seePageIs(route('words'));
+            ->seePageIs(route('words.index'));
 
         $word = Word::first();
         $this->assertEquals($this->user->id, $word->user_id);
@@ -88,6 +88,6 @@ class AddWordTest extends WordTest
 
     protected function addWordWithDefinitions()
     {
-        $this->call('POST', route('insert_word'), ['title' => 'test', 'definitions' => ['test definition', 'another definition']]);
+        $this->call('POST', route('words.store'), ['title' => 'test', 'definitions' => ['test definition', 'another definition']]);
     }
 }

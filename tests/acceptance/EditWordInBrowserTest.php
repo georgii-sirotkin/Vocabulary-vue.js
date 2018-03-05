@@ -15,12 +15,12 @@ class EditWordInBrowserTest extends AuthenticatedUserBrowserTest
         $definitions = factory(Definition::class, 3)->make();
         $word->addDefinitionsWithoutTouch($definitions->all());
 
-        $this->driver->get(route('edit_word', $word));
+        $this->driver->get(route('words.edit', $word));
         $this->driver->findElement(WebDriverBy::id('deleteOldImage'))->click();
         $this->waitForElementToDisappear(WebDriverBy::id('oldImage'));
         $this->driver->findElement(WebDriverBy::cssSelector('.btn-primary'))->click();
 
-        $this->assertEquals(route('words'), $this->driver->getCurrentUrl());
+        $this->assertEquals(route('words.index'), $this->driver->getCurrentUrl());
         $this->assertEquals(1, $this->user->words()->count());
         $updatedWord = $this->user->words()->first();
         $this->assertNull($updatedWord->image_filename);
@@ -39,7 +39,7 @@ class EditWordInBrowserTest extends AuthenticatedUserBrowserTest
         $oldDefinitions = factory(Definition::class, 3)->make()->all();
         $word->addDefinitionsWithoutTouch($oldDefinitions);
 
-        $this->driver->get(route('edit_word', $word));
+        $this->driver->get(route('words.edit', $word));
         $wordInput = $this->driver->findElement(WebDriverBy::id('wordInput'));
         $wordInput->clear();
         $wordInput->sendKeys('changed word');
@@ -54,7 +54,7 @@ class EditWordInBrowserTest extends AuthenticatedUserBrowserTest
         $newDefinitions = [$oldDefinitions[0], $oldDefinitions[2], $newDefinition];
         $this->driver->findElement(WebDriverBy::cssSelector('.btn-primary'))->click();
 
-        $this->assertEquals(route('words'), $this->driver->getCurrentUrl());
+        $this->assertEquals(route('words.index'), $this->driver->getCurrentUrl());
         $this->assertEquals(1, $this->user->words()->count());
         $updatedWord = $this->user->words()->first();
         $this->assertContains('changed word', $updatedWord->word);

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             $faker->unique(true);
             $this->createWordsForUser($user);
         }
+
         $this->createTestUser();
     }
 
@@ -111,9 +112,6 @@ class DatabaseSeeder extends Seeder
     private function generateDefinitions($number)
     {
         $definitions = factory(App\Definition::class, $number)->make();
-        if ($number == 1) {
-            $definitions = new Collection([$definitions]);
-        }
         return $definitions;
     }
 

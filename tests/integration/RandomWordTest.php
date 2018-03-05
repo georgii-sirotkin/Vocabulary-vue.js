@@ -19,7 +19,7 @@ class RandomWordTest extends WordTest
     {
         $this->visit(route('random_word'));
 
-        $this->see(route('add_word'));
+        $this->see(route('words.create'));
     }
 
     /** @test */
@@ -45,7 +45,7 @@ class RandomWordTest extends WordTest
         $this->actingAs($otherUser);
         $this->visit(route('random_word'));
 
-        $this->see(route('add_word'));
+        $this->see(route('words.create'));
     }
 
     /** @test */
@@ -61,7 +61,7 @@ class RandomWordTest extends WordTest
         $this->withSession($sessionData)
             ->visit(route('random_word'));
 
-        $this->see(route('add_word'));
+        $this->see(route('words.create'));
     }
 
     /** @test */
