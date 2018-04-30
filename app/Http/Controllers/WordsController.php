@@ -51,13 +51,7 @@ class WordsController extends Controller
      */
     public function create()
     {
-        if ($this->anyDefinitionsInOldInput()) {
-            $definitions = $this->getDefinitionsFromOldInput();
-        } else {
-            $definitions = collect($this->wordService->createDefinition(''));
-        }
-
-        return view('words.create', compact('definitions'));
+        return view('words.create');
     }
 
     /**

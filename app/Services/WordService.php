@@ -141,9 +141,9 @@ class WordService
      * @param  string $definition
      * @return Definition
      */
-    public function createDefinition($definition)
+    public function createDefinition($definitionData)
     {
-        return new Definition(['text' => $definition]);
+        return new Definition($definitionData);
     }
 
     /**

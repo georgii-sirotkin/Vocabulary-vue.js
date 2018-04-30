@@ -44,7 +44,8 @@ class WordRequest extends Request
                 'max:255',
             ],
             'definitions' => 'array',
-            'image' => "required_without_all:definitions.0,imageUrl,keepImage|file",
+            'definitions.*.text' => 'required|string',
+            'image' => "required_without_all:definitions.0.text,imageUrl,keepImage|file",
             'imageUrl' => 'nullable|url',
         ];
     }

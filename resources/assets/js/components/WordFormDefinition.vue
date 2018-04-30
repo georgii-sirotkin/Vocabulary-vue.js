@@ -2,9 +2,9 @@
     <div class="form-group">
         <div class="col-xs-12 padding-bottom-sm">
             <textarea
+                :value="value"
                 class="form-control"
                 rows="2"
-                :value="value"
                 @input="update($event.target.value)"></textarea>
         </div>
         <div class="col-xs-12 text-right">
