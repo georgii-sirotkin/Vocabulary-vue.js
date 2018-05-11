@@ -50,7 +50,7 @@ class ImageValidator
 		try {
             $image = $this->imageManager->make($validator->attributes()[$inputName]);
         } catch (\Exception $e) {
-            $validator->errors()->add($inputName, "Unable to get image. Supported image types: {$this->getMimeTypesAsString()}.");
+            $validator->errors()->add($inputName, "Unable to process image. Supported image types: {$this->getMimeTypesAsString()}.");
             return;
         }
 
@@ -78,7 +78,7 @@ class ImageValidator
 			return 'imageUrl';
 		}
 
-		if ($this->isFileSuccessfullyUploaded($validator)) {
+		if ($this->isImageSuccessfullyUploaded($validator)) {
 			return 'image';
 		}
 
@@ -102,7 +102,7 @@ class ImageValidator
 	 * @param  Validator $validator
 	 * @return boolean
 	 */
-	private function isFileSuccessfullyUploaded(Validator $validator)
+	private function isImageSuccessfullyUploaded(Validator $validator)
 	{
 		return !empty($validator->valid()['image']);
 	}

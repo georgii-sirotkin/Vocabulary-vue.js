@@ -14,7 +14,8 @@
         "cross-env": "^5.1.4",
         "gulp": "^3.8.8",
         "laravel-mix": "^2.0.0",
-        "vue": "^2.5.7"
+        "vue": "^2.5.7",
+        "vue-picture-input": "^2.1.6"
     },
     "dependencies": {
         "laravel-elixir": "^4.0.0"

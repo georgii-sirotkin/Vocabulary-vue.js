@@ -17,23 +17,39 @@
             <div class="col-sm-9 col-md-8">
                 <ul id="imageTabs" class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active">
-                        <a href="#imageUrl" id="imageUrl-tab" role="tab" data-toggle="tab">URL</a>
+                        <a href="#imageFile" role="tab" id="imageFile-tab" data-toggle="tab">Upload</a>
                     </li>
                     <li role="presentation">
-                        <a href="#imageFile" role="tab" id="imageFile-tab" data-toggle="tab">Upload</a>
+                        <a href="#imageUrl" id="imageUrl-tab" role="tab" data-toggle="tab">URL</a>
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane fade active in" id="imageUrl">
+                    <div role="tabpanel" class="tab-pane fade active in" id="imageFile">
+                        <picture-input
+                                @change="onPictureInputChange"
+                                width="400"
+                                height="250"
+                                accept="image/jpeg,image/png"
+                                size="10"
+                                buttonClass="btn"
+                                removable
+                                hideChangeButton
+                                :customStrings="{
+                                    drag: 'Drop an image or click here to select a file'
+                                }">
+                        </picture-input>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="imageUrl">
+                        <div class="">
+                            <img v-if="word.imageUrl" :src="word.imageUrl" class="img-responsive"/>
+                        </div>
                         <input v-model="word.imageUrl"
                                type="text"
                                class="form-control"
+                               placeholder="Image URL"
                                @input="errors.clear('imageUrl')">
 
                         <span v-if="errors.has('imageUrl')" class="help-block" v-text="errors.get('imageUrl')"></span>
-                    </div>
-                    <div role="tabpanel" class="tab-pane fade" id="imageFile">
-                        <!--{!! Form::file('image', ['style' => 'height: 34px']) !!}-->
                     </div>
                 </div>
             </div>
@@ -77,13 +93,21 @@
     </form>
 </template>
 
+<style>
+    #imageFile .picture-inner-text {
+        font-size: 1.3em;
+    }
+</style>
+
 <script>
     import WordFormDefinition from './WordFormDefinition.vue';
     import Errors from '../Errors';
+    import PictureInput from 'vue-picture-input';
 
     export default {
         components: {
-            'word-form-definition': WordFormDefinition
+            'word-form-definition': WordFormDefinition,
+            PictureInput
         },
 
         props: ['url'],
@@ -92,6 +116,7 @@
             return {
                 word: {
                     title: '',
+                    image: '',
                     imageUrl: '',
                     definitions: [
                         { text: '' },
@@ -134,6 +159,14 @@
                             alert('Something went wrong!');
                         }
                     });
+            },
+
+            onPictureInputChange (image) {
+                if (image) {
+                    this.word.image = image
+                } else {
+                    alert("FileReader API not supported. You're probably using old browser.");
+                }
             }
         }
     }

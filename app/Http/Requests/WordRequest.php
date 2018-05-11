@@ -45,7 +45,7 @@ class WordRequest extends Request
             ],
             'definitions' => 'array',
             'definitions.*.text' => 'required|string',
-            'image' => "required_without_all:definitions.0.text,imageUrl,keepImage|file",
+            'image' => "required_without_all:definitions.0.text,imageUrl,keepImage|nullable|string",
             'imageUrl' => 'nullable|url',
         ];
     }
