@@ -25,23 +25,28 @@
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane fade active in" id="imageFile">
-                        <picture-input
+                        <div class="imageFileInput">
+                            <picture-input
                                 @change="onPictureInputChange"
                                 width="400"
                                 height="250"
-                                accept="image/jpeg,image/png"
+                                accept="image/jpeg,image/png,image/gif"
                                 size="10"
-                                buttonClass="btn"
+                                buttonClass="btn btn-close"
                                 removable
+                                removeButtonClass="remove-image-btn"
                                 hideChangeButton
                                 :customStrings="{
-                                    drag: 'Drop an image or click here to select a file'
+                                    drag: 'Drop an image or click here to select a file',
+                                    remove: 'x'
                                 }">
-                        </picture-input>
+                            </picture-input>
+                        </div>
+                        <span v-if="errors.has('image')" class="help-block" v-text="errors.get('image')"></span>
                     </div>
                     <div role="tabpanel" class="tab-pane fade" id="imageUrl">
                         <div class="">
-                            <img v-if="word.imageUrl" :src="word.imageUrl" class="img-responsive"/>
+                            <img v-if="word.imageUrl" :src="word.imageUrl" class="image-url-preview"/>
                         </div>
                         <input v-model="word.imageUrl"
                                type="text"
@@ -94,8 +99,38 @@
 </template>
 
 <style>
-    #imageFile .picture-inner-text {
-        font-size: 1.3em;
+    .imageFileInput {
+        position: relative;
+    }
+
+    .imageFileInput .picture-inner-text {
+        font-size: 1.3em !important;
+    }
+
+    button.remove-image-btn {
+        font-size: 25px;
+        font-weight: 700;
+        line-height: 1;
+        color: #444;
+        text-shadow: 0 1px 0 #fff;
+        filter: alpha(opacity=60);
+        opacity: .6;
+        background-color: rgba(255, 255, 255, 0.6);
+        border-radius: 15%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 10001;
+        margin: 0.8em !important;
+        padding: 4px 10px;
+    }
+
+    .image-url-preview {
+        max-width: 100%;
+        max-height: 215px;
+        width: auto;
+        height: auto;
+        margin-bottom: 15px;
     }
 </style>
 
