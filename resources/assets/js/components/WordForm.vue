@@ -1,101 +1,109 @@
 <template>
-    <form class="form-horizontal">
-        <div class="form-group" :class="{'has-error' : errors.has('title')}">
-            <label class="col-sm-3 control-label">Word</label>
-            <div class="col-sm-9 col-md-8">
-                <input v-model="word.title"
-                   type="text"
-                   class="form-control"
-                   @input="errors.clear('title')">
+    <div>
+        <form class="form-horizontal">
+            <div class="form-group" :class="{'has-error' : errors.has('title')}">
+                <label class="col-sm-3 control-label">Word</label>
+                <div class="col-sm-9 col-md-8">
+                    <input v-model="word.title"
+                       type="text"
+                       class="form-control"
+                       @input="errors.clear('title')">
 
-                <span v-if="errors.has('title')" class="help-block" v-text="errors.get('title')"></span>
+                    <span v-if="errors.has('title')" class="help-block" v-text="errors.get('title')"></span>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group" :class="{ 'has-error' : errors.has('image') || errors.has('imageUrl') }">
-            <label class="col-sm-3 control-label">Image</label>
-            <div class="col-sm-9 col-md-8">
-                <ul id="imageTabs" class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active">
-                        <a href="#imageFile" role="tab" id="imageFile-tab" data-toggle="tab">Upload</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#imageUrl" id="imageUrl-tab" role="tab" data-toggle="tab">URL</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane fade active in" id="imageFile">
-                        <div class="imageFileInput">
-                            <picture-input
-                                @change="onPictureInputChange"
-                                width="400"
-                                height="250"
-                                accept="image/jpeg,image/png,image/gif"
-                                size="10"
-                                buttonClass="btn btn-close"
-                                removable
-                                removeButtonClass="remove-image-btn"
-                                hideChangeButton
-                                :customStrings="{
-                                    drag: 'Drop an image or click here to select a file',
-                                    remove: 'x'
-                                }">
-                            </picture-input>
+            <div class="form-group" :class="{ 'has-error' : errors.has('image') || errors.has('imageUrl') }">
+                <label class="col-sm-3 control-label">Image</label>
+                <div class="col-sm-9 col-md-8">
+                    <ul id="imageTabs" class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a href="#imageFile" role="tab" id="imageFile-tab" data-toggle="tab">Upload</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#imageUrl" id="imageUrl-tab" role="tab" data-toggle="tab">URL</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade active in" id="imageFile">
+                            <div class="imageFileInput">
+                                <picture-input
+                                    @change="onPictureInputChange"
+                                    width="400"
+                                    height="250"
+                                    accept="image/jpeg,image/png,image/gif"
+                                    size="10"
+                                    buttonClass="btn btn-close"
+                                    removable
+                                    removeButtonClass="remove-image-btn"
+                                    hideChangeButton
+                                    :zIndex="999"
+                                    :customStrings="{
+                                        drag: 'Drop an image or click here to select a file',
+                                        remove: 'x'
+                                    }">
+                                </picture-input>
+                            </div>
+                            <span v-if="errors.has('image')" class="help-block" v-text="errors.get('image')"></span>
                         </div>
-                        <span v-if="errors.has('image')" class="help-block" v-text="errors.get('image')"></span>
-                    </div>
-                    <div role="tabpanel" class="tab-pane fade" id="imageUrl">
-                        <div class="">
-                            <img v-if="word.imageUrl" :src="word.imageUrl" class="image-url-preview"/>
+                        <div role="tabpanel" class="tab-pane fade" id="imageUrl">
+                            <div class="">
+                                <img v-if="word.imageUrl" :src="word.imageUrl" class="image-url-preview"/>
+                            </div>
+                            <input v-model="word.imageUrl"
+                                   type="text"
+                                   class="form-control"
+                                   placeholder="Image URL"
+                                   @input="errors.clear('imageUrl')">
+
+                            <span v-if="errors.has('imageUrl')" class="help-block" v-text="errors.get('imageUrl')"></span>
                         </div>
-                        <input v-model="word.imageUrl"
-                               type="text"
-                               class="form-control"
-                               placeholder="Image URL"
-                               @input="errors.clear('imageUrl')">
-
-                        <span v-if="errors.has('imageUrl')" class="help-block" v-text="errors.get('imageUrl')"></span>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div v-if="definitionsCount > 0" class="row">
-            <label class="col-sm-3 control-label">Defintions</label>
+            <div v-if="definitionsCount > 0" class="row">
+                <label class="col-sm-3 control-label">Defintions</label>
 
-            <div class="col-sm-9 col-md-8">
-                <word-form-definition
-                    v-for="(definition, index) in word.definitions"
-                    :key="index"
-                    :index="index"
-                    v-model="definition.text"
-                    @delete="removeDefinition">
-                </word-form-definition>
+                <div class="col-sm-9 col-md-8">
+                    <word-form-definition
+                        v-for="(definition, index) in word.definitions"
+                        :key="index"
+                        :index="index"
+                        v-model="definition.text"
+                        @delete="removeDefinition">
+                    </word-form-definition>
 
-                <span v-if="errors.has('definitions')" class="help-block" v-text="errors.get('definitions')"></span>
-            </div>
-        </div>
-
-        <div class="space-for-stick-to-bottom">
-        </div>
-
-        <div class="stick-to-bottom button-panel">
-            <div class="row">
-                <div class="col-xs-7 col-sm-6 col-sm-offset-3 col-md-5">
-                    <button @click="addDefinition"
-                        type="button"
-                        class="btn btn-default btn-block">
-                        <i class="fa fa-btn fa-plus"></i> Add Definition
-                    </button>
-                </div>
-                <div class="col-xs-5 col-sm-3 col-md-3">
-                    <button type="submit" class="btn btn-primary btn-block" @click.prevent="save">
-                        <i class="glyphicon glyphicon-save"></i> Save
-                    </button>
+                    <span v-if="errors.has('definitions')" class="help-block" v-text="errors.get('definitions')"></span>
                 </div>
             </div>
-        </div>
-    </form>
+
+            <div class="space-for-stick-to-bottom">
+            </div>
+
+            <div class="stick-to-bottom button-panel">
+                <div class="row">
+                    <div class="col-xs-7 col-sm-6 col-sm-offset-3 col-md-5">
+                        <button @click="addDefinition"
+                            type="button"
+                            class="btn btn-default btn-block">
+                            <i class="fa fa-btn fa-plus"></i> Add Definition
+                        </button>
+                    </div>
+                    <div class="col-xs-5 col-sm-3 col-md-3">
+                        <button type="submit" class="btn btn-primary btn-block" @click.prevent="save">
+                            <i class="glyphicon glyphicon-save"></i> Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <word-form-modal
+                :display="displayModal"
+                :wordsCount="wordsCount"
+                @add-another-word="clear">
+        </word-form-modal>
+    </div>
 </template>
 
 <style>
@@ -120,7 +128,7 @@
         position: absolute;
         top: 0;
         right: 0;
-        z-index: 10001;
+        z-index: 1000;
         margin: 0.8em !important;
         padding: 4px 10px;
     }
@@ -136,12 +144,14 @@
 
 <script>
     import WordFormDefinition from './WordFormDefinition.vue';
+    import WordFormModal from './WordFormModal.vue';
     import Errors from '../Errors';
     import PictureInput from 'vue-picture-input';
 
     export default {
         components: {
             'word-form-definition': WordFormDefinition,
+            'word-form-modal': WordFormModal,
             PictureInput
         },
 
@@ -149,15 +159,10 @@
 
         data: function () {
             return {
-                word: {
-                    title: '',
-                    image: '',
-                    imageUrl: '',
-                    definitions: [
-                        { text: '' },
-                    ]
-                },
-                errors: new Errors()
+                word: {},
+                errors: new Errors(),
+                displayModal: false,
+                wordsCount: null
             };
         },
 
@@ -184,8 +189,10 @@
 
             save() {
                 axios.post(this.url, this.getSanitizedWord())
-                    .then(() => {
-                        alert('hooray!');
+                    .then((response) => {
+                        this.wordsCount = response.data.words_count;
+                        this.errors.clear();
+                        this.displayModal = true;
                     })
                     .catch(error => {
                         if (error.response.status == 422) {
@@ -202,7 +209,28 @@
                 } else {
                     alert("FileReader API not supported. You're probably using old browser.");
                 }
+            },
+
+            clear() {
+                this.displayModal = false;
+                this.setEmptyValues();
+                $(".remove-image-btn").click();
+            },
+
+            setEmptyValues () {
+                this.word = {
+                    title: '',
+                        image: '',
+                        imageUrl: '',
+                        definitions: [
+                        { text: '' },
+                    ]
+                }
             }
+        },
+
+        created() {
+            this.setEmptyValues();
         }
     }
 </script>

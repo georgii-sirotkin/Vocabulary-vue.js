@@ -4,7 +4,7 @@
 
 @section('content')
 	@if (Session::get('showHelloMessage'))
-		@include('words.partials.modal', ['numberOfWords' => Session::get('numberOfWords')])
+		@include('modals.greeting', ['numberOfWords' => Session::get('numberOfWords')])
 	@endif
 
 	<div class="row">

@@ -63,8 +63,7 @@ class WordsController extends Controller
     public function store(WordRequest $request)
     {
         $this->wordService->storeWord($request);
-
-        return redirect()->route('words.index');
+        return ['words_count' => Word::count()];
     }
 
     /**
