@@ -17,8 +17,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" @click="viewWords">View words</button>
-                    <button type="button" class="btn btn-primary" @click="$emit('add-another-word')">
+                    <button type="button" class="btn btn-default" @click="redirectToWordsIndex">View words</button>
+                    <button type="button" class="btn btn-primary" @click="$parent.displayModal = false;">
                         Add another word
                     </button>
                 </div>
@@ -39,11 +39,11 @@
 
 <script>
     export default {
-        props: ['display', 'wordsCount'],
+        props: ['display', 'words-count', 'words-url'],
         methods: {
-            viewWords() {
-                $("#wordFormModal").modal('hide');
-                window.location.href = '/words';
+            redirectToWordsIndex() {
+                this.$parent.displayModal = false;
+                window.location.href = this.wordsUrl;
             }
         },
         watch: {

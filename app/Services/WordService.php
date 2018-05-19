@@ -115,35 +115,19 @@ class WordService
     }
 
     /**
-     * Get array of Definition objects.
-     *
-     * @param  array  $definitions
-     * @return array
-     */
-    public function getDefinitionObjects(array $definitions)
-    {
-        return array_map(array($this, 'createDefinition'), $definitions);
-    }
-
-    /**
      * Get array of Definition objects from input.
      *
      * @return array
      */
     private function getDefinitionsFromInput(WordRequest $request)
     {
-        return $this->getDefinitionObjects(array_filter($request->input('definitions', array())));
-    }
+        $definitionsData = collect($request->input('definitions', array()));
 
-    /**
-     * Get a new Definition instance.
-     *
-     * @param  string $definition
-     * @return Definition
-     */
-    public function createDefinition($definitionData)
-    {
-        return new Definition($definitionData);
+        return $definitionsData->reject(function ($definitionData) {
+            return empty($definitionData['text']);
+        })->map(function ($definitionData) {
+            return new Definition(['text' => $definitionData['text']]);
+        });
     }
 
     /**
@@ -155,7 +139,7 @@ class WordService
      */
     private function shouldDeleteOldImage(WordRequest $request, Word $word)
     {
-        return $word->hasImage() && ($request->hasImage() || !$request->has('keepImage'));
+        return $word->hasImage() && ($request->hasImage() || !$request->filled('image_filename'));
     }
 
     /**

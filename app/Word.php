@@ -7,6 +7,7 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Storage;
 
 /**
@@ -42,6 +43,8 @@ class Word extends Model
         'title',
     ];
 
+    protected $appends = ['url', 'image_url'];
+
     /**
      * Return the sluggable configuration array for this model.
      *
@@ -61,13 +64,23 @@ class Word extends Model
      *
      * @return string|null
      */
-    public function getImageUrl()
+    public function getImageUrlAttribute()
     {
         if (!$this->hasImage()) {
             return null;
         }
 
         return Storage::disk('public')->url($this->getImagePath());
+    }
+
+    /**
+     * Get url to the word.
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return route('words.show', $this);
     }
 
     /**
@@ -97,9 +110,9 @@ class Word extends Model
     /**
      * Add definitions to word without touching word's updated_at field.
      *
-     * @param array $definitions
+     * @param Collection $definitions
      */
-    public function addDefinitionsWithoutTouch(array $definitions)
+    public function addDefinitionsWithoutTouch(Collection $definitions)
     {
         foreach ($definitions as $definition) {
             $definition->word_id = $this->id;
@@ -110,9 +123,9 @@ class Word extends Model
     /**
      * Add definitions to word.
      *
-     * @param array $definitions
+     * @param Collection $definitions
      */
-    public function addDefinitions(array $definitions)
+    public function addDefinitions(Collection $definitions)
     {
         $this->definitions()->saveMany($definitions);
     }

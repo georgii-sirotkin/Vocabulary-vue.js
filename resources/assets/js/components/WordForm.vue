@@ -13,7 +13,7 @@
                 </div>
             </div>
 
-            <div class="form-group" :class="{ 'has-error' : errors.has('image') || errors.has('imageUrl') }">
+            <div class="form-group" :class="{ 'has-error' : errors.has('image') || errors.has('remoteImageUrl') }">
                 <label class="col-sm-3 control-label">Image</label>
                 <div class="col-sm-9 col-md-8">
                     <ul id="imageTabs" class="nav nav-tabs" role="tablist">
@@ -21,14 +21,13 @@
                             <a href="#imageFile" role="tab" id="imageFile-tab" data-toggle="tab">Upload</a>
                         </li>
                         <li role="presentation">
-                            <a href="#imageUrl" id="imageUrl-tab" role="tab" data-toggle="tab">URL</a>
+                            <a href="#remoteImageUrl" id="remoteImageUrl-tab" role="tab" data-toggle="tab">URL</a>
                         </li>
                     </ul>
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane fade active in" id="imageFile">
                             <div class="imageFileInput">
                                 <picture-input
-                                    @change="onPictureInputChange"
                                     width="400"
                                     height="250"
                                     accept="image/jpeg,image/png,image/gif"
@@ -41,22 +40,25 @@
                                     :customStrings="{
                                         drag: 'Drop an image or click here to select a file',
                                         remove: 'x'
-                                    }">
+                                    }"
+                                    :prefill="word.image_url"
+                                    @change="onPictureInputChange"
+                                    @remove="onPictureRemove">
                                 </picture-input>
                             </div>
                             <span v-if="errors.has('image')" class="help-block" v-text="errors.get('image')"></span>
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="imageUrl">
+                        <div role="tabpanel" class="tab-pane fade" id="remoteImageUrl">
                             <div class="">
-                                <img v-if="word.imageUrl" :src="word.imageUrl" class="image-url-preview"/>
+                                <img v-if="word.remoteImageUrl" :src="word.remoteImageUrl" class="image-url-preview"/>
                             </div>
-                            <input v-model="word.imageUrl"
+                            <input v-model="word.remoteImageUrl"
                                    type="text"
                                    class="form-control"
                                    placeholder="Image URL"
-                                   @input="errors.clear('imageUrl')">
+                                   @input="errors.clear('remoteImageUrl')">
 
-                            <span v-if="errors.has('imageUrl')" class="help-block" v-text="errors.get('imageUrl')"></span>
+                            <span v-if="errors.has('remoteImageUrl')" class="help-block" v-text="errors.get('remoteImageUrl')"></span>
                         </div>
                     </div>
                 </div>
@@ -64,7 +66,6 @@
 
             <div v-if="definitionsCount > 0" class="row">
                 <label class="col-sm-3 control-label">Defintions</label>
-
                 <div class="col-sm-9 col-md-8">
                     <word-form-definition
                         v-for="(definition, index) in word.definitions"
@@ -99,9 +100,9 @@
             </div>
         </form>
         <word-form-modal
-                :display="displayModal"
-                :wordsCount="wordsCount"
-                @add-another-word="clear">
+            :display="displayModal"
+            :words-count="wordsCount"
+            :words-url="wordsUrl">
         </word-form-modal>
     </div>
 </template>
@@ -155,11 +156,11 @@
             PictureInput
         },
 
-        props: ['url'],
+        props: ['words-url', 'initialWord'],
 
         data: function () {
             return {
-                word: {},
+                word: this.isEditing() ? this.initialWord : this.getEmptyWord(),
                 errors: new Errors(),
                 displayModal: false,
                 wordsCount: null
@@ -173,6 +174,10 @@
         },
 
         methods: {
+            isEditing() {
+                return typeof this.initialWord == 'object';
+            },
+
             removeDefinition(index) {
                 this.word.definitions.splice(index, 1);
             },
@@ -188,22 +193,32 @@
             },
 
             save() {
-                axios.post(this.url, this.getSanitizedWord())
-                    .then((response) => {
-                        this.wordsCount = response.data.words_count;
-                        this.errors.clear();
-                        this.displayModal = true;
-                    })
-                    .catch(error => {
-                        if (error.response.status == 422) {
-                            this.errors.record(error.response.data.errors);
-                        } else {
-                            alert('Something went wrong!');
-                        }
-                    });
+                if (this.isEditing()) {
+                    this.update();
+                } else {
+                    this.create();
+                }
             },
 
-            onPictureInputChange (image) {
+            update() {
+                axios.put(this.word.url, this.getSanitizedWord())
+                    .then(() => {
+                        window.location.href = this.word.url;
+                    })
+                    .catch(error => this.handleErrorResponse(error));
+            },
+
+            create() {
+                axios.post(this.wordsUrl, this.getSanitizedWord())
+                    .then((response) => {
+                        this.wordsCount = response.data.words_count;
+                        this.resetForm();
+                        this.displayModal = true;
+                    })
+                    .catch(error => this.handleErrorResponse(error));
+            },
+
+            onPictureInputChange(image) {
                 if (image) {
                     this.word.image = image
                 } else {
@@ -211,26 +226,35 @@
                 }
             },
 
-            clear() {
-                this.displayModal = false;
-                this.setEmptyValues();
+            onPictureRemove() {
+                this.word.image = null;
+                this.word.image_filename = null;
+            },
+
+            resetForm() {
+                this.errors.clear();
+                this.word = this.getEmptyWord();
                 $(".remove-image-btn").click();
             },
 
-            setEmptyValues () {
-                this.word = {
+            getEmptyWord() {
+                return {
                     title: '',
-                        image: '',
-                        imageUrl: '',
-                        definitions: [
+                    image: '',
+                    remoteImageUrl: '',
+                    definitions: [
                         { text: '' },
                     ]
+                };
+            },
+
+            handleErrorResponse(error) {
+                if (error.response.status == 422) {
+                    this.errors.record(error.response.data.errors);
+                } else {
+                    alert('Something went wrong!');
                 }
             }
         },
-
-        created() {
-            this.setEmptyValues();
-        }
     }
 </script>

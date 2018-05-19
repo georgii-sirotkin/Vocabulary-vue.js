@@ -85,13 +85,8 @@ class WordsController extends Controller
      */
     public function edit(Word $word)
     {
-        if ($this->anyDefinitionsInOldInput()) {
-            $definitions = $this->getDefinitionsFromOldInput();
-        } else {
-            $definitions = $word->definitions;
-        }
-
-        return view('words.edit', compact('word', 'definitions'));
+        $word->load('definitions');
+        return view('words.edit', compact('word'));
     }
 
     /**
@@ -104,8 +99,7 @@ class WordsController extends Controller
     public function update(WordRequest $request, Word $word)
     {
         $this->wordService->updateWord($word, $request);
-
-        return redirect()->route('words.index');
+        return $word->fresh();
     }
 
     /**
@@ -119,25 +113,5 @@ class WordsController extends Controller
         $this->wordService->deleteWord($word);
 
         return redirect()->route('words.index');
-    }
-
-    /**
-     * Determine if request contains old input definitions.
-     *
-     * @return boolean
-     */
-    private function anyDefinitionsInOldInput()
-    {
-        return !is_null(old('definitions')) && is_array(old('definitions'));
-    }
-
-    /**
-     * Get Collection of Definition objects from old input.
-     *
-     * @return Collection
-     */
-    private function getDefinitionsFromOldInput()
-    {
-        return collect($this->wordService->getDefinitionObjects(old('definitions')));
     }
 }

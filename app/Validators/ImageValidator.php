@@ -75,7 +75,7 @@ class ImageValidator
 	private function getInputName(Validator $validator)
 	{
 		if ($this->isImageURLValid($validator)) {
-			return 'imageUrl';
+			return 'remoteImageUrl';
 		}
 
 		if ($this->isImageSuccessfullyUploaded($validator)) {
@@ -93,7 +93,7 @@ class ImageValidator
 	 */
 	private function isImageURLValid(Validator $validator)
 	{
-		return !empty($validator->valid()['imageUrl']);
+		return !empty($validator->valid()['remoteImageUrl']);
 	}
 
 	/**

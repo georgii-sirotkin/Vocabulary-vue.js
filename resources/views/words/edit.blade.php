@@ -3,8 +3,5 @@
 @section('title', 'Edit word')
 
 @section('content')
-    @include('errors.partials.errors')
-    {!! Form::model($word, array('route' => array('words.update', $word), 'method' => 'PUT', 'files' => true, 'class' => 'form-horizontal')) !!}
-        @include('words.partials.form')
-    {!! Form::close() !!}
+    <word-form :initial-word="{{ $word }}"></word-form>
 @endsection
