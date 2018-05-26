@@ -93,7 +93,7 @@
                     </div>
                     <div class="col-xs-5 col-sm-3 col-md-3">
                         <button type="submit" class="btn btn-primary btn-block" @click.prevent="save">
-                            <i class="glyphicon glyphicon-save"></i> Save
+                            <i class="fa fa-spinner fa-pulse" style="margin-right: 0.3em" v-show="loading"></i> Save
                         </button>
                     </div>
                 </div>
@@ -163,7 +163,8 @@
                 word: this.isEditing() ? this.initialWord : this.getEmptyWord(),
                 errors: new Errors(),
                 displayModal: false,
-                wordsCount: null
+                wordsCount: null,
+                loading: false
             };
         },
 
@@ -201,21 +202,27 @@
             },
 
             update() {
+                this.loading = true;
+
                 axios.put(this.word.url, this.getSanitizedWord())
                     .then(() => {
                         window.location.href = this.word.url;
                     })
-                    .catch(error => this.handleErrorResponse(error));
+                    .catch(error => this.handleErrorResponse(error))
+                    .finally(() => {this.loading = false;});
             },
 
             create() {
+                this.loading = true;
+                
                 axios.post(this.wordsUrl, this.getSanitizedWord())
                     .then((response) => {
                         this.wordsCount = response.data.words_count;
                         this.resetForm();
                         this.displayModal = true;
                     })
-                    .catch(error => this.handleErrorResponse(error));
+                    .catch(error => this.handleErrorResponse(error))
+                    .finally(() => {this.loading = false;});
             },
 
             onPictureInputChange(image) {
