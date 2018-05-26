@@ -2,7 +2,7 @@
 	<div class="col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
 		@if (!empty($word->image_filename))
 		    <p>
-		        <img src="{{ $word->getImageUrl() }}" class="img-responsive padding-bottom-sm">
+		        <img src="{{ $word->image_url }}" class="img-responsive padding-bottom-sm">
 		    </p>
 		@endif
 

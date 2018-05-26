@@ -117,7 +117,7 @@ class WordService
     /**
      * Get array of Definition objects from input.
      *
-     * @return array
+     * @return Collection
      */
     private function getDefinitionsFromInput(WordRequest $request)
     {
